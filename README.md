@@ -126,14 +126,22 @@ but they'll make it shine:
 
 ---
 
-## 🌐 Deploying
+## 🌐 Live site & deploying
 
-The build output is a static `/dist` folder — host it anywhere.
+**Live at → https://snasser404.github.io**
 
-- **Vercel / Netlify:** import the repo, framework "Vite", build `npm run build`,
-  output `dist`. Done.
-- **GitHub Pages:** `npm run build`, then publish `/dist`. `vite.config.ts` already uses
-  a relative `base: './'`, so it works from any sub-path.
+Hosted on **GitHub Pages** from the `Snasser404/snasser404.github.io` repo. A GitHub Actions
+workflow ([.github/workflows/deploy.yml](.github/workflows/deploy.yml)) rebuilds and redeploys
+**automatically on every push to `main`** — just commit and push your changes:
+
+```bash
+git add -A
+git commit -m "Update portfolio"
+git push        # → site rebuilds & goes live in ~1 minute
+```
+
+`vite.config.ts` uses a relative `base: './'`, so the build also works from any sub-path or
+other host (Vercel/Netlify: import the repo, framework "Vite", build `npm run build`, output `dist`).
 
 ---
 
