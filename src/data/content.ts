@@ -477,9 +477,14 @@ export const education: Credential[] = [
   { title: 'International Computer License', org: 'New Horizon Computer Center, Aden', year: '2019', kind: 'cert' },
 ]
 
+// Toggle to bring the software-project sections back (Selected Work + More Builds).
+// Set to true to re-show them — also re-add <Projects/> and <MoreProjects/> in App.tsx
+// and restore their nav item + section numbers.
+export const showSoftwareProjects = false
+
 export const navItems = [
   { id: 'about', label: 'About' },
-  { id: 'work', label: 'Work' },
+  ...(showSoftwareProjects ? [{ id: 'work', label: 'Work' }] : []),
   { id: 'marketing', label: 'Marketing' },
   { id: 'skills', label: 'Skills' },
   { id: 'experience', label: 'Experience' },

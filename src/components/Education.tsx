@@ -6,7 +6,7 @@ export default function Education() {
   return (
     <section id="education" className="section" style={{ paddingTop: 0 }}>
       <div className="container-x">
-        <SectionHeading index="07" eyebrow="Education & Certifications" title="Credentials across marketing, AI, and data." />
+        <SectionHeading index="05" eyebrow="Education & Certifications" title="Credentials across marketing, AI, and data." />
         <div className="edu-grid">
           {education.map((c, i) => (
             <Reveal key={c.title} delay={(i % 3) * 0.05}>
