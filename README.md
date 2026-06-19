@@ -128,9 +128,11 @@ but they'll make it shine:
 
 ## 🌐 Live site & deploying
 
-**Live at → https://snasser404.github.io**
+**Live at → https://nassersaleh.ca**  *(`snasser404.github.io` and `www.` redirect here; HTTPS enforced)*
 
-Hosted on **GitHub Pages** from the `Snasser404/snasser404.github.io` repo. A GitHub Actions
+Hosted on **GitHub Pages** from the `Snasser404/snasser404.github.io` repo. The custom domain is
+configured via [public/CNAME](public/CNAME) (`nassersaleh.ca`) with DNS at GoDaddy (apex `A` records
+→ GitHub Pages IPs, `www` `CNAME` → `snasser404.github.io`). A GitHub Actions
 workflow ([.github/workflows/deploy.yml](.github/workflows/deploy.yml)) rebuilds and redeploys
 **automatically on every push to `main`** — just commit and push your changes:
 
