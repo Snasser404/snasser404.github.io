@@ -12,6 +12,7 @@ import Education from './components/Education'
 import Contact from './components/Contact'
 import Footer from './components/Footer'
 import FloatingActions from './components/FloatingActions'
+import Assistant from './components/Assistant'
 
 export default function App() {
   const { scrollYProgress } = useScroll()
@@ -55,6 +56,7 @@ export default function App() {
 
       <Footer />
       <FloatingActions />
+      <Assistant />
     </>
   )
 }

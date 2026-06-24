@@ -955,6 +955,279 @@ h1, h2, h3, h4, .section-title, .eyebrow {
   }
 }
 
+/* ---------- Assistant chatbot ---------- */
+.assistant-launcher {
+  position: fixed;
+  left: clamp(16px, 3vw, 28px);
+  bottom: clamp(16px, 3vw, 28px);
+  z-index: 46;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0.7rem 1.1rem 0.7rem 0.95rem;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  color: #fff;
+  background: linear-gradient(100deg, var(--cyan), var(--electric) 60%, var(--violet));
+  box-shadow: 0 12px 30px -10px var(--glow-violet);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.assistant-launcher:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 38px -10px var(--glow-violet);
+}
+.assistant-launcher-label {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+.assistant-launcher-dot {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #34e0c4;
+  box-shadow: 0 0 0 0 rgba(52, 224, 196, 0.6);
+  animation: a-pulse 2s infinite;
+}
+@keyframes a-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(52, 224, 196, 0.6); }
+  70% { box-shadow: 0 0 0 8px rgba(52, 224, 196, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(52, 224, 196, 0); }
+}
+
+.assistant-panel {
+  position: fixed;
+  left: clamp(16px, 3vw, 28px);
+  bottom: clamp(16px, 3vw, 28px);
+  z-index: 50;
+  width: min(390px, calc(100vw - 32px));
+  height: min(72vh, 580px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 0;
+  box-shadow: var(--shadow-lg), 0 8px 30px -12px rgba(16, 24, 40, 0.25);
+}
+.assistant-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 0.85rem 0.95rem;
+  border-bottom: 1px solid var(--line);
+  background: linear-gradient(100deg, rgba(8, 145, 178, 0.08), rgba(124, 58, 237, 0.08));
+}
+.assistant-head-id {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.assistant-avatar {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  color: #fff;
+  background: linear-gradient(135deg, var(--cyan), var(--violet));
+  flex-shrink: 0;
+}
+.assistant-title {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.98rem;
+  line-height: 1.1;
+}
+.assistant-sub {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+.assistant-online {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #16a34a;
+}
+.assistant-x {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+}
+.assistant-x:hover {
+  background: rgba(15, 23, 42, 0.05);
+  color: var(--text);
+}
+.assistant-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem 0.95rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.bubble {
+  max-width: 86%;
+  padding: 0.62rem 0.85rem;
+  border-radius: 14px;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  word-wrap: break-word;
+}
+.bubble-bot {
+  align-self: flex-start;
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  border-bottom-left-radius: 5px;
+  color: var(--text);
+}
+.bubble-user {
+  align-self: flex-end;
+  background: linear-gradient(100deg, var(--electric), var(--violet));
+  color: #fff;
+  border-bottom-right-radius: 5px;
+}
+.bubble-bot a {
+  color: var(--electric);
+  font-weight: 600;
+  text-decoration: underline;
+}
+.bubble-user a {
+  color: #fff;
+  text-decoration: underline;
+}
+.typing {
+  display: inline-flex;
+  gap: 4px;
+  padding: 2px 0;
+}
+.typing i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--text-dim);
+  animation: a-bounce 1.2s infinite ease-in-out;
+}
+.typing i:nth-child(2) { animation-delay: 0.15s; }
+.typing i:nth-child(3) { animation-delay: 0.3s; }
+@keyframes a-bounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+  30% { transform: translateY(-5px); opacity: 1; }
+}
+.assistant-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 0.4rem;
+}
+.assistant-chip {
+  font-size: 0.78rem;
+  padding: 0.4rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  background: var(--panel);
+  color: var(--text-soft);
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.assistant-chip:hover {
+  color: var(--electric);
+  border-color: rgba(79, 70, 229, 0.4);
+}
+.assistant-input {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  padding: 0.7rem;
+  border-top: 1px solid var(--line);
+}
+.assistant-input textarea {
+  flex: 1;
+  resize: none;
+  max-height: 96px;
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
+  padding: 0.6rem 0.7rem;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  color: var(--text);
+  background: var(--panel-2);
+}
+.assistant-input textarea:focus {
+  outline: none;
+  border-color: var(--electric);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+}
+.assistant-send {
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  border: none;
+  cursor: pointer;
+  color: #fff;
+  background: linear-gradient(135deg, var(--electric), var(--violet));
+  display: grid;
+  place-items: center;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.assistant-send:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.assistant-send:not(:disabled):hover {
+  transform: translateY(-1px);
+}
+.assistant-foot {
+  text-align: center;
+  font-size: 0.66rem;
+  color: var(--text-dim);
+  padding: 0 0.7rem 0.6rem;
+}
+@media (max-width: 480px) {
+  .assistant-launcher-label { display: none; }
+  .assistant-launcher { padding: 0.7rem; }
+}
+
+/* "How to use the assistant" callout (Contact section) */
+.assistant-callout {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  margin-top: 1.4rem;
+  max-width: 480px;
+  padding: 0.9rem 1.05rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(79, 70, 229, 0.22);
+  background: linear-gradient(100deg, rgba(8, 145, 178, 0.06), rgba(124, 58, 237, 0.06));
+}
+.assistant-callout-icon {
+  font-size: 1.2rem;
+  line-height: 1.4;
+}
+.assistant-callout p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--text-soft);
+}
+.assistant-callout strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
 /* Respect reduced motion */
 @media (prefers-reduced-motion: reduce) {
   html {

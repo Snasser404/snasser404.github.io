@@ -99,6 +99,15 @@ export default function Contact() {
                 quickly.
               </p>
 
+              <div className="assistant-callout">
+                <span className="assistant-callout-icon">💬</span>
+                <p>
+                  <strong>Want a fast read on fit?</strong> Open the <strong>assistant</strong> in the bottom-left corner —
+                  ask anything about my background, or <strong>paste a job description</strong> and it'll tell you how well I
+                  match and where I'm strong.
+                </p>
+              </div>
+
               <div className="contact-links">
                 {contactLinks.map((c) => (
                   <a

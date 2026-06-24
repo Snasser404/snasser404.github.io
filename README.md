@@ -147,6 +147,19 @@ other host (Vercel/Netlify: import the repo, framework "Vite", build `npm run bu
 
 ---
 
+## 🤖 Portfolio assistant (chatbot)
+
+A floating assistant (bottom-left) lets employers **ask questions about Nasser** and **paste a job
+description to get an instant fit check** (it classifies the role, scores the fit, and lists matching
+strengths). It runs **entirely in the browser** — no backend, no API key, no cost, fully private.
+Logic + knowledge live in [src/lib/assistant.ts](src/lib/assistant.ts) (grounded only in real résumé
+data). A "how to use it" callout sits in the Contact section.
+
+**Optional AI upgrade →** to make it answer truly open-ended questions with **Claude**, replace the
+body of `getResponse()` with a `fetch()` to a small serverless proxy that holds your Anthropic API
+key (a free Cloudflare Worker works well). The proxy keeps the key off the client. Ask and I'll wire
+it up — note it adds per-use API cost.
+
 ## 🛠 Tech stack
 
 | Area        | Tech |
