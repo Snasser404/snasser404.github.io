@@ -1,0 +1,27 @@
+name = "nasser-assistant"
+main = "worker.js"
+compatibility_date = "2024-11-01"
+
+# Domains allowed to call the assistant (anti-spam: blocks other sites/scripts).
+# Add a localhost entry while testing locally if you want.
+[vars]
+ALLOWED_ORIGINS = "https://nassersaleh.ca,https://www.nassersaleh.ca,https://snasser404.github.io"
+DAILY_MAX = "500"   # hard ceiling on total assistant calls per day
+
+# Per-IP rate limit (anti-spam): 15 requests per 60 seconds per visitor IP.
+# namespace_id is just a unique number you pick for this limiter.
+[[unsafe.bindings]]
+name = "RATE_LIMITER"
+type = "ratelimit"
+namespace_id = "1001"
+simple = { limit = 15, period = 60 }
+
+# Global daily-cap counter store. Create the namespace once (see SETUP.md) and
+# paste its id below. If you skip this, the per-IP limit + Anthropic monthly
+# spend cap still protect you — the Worker runs fine without it.
+[[kv_namespaces]]
+binding = "BUDGET"
+id = "PASTE_YOUR_KV_NAMESPACE_ID_HERE"
+
+# NOTE: the Anthropic API key is NOT stored here. Set it as a secret:
+#   npx wrangler secret put ANTHROPIC_API_KEY

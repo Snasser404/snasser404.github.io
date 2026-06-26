@@ -155,10 +155,14 @@ strengths). It runs **entirely in the browser** — no backend, no API key, no c
 Logic + knowledge live in [src/lib/assistant.ts](src/lib/assistant.ts) (grounded only in real résumé
 data). A "how to use it" callout sits in the Contact section.
 
-**Optional AI upgrade →** to make it answer truly open-ended questions with **Claude**, replace the
-body of `getResponse()` with a `fetch()` to a small serverless proxy that holds your Anthropic API
-key (a free Cloudflare Worker works well). The proxy keeps the key off the client. Ask and I'll wire
-it up — note it adds per-use API cost.
+**Real-AI mode (Claude) — included, ready to deploy.** A secure **Cloudflare Worker** proxy lives in
+[worker/](worker/): it holds your Anthropic API key server-side and ships with anti-spam controls —
+origin allowlist, per-IP rate limit, global daily cap, output/input caps, and a scoped prompt that
+refuses misuse. Follow [worker/SETUP.md](worker/SETUP.md) (~15 min) to deploy it, then paste the
+Worker URL into `ASSISTANT_API_URL` in [src/lib/assistant.ts](src/lib/assistant.ts). The site
+**falls back to the built-in engine** automatically if the Worker is down or over budget, so the
+assistant always answers. Defaults to **Claude Haiku** (cheapest — change `MODEL` in `worker.js` for
+more depth); cost is bounded by the rate limits plus your Anthropic monthly spend cap.
 
 ## 🛠 Tech stack
 

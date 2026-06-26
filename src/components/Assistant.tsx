@@ -2,13 +2,19 @@ import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import {
   getResponse,
+  askClaude,
+  formatReply,
   escapeHtml,
   WELCOME_HTML,
   SUGGESTIONS,
+  ASSISTANT_API_URL,
   type ChatMsg,
+  type ApiTurn,
 } from '../lib/assistant'
 
 const FIT_PROMPT = 'Check my fit for a role'
+const useAI = !!ASSISTANT_API_URL
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
 
 function ChatIcon() {
   return (
@@ -38,6 +44,7 @@ export default function Assistant() {
   const [input, setInput] = useState('')
   const [thinking, setThinking] = useState(false)
   const [pendingJD, setPendingJD] = useState(false)
+  const apiHistory = useRef<ApiTurn[]>([]) // plain-text history for the Claude proxy
   const scrollRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
 
@@ -49,32 +56,53 @@ export default function Assistant() {
     if (open) setTimeout(() => inputRef.current?.focus(), 250)
   }, [open])
 
-  const pushBot = (html: string) => {
-    setThinking(true)
-    window.setTimeout(() => {
-      setThinking(false)
-      setMessages((m) => [...m, { role: 'bot', html }])
-    }, 480)
-  }
+  const addBot = (html: string) => setMessages((m) => [...m, { role: 'bot', html }])
 
-  const submit = (text: string) => {
+  const submit = async (text: string) => {
     const clean = text.trim()
     if (!clean || thinking) return
     setMessages((m) => [...m, { role: 'user', html: escapeHtml(clean) }])
     setInput('')
     const force = pendingJD
     setPendingJD(false)
-    pushBot(getResponse(clean, force))
+    apiHistory.current = [...apiHistory.current, { role: 'user', content: clean }]
+    setThinking(true)
+
+    if (useAI) {
+      try {
+        const reply = await askClaude(apiHistory.current)
+        apiHistory.current = [...apiHistory.current, { role: 'assistant', content: reply }]
+        setThinking(false)
+        addBot(formatReply(reply))
+      } catch (e) {
+        setThinking(false)
+        const err = e as { status?: number; reply?: string }
+        // Worker sent a friendly rate-limit / daily-cap message → show it.
+        // Any other failure → fall back to the built-in engine so the bot still answers.
+        addBot(err.reply ? formatReply(err.reply) : getResponse(clean, force))
+      }
+    } else {
+      await sleep(420) // brief, natural typing pause for the local engine
+      setThinking(false)
+      addBot(getResponse(clean, force))
+    }
   }
 
-  const onSuggestion = (s: string) => {
+  const onSuggestion = async (s: string) => {
     if (thinking) return
     if (s === FIT_PROMPT) {
       setMessages((m) => [...m, { role: 'user', html: escapeHtml(s) }])
+      const promptText = "Sure — paste the **job description** (or just the key requirements) and I'll map them to Nasser's background and assess the fit."
+      apiHistory.current = [
+        ...apiHistory.current,
+        { role: 'user', content: s },
+        { role: 'assistant', content: promptText },
+      ]
       setPendingJD(true)
-      pushBot(
-        `Sure — paste the **job description** (or just the key requirements) and I'll map them to Nasser's background and score the fit.`,
-      )
+      setThinking(true)
+      await sleep(300)
+      setThinking(false)
+      addBot(formatReply(promptText))
       return
     }
     submit(s)
@@ -169,7 +197,7 @@ export default function Assistant() {
                 <SendIcon />
               </button>
             </div>
-            <div className="assistant-foot">Automated assistant · answers from Nasser's résumé</div>
+            <div className="assistant-foot">{useAI ? 'AI assistant · powered by Claude' : "Automated assistant · answers from Nasser's résumé"}</div>
           </motion.div>
         )}
       </AnimatePresence>

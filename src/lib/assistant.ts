@@ -16,6 +16,35 @@ const RESUME = `${import.meta.env.BASE_URL}${profile.resume}`
 const EMAIL = profile.email
 const mailto = (subject = 'Opportunity for Nasser') => `mailto:${EMAIL}?subject=${encodeURIComponent(subject)}`
 
+/* ---------------------------------------------------------------
+   REAL AI (Claude) — optional upgrade.
+   Paste your deployed Cloudflare Worker URL here to switch the
+   assistant from the built-in engine to real Claude AI. Leave it
+   empty to keep the free, offline, in-browser engine.
+   See worker/SETUP.md for how to deploy the Worker.
+----------------------------------------------------------------*/
+export const ASSISTANT_API_URL: string = '' // e.g. 'https://nasser-assistant.<your-subdomain>.workers.dev'
+
+export type ApiTurn = { role: 'user' | 'assistant'; content: string }
+
+/** Calls the Claude proxy. Throws an Error with `.status` on failure so the
+ *  caller can show a friendly message or fall back to the local engine. */
+export async function askClaude(history: ApiTurn[]): Promise<string> {
+  const res = await fetch(ASSISTANT_API_URL, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json', 'x-portfolio': '1' },
+    body: JSON.stringify({ messages: history }),
+  })
+  const data = await res.json().catch(() => ({}))
+  if (!res.ok) {
+    const err = new Error(`assistant_${res.status}`) as Error & { status?: number; reply?: string }
+    err.status = res.status
+    err.reply = (data && (data as { reply?: string }).reply) || ''
+    throw err
+  }
+  return String((data as { reply?: string }).reply || '')
+}
+
 /** Convert the lightweight markup used in answers (**bold**, [text](url)) to HTML.
  *  <br>/<em> are already HTML and pass through. Content is from this module only. */
 function formatMarkup(s: string): string {
@@ -23,6 +52,14 @@ function formatMarkup(s: string): string {
     .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
     .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
     .replace(/\*([^*]+)\*/g, '<em>$1</em>')
+}
+
+/** Format a real-AI (Claude) reply for display. Model output is untrusted, so
+ *  escape HTML FIRST, then apply only light markdown + line breaks. */
+export function formatReply(text: string): string {
+  return escapeHtml(text)
+    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/\n/g, '<br>')
 }
 
 const WELCOME_RAW =
