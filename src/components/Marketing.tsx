@@ -7,8 +7,8 @@ export default function Marketing() {
     <section id="marketing" className="section" style={{ paddingTop: 0 }}>
       <div className="container-x">
         <SectionHeading
-          index="02"
-          eyebrow="Marketing & Design"
+          index="03"
+          eyebrow="Campaigns & Results"
           title="Campaigns and creative that moved the numbers."
         />
 

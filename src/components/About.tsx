@@ -23,8 +23,8 @@ export default function About() {
                 <div className="about-portrait-fallback">
                   <span className="about-monogram">NS</span>
                   <div style={{ display: 'flex', gap: 10, marginTop: 18 }}>
-                    <span className="about-pill"><Megaphone width={15} height={15} /> Marketer</span>
-                    <span className="about-pill"><Code width={15} height={15} /> Developer</span>
+                    <span className="about-pill"><Megaphone width={15} height={15} /> Marketing</span>
+                    <span className="about-pill"><Code width={15} height={15} /> MarTech &amp; Data</span>
                   </div>
                 </div>
               )}

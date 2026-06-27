@@ -1,6 +1,6 @@
 import { Suspense, lazy } from 'react'
 import { motion } from 'framer-motion'
-import { profile, showSoftwareProjects } from '../data/content'
+import { profile } from '../data/content'
 import { ArrowDown, ArrowUpRight, Sparkle } from './icons'
 
 // Lazy-load the WebGL scene so first paint isn't blocked by Three.js.
@@ -91,7 +91,7 @@ export default function Hero() {
         </motion.p>
 
         <motion.div variants={item} style={{ marginTop: 30, display: 'flex', gap: 14, flexWrap: 'wrap' }}>
-          <button onClick={() => go(showSoftwareProjects ? 'work' : 'marketing')} className="btn btn-primary">
+          <button onClick={() => go('work')} className="btn btn-primary">
             View my work <ArrowUpRight width={16} height={16} />
           </button>
           <button onClick={() => go('contact')} className="btn btn-ghost">

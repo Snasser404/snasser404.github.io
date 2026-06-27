@@ -88,7 +88,7 @@ export default function Contact() {
   return (
     <section id="contact" className="section">
       <div className="container-x">
-        <SectionHeading index="06" eyebrow="Contact" title="Let's build something worth marketing." />
+        <SectionHeading index="07" eyebrow="Contact" title="Let's build something worth marketing." />
 
         <div className="contact-layout">
           {/* Left: pitch + direct links */}

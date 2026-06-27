@@ -1,11 +1,9 @@
 import { motion, useScroll, useSpring } from 'framer-motion'
-import { showSoftwareProjects } from './data/content'
 import Nav from './components/Nav'
 import Hero from './components/Hero'
 import About from './components/About'
 import Projects from './components/Projects'
 import Marketing from './components/Marketing'
-import MoreProjects from './components/MoreProjects'
 import Skills from './components/Skills'
 import Experience from './components/Experience'
 import Education from './components/Education'
@@ -44,10 +42,8 @@ export default function App() {
       <main>
         <Hero />
         <About />
-        {/* Software project sections hidden for now (see showSoftwareProjects in content.ts) */}
-        {showSoftwareProjects && <Projects />}
+        <Projects />
         <Marketing />
-        {showSoftwareProjects && <MoreProjects />}
         <Skills />
         <Experience />
         <Education />

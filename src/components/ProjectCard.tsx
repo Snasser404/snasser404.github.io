@@ -98,7 +98,7 @@ export default function ProjectCard({ project, index }: { project: Project; inde
           )}
           {!project.live && !project.repo && !project.repoPrivate && (
             <span className="proj-link" style={{ color: 'var(--text-dim)', cursor: 'default' }}>
-              <Lock width={14} height={14} /> Demo & walk-through on request
+              <Lock width={14} height={14} /> Case study on request
             </span>
           )}
         </div>

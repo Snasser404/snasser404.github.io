@@ -64,7 +64,7 @@ export function formatReply(text: string): string {
 
 const WELCOME_RAW =
   `Hi! 👋 I'm Nasser's assistant. Ask me anything about his background — or **paste a job description** and I'll check how well he fits.<br><br>` +
-  `Try: <em>"What's his experience?"</em> · <em>"What's his tech stack?"</em> · <em>"Is he a fit for my role?"</em>`
+  `Try: <em>"What's his experience?"</em> · <em>"What tools does he use?"</em> · <em>"Is he a fit for my role?"</em>`
 
 export const WELCOME_HTML = formatMarkup(WELCOME_RAW)
 
@@ -91,12 +91,11 @@ const intents: Intent[] = [
   {
     keys: ['skill', 'tech stack', 'stack', 'technolog', 'tools', 'know how', 'can he do', 'capable', 'proficient'],
     answer:
-      `Nasser works across **growth and engineering**:<br>` +
-      `• **Front-end & web:** React, Next.js, TypeScript, Tailwind, HTML/CSS, PWAs<br>` +
-      `• **Back-end & data:** Node.js, PostgreSQL, Supabase, FastAPI, SQL<br>` +
-      `• **AI / ML:** Claude API, retrieval-augmented generation (RAG), vector embeddings, Python<br>` +
-      `• **Marketing:** SEO, PPC/SEM (Google/Meta/LinkedIn Ads), email, content & brand<br>` +
-      `• **Analytics:** GA4, SEMrush, Ahrefs, Tableau, Power BI, Excel<br>` +
+      `Nasser works across **marketing, data, and the tools that connect them**:<br>` +
+      `• **Marketing:** SEO (technical + local), PPC/SEM (Google/Meta/LinkedIn Ads), content & brand, email<br>` +
+      `• **Analytics & data:** GA4, SEMrush, Ahrefs, Tableau, Power BI, A/B testing, reporting<br>` +
+      `• **MarTech & automation:** marketing automation, CRM & lead funnels, Mailchimp/Brevo, CMS (Wix/WordPress/Shopify), booking systems, AI content (Claude)<br>` +
+      `• **Technical fluency:** HTML/CSS, APIs, Python for data, SQL basics<br>` +
       `• **Languages:** English & Arabic`,
   },
   {
@@ -109,9 +108,9 @@ const intents: Intent[] = [
       `• **+15% ROI** and **+20%** customer retention from BI reporting (Ajjerni Rentals)`,
   },
   {
-    keys: ['develop', 'software', 'build', 'code', 'coding', 'programming', 'engineer', 'web app', 'apps', 'ai', 'llm', 'machine learning'],
+    keys: ['develop', 'software', 'build', 'code', 'coding', 'programming', 'technical', 'web app', 'apps', 'ai', 'automation', 'martech'],
     answer:
-      `Yes — Nasser builds, not just markets. He develops **full-stack web apps and AI-powered tools** with React/Next.js, TypeScript, Python, Supabase and the **Claude API** (including retrieval-augmented generation). He holds **Generative AI** and **AI Programming with Python** nanodegrees from Udacity. He brings a marketer's product instinct to everything he ships.`,
+      `Nasser is a **technical marketer** — he builds and runs the technology behind campaigns: marketing websites, local-SEO landing pages, **marketing automation**, GA4 conversion tracking, and booking/CRM funnels. He's comfortable with HTML/CSS, no-code/low-code tools, APIs, a bit of Python for data, and AI content tools (Claude) — backed by **Generative AI** and **AI Programming** credentials from Udacity. Enough tech to ship and measure a campaign end-to-end without waiting on a dev queue.`,
   },
   {
     keys: ['education', 'degree', 'study', 'studied', 'university', 'school', 'certif', 'qualif', 'nanodegree', 'credential'],
@@ -126,7 +125,7 @@ const intents: Intent[] = [
   {
     keys: ['available', 'availability', 'open to', 'hiring', 'looking for work', 'job search', 'start', 'freelance', 'contract'],
     answer:
-      `Yes — Nasser is **open to opportunities**: software, marketing, and hybrid roles, plus freelance builds. He's based in **Toronto, Ontario**. The fastest way to start a conversation is to [email him](${mailto()}) or use the contact form on this page.`,
+      `Yes — Nasser is **open to opportunities**: digital marketing, MarTech, and growth/analytics roles, plus freelance engagements. He's based in **Toronto, Ontario**. The fastest way to start a conversation is to [email him](${mailto()}) or use the contact form on this page.`,
   },
   {
     keys: ['location', 'based', 'where', 'remote', 'relocat', 'toronto', 'canada', 'timezone'],
@@ -140,7 +139,7 @@ const intents: Intent[] = [
   {
     keys: ['why', 'strength', 'stand out', 'unique', 'hire him', 'good fit', 'sell', 'pitch', 'special'],
     answer:
-      `His edge is the **hybrid**: he can *build the product and the growth engine that carries it*. Three-plus years of measurable marketing (doubled traffic, +20% ROI) **plus** real full-stack & AI engineering — so he ships software with a marketer's instinct for the end user. Bilingual EN/AR, fast-moving, and detail-oriented.`,
+      `His edge is being a **marketer who's genuinely technical**. He runs the campaigns *and* builds the MarTech behind them — websites, automation, GA4 tracking, lead funnels — so work ships fast and everything is measurable. Three-plus years of results (doubled traffic, −20% cost-per-click, +20% ROI), with the data and analytics chops to prove it. Bilingual EN/AR, fast-moving, detail-oriented.`,
   },
   {
     keys: ['contact', 'reach', 'email', 'hire', 'get in touch', 'connect', 'linkedin', 'message', 'talk', 'resume', 'résumé', 'cv'],
@@ -254,7 +253,7 @@ export function analyzeJobDescription(text: string): string {
   let focus: string
   if (mkt >= 2 && tech >= 2) focus = 'hybrid (marketing + tech)'
   else if (mkt > tech) focus = 'marketing-focused'
-  else if (tech > mkt) focus = 'software / technical'
+  else if (tech > mkt) focus = 'technical / MarTech'
   else focus = 'mixed'
 
   const n = uniq.length
@@ -262,13 +261,13 @@ export function analyzeJobDescription(text: string): string {
 
   const pitchByFocus: Record<string, string> = {
     'hybrid (marketing + tech)':
-      `This role wants someone who can **build and grow** — exactly Nasser's edge. He ships full-stack & AI software and drives measurable marketing (doubled traffic, +20% ROI), so he closes the usual gap between product and marketing teams.`,
+      `This role wants someone who can **market *and* build the tech to execute it** — Nasser's sweet spot. He runs campaigns and owns the MarTech behind them (websites, automation, GA4, lead funnels), so he closes the usual gap between marketing and the tools.`,
     'marketing-focused':
-      `Nasser brings **3+ years of hands-on marketing** — SEO, PPC, GA4 analytics, content & brand — with proven results (doubled site traffic, −20% CPC, +20% ROI). Bonus: he also builds the sites and tools behind campaigns, so he can execute end-to-end.`,
-    'software / technical':
-      `Nasser builds **full-stack web apps and AI-powered tools** with React/Next.js, TypeScript, Python and the Claude API, backed by AI nanodegrees — and brings a marketer's product instinct for the end user.`,
+      `Nasser brings **3+ years of hands-on marketing** — SEO, PPC, GA4 analytics, content & brand — with proven results (doubled site traffic, −20% CPC, +20% ROI). Bonus: he also builds the sites, tracking, and automation behind campaigns, so he executes end-to-end.`,
+    'technical / MarTech':
+      `Nasser is a **marketer with strong technical fluency** — he builds marketing sites, automation, conversion tracking, and lead funnels (HTML/CSS, no-code/low-code, APIs, a bit of Python). A strong fit for technical-marketing / MarTech roles, backed by real campaign and analytics experience.`,
     mixed:
-      `Nasser pairs **3+ years of measurable marketing** with real **full-stack & AI engineering** — a rare build-and-grow combination.`,
+      `Nasser pairs **3+ years of measurable marketing** with real **MarTech & data fluency** — a rare build-and-measure combination.`,
   }
 
   const list = uniq.map((s) => s.label)

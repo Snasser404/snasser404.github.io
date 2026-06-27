@@ -8,7 +8,7 @@ export default function Skills() {
   return (
     <section id="skills" className="section">
       <div className="container-x">
-        <SectionHeading index="03" eyebrow="Skills & Stack" title="A toolkit that spans growth and engineering." />
+        <SectionHeading index="04" eyebrow="Skills & Stack" title="A marketer's toolkit, backed by data & tech." />
         <div className="skills-grid">
           {skillGroups.map((g, i) => {
             const accent = accents[i % accents.length]
