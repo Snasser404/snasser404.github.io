@@ -92,7 +92,7 @@ const intents: Intent[] = [
     keys: ['skill', 'tech stack', 'stack', 'technolog', 'tools', 'know how', 'can he do', 'capable', 'proficient'],
     answer:
       `Nasser works across **marketing, data, and the tools that connect them**:<br>` +
-      `• **Marketing:** SEO (technical + local), PPC/SEM (Google/Meta/LinkedIn Ads), content & brand, email<br>` +
+      `• **Marketing:** SEO (technical + local) + **GEO** (Generative Engine Optimization — visibility in AI answers), PPC/SEM (Google/Meta/LinkedIn Ads), content & brand, email<br>` +
       `• **Analytics & data:** GA4, SEMrush, Ahrefs, Tableau, Power BI, A/B testing, reporting<br>` +
       `• **MarTech & automation:** marketing automation, CRM & lead funnels, Mailchimp/Brevo, CMS (Wix/WordPress/Shopify), booking systems, AI content (Claude)<br>` +
       `• **Technical fluency:** HTML/CSS, APIs, Python for data, SQL basics<br>` +
@@ -110,7 +110,7 @@ const intents: Intent[] = [
   {
     keys: ['develop', 'software', 'build', 'code', 'coding', 'programming', 'technical', 'web app', 'apps', 'ai', 'automation', 'martech'],
     answer:
-      `Nasser is a **technical marketer** — he builds and runs the technology behind campaigns: marketing websites, local-SEO landing pages, **marketing automation**, GA4 conversion tracking, and booking/CRM funnels. He's comfortable with HTML/CSS, no-code/low-code tools, APIs, a bit of Python for data, and AI content tools (Claude) — backed by **Generative AI** and **AI Programming** credentials from Udacity. Enough tech to ship and measure a campaign end-to-end without waiting on a dev queue.`,
+      `Nasser is a **technical marketer** — he builds and runs the technology behind campaigns: marketing websites, local-SEO landing pages, **marketing automation**, GA4 conversion tracking, and booking/CRM funnels. He's comfortable with HTML/CSS, no-code/low-code tools, APIs, a bit of Python for data, and AI content tools (Claude) — backed by **Generative AI** and **AI Programming** credentials from Udacity. He's also fluent in **GEO (Generative Engine Optimization)** — getting brands cited in AI answers from ChatGPT, Perplexity, and Google AI Overviews, not just classic SEO. Enough tech to ship and measure a campaign end-to-end without waiting on a dev queue.`,
   },
   {
     keys: ['education', 'degree', 'study', 'studied', 'university', 'school', 'certif', 'qualif', 'nanodegree', 'credential'],
@@ -194,6 +194,7 @@ const SKILLS: Skill[] = [
   { label: 'Data analysis', cat: 'data', keys: ['data analy', 'data-driven', 'reporting', 'dashboard'] },
   // marketing
   { label: 'SEO', cat: 'marketing', keys: ['seo', 'search engine optimization', 'organic search'] },
+  { label: 'GEO / AI-search', cat: 'marketing', keys: ['generative engine optimization', 'generative engine', 'answer engine', 'ai search', 'ai overview', 'ai overviews', 'llm seo', 'geo optimization'] },
   { label: 'PPC / SEM', cat: 'marketing', keys: ['ppc', 'sem', 'paid search', 'paid media', 'google ads', 'adwords', 'paid ads'] },
   { label: 'Social media', cat: 'marketing', keys: ['social media', 'instagram', 'linkedin ads', 'facebook ads', 'tiktok', 'meta ads'] },
   { label: 'Content & copy', cat: 'marketing', keys: ['content marketing', 'content creation', 'copywriting', 'copywriter', 'content strategy'] },

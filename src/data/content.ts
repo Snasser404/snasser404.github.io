@@ -29,7 +29,7 @@ export const profile = {
   roleTitle: 'Digital Marketing & MarTech Specialist',
   tagline: 'Marketing that’s measured. Tech that makes it scale.',
   subheadline:
-    'A data-driven digital marketer who builds and runs the technology behind growth — websites, SEO, marketing automation, analytics, and the booking & CRM funnels that turn traffic into customers.',
+    'A data-driven digital marketer who builds and runs the technology behind growth — websites, SEO & GEO, marketing automation, analytics, and the booking & CRM funnels that turn traffic into customers.',
   location: 'Toronto, Ontario',
   email: 'nassersaleh156@gmail.com',
   phone: '(438) 988-6709',
@@ -45,6 +45,7 @@ export const about = {
   paragraphs: [
     "I'm a digital marketing specialist based in Toronto who works at the intersection of marketing, data, and technology. Over the last three-plus years I've run PPC and SEO campaigns, owned analytics in GA4 and SEMrush, and led content and brand work across non-profit and for-profit teams — consistently turning data into decisions that move traffic, engagement, and ROI.",
     "What sets me apart is the tech side. I don't just brief the tools — I set them up and run them: marketing websites, local-SEO landing pages, marketing-automation workflows, conversion tracking, and booking/CRM funnels. That lets me launch a campaign end-to-end and measure exactly what's working, without waiting on a dev queue.",
+    "I also work at the front edge of search. Beyond classic SEO, I focus on Generative Engine Optimization (GEO) — making sure a brand actually shows up in AI answers from ChatGPT, Perplexity, and Google's AI Overviews, where more and more buying decisions now start.",
     'I hold a Bachelor of Marketing from the University of Toronto, plus AI and data-analytics credentials from Udacity, BrainStation, Google, and the Lebanese American University. Bilingual in English and Arabic.',
   ],
   stats: [
@@ -72,7 +73,7 @@ export const featuredProjects: Project[] = [
     highlights: [
       '25+ pages indexed; 20+ city-specific landing pages targeting GTA "pest control near me" searches',
       'GA4 + event tracking wired to measure calls, form fills, and bookings',
-      'LocalBusiness + FAQ schema for rich results and stronger Google Business visibility',
+      'LocalBusiness + FAQ schema for rich results, Google Business, and AI-answer (GEO) readiness',
       'A booking & lead funnel connecting search traffic to scheduled service',
     ],
     live: 'https://serenetouch.ca/',
@@ -100,12 +101,12 @@ export const featuredProjects: Project[] = [
     status: 'In progress',
     blurb:
       'A marketing-automation system I built (AutoMar) that plans a weekly content calendar, drafts on-brand social posts, SEO articles, and ad copy across channels, schedules them behind approval, and reports on performance — the MarTech backbone that lets a small team market like a big one.',
-    techStack: ['Marketing automation', 'Multi-channel content', 'AI copy (Claude)', 'SEO', 'Scheduling', 'Reporting'],
+    techStack: ['Marketing automation', 'Multi-channel content', 'AI copy (Claude)', 'SEO & GEO', 'Scheduling', 'Reporting'],
     highlights: [
       'Plans and drafts multi-channel content — social, SEO articles, email, ads — on a weekly cadence',
+      'Built-in GEO (Generative Engine Optimization) audits — tracking brand visibility and share-of-answer across AI engines (ChatGPT, Perplexity, Gemini)',
       'Human approval gates and brand-safety checks before anything publishes',
-      'Performance reporting that feeds the next week\'s plan — a closed marketing loop',
-      'Hands-on command of the modern MarTech & AI toolset',
+      "Performance reporting that feeds the next week's plan — a closed marketing loop",
     ],
   },
   {
@@ -211,6 +212,7 @@ export const skillGroups: SkillGroup[] = [
     group: 'Digital Marketing',
     skills: [
       'SEO (technical + local)',
+      'GEO (Generative Engine Optimization)',
       'PPC / SEM (Google, Meta, LinkedIn)',
       'Content & brand',
       'Email marketing',
