@@ -46,7 +46,7 @@ export const about = {
     "I'm a digital marketing specialist based in Toronto who works at the intersection of marketing, data, and technology. Over the last three-plus years I've run PPC and SEO campaigns, owned analytics in GA4 and SEMrush, and led content and brand work across non-profit and for-profit teams — consistently turning data into decisions that move traffic, engagement, and ROI.",
     "What sets me apart is the tech side. I don't just brief the tools — I set them up and run them: marketing websites, local-SEO landing pages, marketing-automation workflows, conversion tracking, and booking/CRM funnels. That lets me launch a campaign end-to-end and measure exactly what's working, without waiting on a dev queue.",
     "I also work at the front edge of search. Beyond classic SEO, I focus on Generative Engine Optimization (GEO) — making sure a brand actually shows up in AI answers from ChatGPT, Perplexity, and Google's AI Overviews, where more and more buying decisions now start.",
-    'I hold a Bachelor of Marketing from the University of Toronto, plus AI and data-analytics credentials from Udacity, BrainStation, Google, and the Lebanese American University. Bilingual in English and Arabic.',
+    'My foundation is two years of marketing studies at the University of Toronto, plus hands-on credentials in AI and data analytics from Udacity, BrainStation, Google, and the Lebanese American University. Bilingual in English and Arabic.',
   ],
   stats: [
     { value: '+100%', label: 'Website traffic', sub: 'doubled at GlobalDWS' },
@@ -69,7 +69,7 @@ export const featuredProjects: Project[] = [
     client: true,
     blurb:
       'Built the full digital presence for a Toronto-area pest-control business — a fast marketing site, 20+ location-targeted SEO landing pages, GA4 conversion tracking, and a booking/lead funnel that turns local searches into booked jobs.',
-    techStack: ['Local SEO', 'Web build', 'GA4 + tracking', 'Lead funnel', 'Google Business', 'Schema markup'],
+    techStack: ['Custom-coded (HTML/CSS/JS)', 'Local SEO', 'GA4 + tracking', 'Lead funnel', 'Google Business', 'Schema markup'],
     highlights: [
       '25+ pages indexed; 20+ city-specific landing pages targeting GTA "pest control near me" searches',
       'GA4 + event tracking wired to measure calls, form fills, and bookings',
@@ -86,7 +86,7 @@ export const featuredProjects: Project[] = [
     client: true,
     blurb:
       'An online booking and customer-retention solution for a barbershop — 24/7 self-serve booking, automated reminders to cut no-shows, and a reviews/SEO loop to grow local visibility.',
-    techStack: ['Online booking', 'Automated reminders', 'Reviews / SEO', 'Customer comms', 'Mobile-first'],
+    techStack: ['Custom-coded app', 'Online booking', 'Automated reminders', 'Reviews / SEO', 'Mobile-first'],
     highlights: [
       'Self-serve 24/7 booking that captures appointments outside business hours',
       'Automated SMS/email reminders designed to reduce no-shows',
@@ -117,7 +117,7 @@ export const featuredProjects: Project[] = [
     client: true,
     blurb:
       'Digital presence and booking growth for a Mississauga spa — an online booking funnel with memberships and promotions, plus the local marketing and analytics to keep the calendar full.',
-    techStack: ['Online booking', 'Memberships / promos', 'Local marketing', 'GA4', 'Email', 'CMS (Wix)'],
+    techStack: ['Built on Wix', 'Online booking', 'Memberships / promos', 'Local marketing', 'GA4', 'Email'],
     highlights: [
       'Online booking funnel with memberships, packages, and promo codes',
       'Service catalog and scheduling for a 7-day, multi-room operation',
@@ -125,6 +125,33 @@ export const featuredProjects: Project[] = [
       'Launched as a live pilot the business can run day-to-day',
     ],
     live: 'https://nassersaleh156.wixsite.com/paradise-wellness',
+  },
+]
+
+/* ---- Website development — the platforms I build on, customer-facing ----
+   I build (and market) the site on whatever fits the business. */
+export type WebPlatform = { name: string; blurb: string; example?: string; accent: string }
+
+export const webPlatforms: WebPlatform[] = [
+  {
+    name: 'Custom-coded',
+    accent: '#2ECC71',
+    blurb:
+      'Hand-built sites (HTML/CSS/JS) — fully bespoke, fast-loading, and tuned to rank. Best when you want something unique, high-performance, and built around SEO from day one.',
+    example: 'e.g. Serene Touch — a 31-page local-SEO website',
+  },
+  {
+    name: 'WordPress',
+    accent: '#4f46e5',
+    blurb:
+      'Flexible, content-rich sites you and your team can update yourselves — blog, service pages, plugins, forms, and lead capture without touching code.',
+  },
+  {
+    name: 'Wix & Shopify',
+    accent: '#FF7AB6',
+    blurb:
+      'Quick, budget-friendly launches and online stores you can manage day-to-day — the fastest way to get a polished, working site live.',
+    example: 'e.g. Paradise Wellness — spa booking site',
   },
 ]
 
@@ -236,10 +263,12 @@ export const skillGroups: SkillGroup[] = [
   {
     group: 'MarTech & Automation',
     skills: [
+      'Website development',
+      'CMS (Wix · WordPress · Shopify)',
+      'Custom-coded sites (HTML/CSS/JS)',
       'Marketing automation',
       'CRM & lead funnels',
       'Mailchimp / Brevo',
-      'CMS (Wix · WordPress · Shopify)',
       'Booking systems',
       'AI content tools (Claude)',
       'Google Business · local',
@@ -315,10 +344,10 @@ export const experience: Experience[] = [
   },
 ]
 
-export type Credential = { title: string; org: string; year: string; kind: 'degree' | 'cert' }
+export type Credential = { title: string; org: string; year: string; kind: 'degree' | 'cert' | 'study' }
 
 export const education: Credential[] = [
-  { title: 'Bachelor of Marketing', org: 'University of Toronto, Mississauga', year: '2024', kind: 'degree' },
+  { title: 'Marketing — 2 years of study', org: 'University of Toronto, Mississauga', year: '2 yrs', kind: 'study' },
   { title: 'Digital Marketing & E-commerce', org: 'Google Career Certificate', year: '2022', kind: 'cert' },
   { title: 'Generative AI — Nanodegree', org: 'Udacity', year: '2024', kind: 'cert' },
   { title: 'AI Automation, Ethics & Responsible AI', org: 'BrainStation', year: '2024', kind: 'cert' },

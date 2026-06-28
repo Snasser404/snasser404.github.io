@@ -15,11 +15,11 @@ export default function Education() {
                   <span
                     className="chip"
                     style={{
-                      borderColor: c.kind === 'degree' ? 'rgba(34,211,238,0.5)' : 'rgba(168,85,247,0.5)',
-                      color: c.kind === 'degree' ? 'var(--cyan)' : 'var(--violet)',
+                      borderColor: c.kind === 'cert' ? 'rgba(168,85,247,0.5)' : 'rgba(34,211,238,0.5)',
+                      color: c.kind === 'cert' ? 'var(--violet)' : 'var(--cyan)',
                     }}
                   >
-                    {c.kind === 'degree' ? 'Degree' : 'Certificate'}
+                    {c.kind === 'cert' ? 'Certificate' : c.kind === 'study' ? 'University' : 'Degree'}
                   </span>
                   <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: 'var(--text-dim)' }}>{c.year}</span>
                 </div>

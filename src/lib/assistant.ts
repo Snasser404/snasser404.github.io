@@ -94,7 +94,8 @@ const intents: Intent[] = [
       `Nasser works across **marketing, data, and the tools that connect them**:<br>` +
       `• **Marketing:** SEO (technical + local) + **GEO** (Generative Engine Optimization — visibility in AI answers), PPC/SEM (Google/Meta/LinkedIn Ads), content & brand, email<br>` +
       `• **Analytics & data:** GA4, SEMrush, Ahrefs, Tableau, Power BI, A/B testing, reporting<br>` +
-      `• **MarTech & automation:** marketing automation, CRM & lead funnels, Mailchimp/Brevo, CMS (Wix/WordPress/Shopify), booking systems, AI content (Claude)<br>` +
+      `• **Website development:** custom-coded (HTML/CSS/JS), WordPress, Wix/Shopify, landing pages<br>` +
+      `• **MarTech & automation:** marketing automation, CRM & lead funnels, Mailchimp/Brevo, booking systems, AI content (Claude)<br>` +
       `• **Technical fluency:** HTML/CSS, APIs, Python for data, SQL basics<br>` +
       `• **Languages:** English & Arabic`,
   },
@@ -110,12 +111,12 @@ const intents: Intent[] = [
   {
     keys: ['develop', 'software', 'build', 'code', 'coding', 'programming', 'technical', 'web app', 'apps', 'ai', 'automation', 'martech'],
     answer:
-      `Nasser is a **technical marketer** — he builds and runs the technology behind campaigns: marketing websites, local-SEO landing pages, **marketing automation**, GA4 conversion tracking, and booking/CRM funnels. He's comfortable with HTML/CSS, no-code/low-code tools, APIs, a bit of Python for data, and AI content tools (Claude) — backed by **Generative AI** and **AI Programming** credentials from Udacity. He's also fluent in **GEO (Generative Engine Optimization)** — getting brands cited in AI answers from ChatGPT, Perplexity, and Google AI Overviews, not just classic SEO. Enough tech to ship and measure a campaign end-to-end without waiting on a dev queue.`,
+      `Nasser is a **technical marketer** — he builds and runs the technology behind campaigns: marketing websites, local-SEO landing pages, **marketing automation**, GA4 conversion tracking, and booking/CRM funnels. On websites he builds on whatever fits the business — **custom-coded** (HTML/CSS/JS), **WordPress**, or **Wix/Shopify** — e.g. a 31-page custom-coded site for Serene Touch and a Wix booking site for Paradise Wellness. He's also fluent in **GEO (Generative Engine Optimization)** — getting brands cited in AI answers from ChatGPT, Perplexity, and Google AI Overviews, not just classic SEO. Backed by **Generative AI** and **AI Programming** credentials from Udacity. Enough tech to ship and measure a campaign end-to-end without waiting on a dev queue.`,
   },
   {
     keys: ['education', 'degree', 'study', 'studied', 'university', 'school', 'certif', 'qualif', 'nanodegree', 'credential'],
     answer:
-      `• **Bachelor of Marketing** — University of Toronto, Mississauga (2024)<br>` +
+      `• **Marketing** — University of Toronto, Mississauga (2 years of study)<br>` +
       `• **Generative AI** — Nanodegree, Udacity (2024)<br>` +
       `• **AI Programming with Python** — Nanodegree, Udacity (2023)<br>` +
       `• **AI Automation, Ethics & Responsible AI** — BrainStation (2024)<br>` +
@@ -172,7 +173,11 @@ const SKILLS: Skill[] = [
   { label: 'Tailwind', cat: 'dev', keys: ['tailwind'] },
   { label: 'Front-end', cat: 'dev', keys: ['front-end', 'frontend', 'front end'] },
   { label: 'Full-stack', cat: 'dev', keys: ['full-stack', 'fullstack', 'full stack'] },
-  { label: 'Web development', cat: 'dev', keys: ['web develop', 'web application', 'web app'] },
+  { label: 'Web development', cat: 'dev', keys: ['web develop', 'web application', 'web app', 'web design'] },
+  { label: 'WordPress', cat: 'dev', keys: ['wordpress'] },
+  { label: 'Wix / Shopify', cat: 'dev', keys: ['wix', 'shopify', 'squarespace', 'webflow'] },
+  { label: 'CMS', cat: 'marketing', keys: ['cms', 'content management system'] },
+  { label: 'Landing pages', cat: 'marketing', keys: ['landing page'] },
   { label: 'PWA', cat: 'dev', keys: ['pwa', 'progressive web'] },
   { label: 'Responsive UI', cat: 'dev', keys: ['responsive', 'ui/ux', 'user interface'] },
   // ai
