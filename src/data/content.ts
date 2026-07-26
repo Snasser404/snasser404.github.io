@@ -65,7 +65,7 @@ export const featuredProjects: Project[] = [
     name: 'Wai Nui Outrigger Canoe Club',
     category: 'Research & Insights',
     accent: '#0891b2',
-    status: 'Delivered',
+    status: 'Completed',
     client: true,
     blurb:
       'A full marketing and website audit for an Oakville community sports club — competitor benchmarking, an SEO and content review, and a member-journey analysis, distilled into a prioritized 90-day action plan a volunteer-run board could actually execute.',
@@ -81,7 +81,7 @@ export const featuredProjects: Project[] = [
     name: 'Serene Touch Pest Control',
     category: 'Local SEO · Web · Lead Gen',
     accent: '#2ECC71',
-    status: 'Live · serenetouch.ca',
+    status: 'Completed · Live',
     client: true,
     blurb:
       'Built the full digital presence for a Toronto-area pest-control business — a fast marketing site, 20+ location-targeted SEO landing pages, GA4 conversion tracking, and a booking/lead funnel that turns local searches into booked jobs.',
@@ -98,7 +98,7 @@ export const featuredProjects: Project[] = [
     name: 'BarberBook',
     category: 'Booking & Retention',
     accent: '#6C5CE7',
-    status: 'Product',
+    status: 'Completed',
     client: true,
     blurb:
       'An online booking and customer-retention solution for a barbershop — 24/7 self-serve booking, automated reminders to cut no-shows, and a reviews/SEO loop to grow local visibility.',
@@ -111,25 +111,10 @@ export const featuredProjects: Project[] = [
     ],
   },
   {
-    name: 'Marketing Automation Platform',
-    category: 'MarTech · Automation',
-    accent: '#3D9DF6',
-    status: 'In progress',
-    blurb:
-      'A marketing-automation system I built (AutoMar) that plans a weekly content calendar, drafts on-brand social posts, SEO articles, and ad copy across channels, schedules them behind approval, and reports on performance — the MarTech backbone that lets a small team market like a big one.',
-    techStack: ['Marketing automation', 'Multi-channel content', 'AI copy (Claude)', 'SEO & GEO', 'Scheduling', 'Reporting'],
-    highlights: [
-      'Plans and drafts multi-channel content — social, SEO articles, email, ads — on a weekly cadence',
-      'Built-in GEO (Generative Engine Optimization) audits — tracking brand visibility and share-of-answer across AI engines (ChatGPT, Perplexity, Gemini)',
-      'Human approval gates and brand-safety checks before anything publishes',
-      "Performance reporting that feeds the next week's plan — a closed marketing loop",
-    ],
-  },
-  {
     name: 'Paradise Wellness',
     category: 'Spa · Booking & Growth',
     accent: '#FF7AB6',
-    status: 'Live pilot',
+    status: 'Completed',
     client: true,
     blurb:
       'Digital presence and booking growth for a Mississauga spa — an online booking funnel with memberships and promotions, plus the local marketing and analytics to keep the calendar full.',
@@ -138,7 +123,7 @@ export const featuredProjects: Project[] = [
       'Online booking funnel with memberships, packages, and promo codes',
       'Service catalog and scheduling for a 7-day, multi-room operation',
       'Local marketing + analytics to drive and measure bookings',
-      'Launched as a live pilot the business can run day-to-day',
+      'Handed over live, with the business able to run it day-to-day',
     ],
   },
 ]

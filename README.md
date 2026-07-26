@@ -1,7 +1,7 @@
 # Nasser Saleh — Portfolio & Personal Website
 
-A dynamic, interactive, 3D, futuristic personal portfolio for **Nasser Saleh** —
-Digital Marketing Specialist & Software Developer.
+A dynamic, interactive, 3D personal portfolio for **Nasser Saleh** —
+Digital Marketing & MarTech Specialist.
 
 Built with React + TypeScript + Vite, an interactive **Three.js / React Three Fiber**
 hero scene, smooth **Framer Motion** scroll animations, and self-hosted fonts. Clean,
@@ -17,13 +17,11 @@ hero scene, smooth **Framer Motion** scroll animations, and self-hosted fonts. C
 - **Interactive 3D hero** — a morphing core, orbiting data rings, drifting satellites,
   and a particle starfield that subtly tracks your cursor (React Three Fiber + Three.js).
   The render loop auto-pauses when scrolled out of view to save battery/GPU.
-- **Nine sections** — Hero · About · Featured Work · **Marketing & Design** · More Projects ·
+- **Seven sections** — Hero · About · Selected Work (clients) · **Campaigns & Results** ·
   Skills · Experience · Education & Certifications · Contact.
-- **Marketing & Design section** — campaign/SEO/PPC/analytics case-study cards (seeded with
-  real résumé metrics) plus a design gallery with labelled placeholder slots for creative work.
-- **Curated from real work** — 8 flagship projects + 7 more, pulled from Nasser's actual
-  builds (AutoMar, GameOps, StatCan RAG, Serene Touch, Paradise Wellness, Jobber,
-  Last Contractor, Production Ops, and more).
+- **Client work** — completed engagements framed by marketing outcome: Wai Nui (research &
+  insights audit), Serene Touch (local SEO + lead gen), BarberBook (booking), Paradise Wellness.
+- **Campaigns & Results** — quantified wins from past roles, plus a design/content gallery.
 - **Polished motion** — scroll-reveal, magnetic 3D card tilt, scroll-progress bar,
   animated nav. Respects `prefers-reduced-motion`.
 - **Zero external runtime dependencies** — fonts are self-hosted (works offline),
@@ -155,13 +153,13 @@ strengths). It runs **entirely in the browser** — no backend, no API key, no c
 Logic + knowledge live in [src/lib/assistant.ts](src/lib/assistant.ts) (grounded only in real résumé
 data). A "how to use it" callout sits in the Contact section.
 
-**Real-AI mode (Claude) — included, ready to deploy.** A secure **Cloudflare Worker** proxy lives in
+**Real-AI mode — included, ready to deploy.** A secure **Cloudflare Worker** proxy lives in
 [worker/](worker/): it holds your Anthropic API key server-side and ships with anti-spam controls —
 origin allowlist, per-IP rate limit, global daily cap, output/input caps, and a scoped prompt that
 refuses misuse. Follow [worker/SETUP.md](worker/SETUP.md) (~15 min) to deploy it, then paste the
 Worker URL into `ASSISTANT_API_URL` in [src/lib/assistant.ts](src/lib/assistant.ts). The site
 **falls back to the built-in engine** automatically if the Worker is down or over budget, so the
-assistant always answers. Defaults to **Claude Haiku** (cheapest — change `MODEL` in `worker.js` for
+assistant always answers. Defaults to the cheapest model tier ( — change `MODEL` in `worker.js` for
 more depth); cost is bounded by the rate limits plus your Anthropic monthly spend cap.
 
 ## 🛠 Tech stack

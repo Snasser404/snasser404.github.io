@@ -2,7 +2,7 @@
    Nasser Saleh — Portfolio Assistant proxy (Cloudflare Worker)
 
    Holds the Anthropic API key server-side (never exposed to the
-   browser) and answers portfolio questions with Claude Haiku.
+   browser) and answers portfolio questions with a hosted AI model.
 
    ANTI-SPAM / ABUSE CONTROLS (all enforced here):
      1. Origin allowlist  — only your domains may call it (CORS + hard 403)
@@ -11,13 +11,14 @@
      4. Input caps         — message count + length limits
      5. Output cap         — max_tokens kept small (also limits cost)
      6. Scoped system prompt — only answers about Nasser; refuses misuse
-     7. Cheapest model     — Claude Haiku by default
+     7. Cheapest model     — the low-cost tier by default
 
    The hard $ backstop is the monthly spend limit you set in the
    Anthropic Console (see SETUP.md). This Worker can't exceed it.
    ============================================================ */
 
-const MODEL = 'claude-haiku-4-5' // cheapest; change to 'claude-sonnet-4-6' or 'claude-opus-4-8' for more depth
+// Model id (required by the API). Cheapest tier; swap for a larger model for more depth.
+const MODEL = 'claude-haiku-4-5'
 const MAX_OUTPUT_TOKENS = 450 // caps response length (and per-call cost)
 const MAX_MESSAGES = 12 // only the most recent N turns are sent
 const MAX_CHARS_PER_MESSAGE = 8000 // allows pasting a full job description
@@ -37,7 +38,7 @@ ABOUT NASSER — use ONLY these facts; never invent employers, metrics, dates, o
 - Marketing & analytics: SEO (technical + local) and GEO (Generative Engine Optimization — getting brands cited in AI answers from ChatGPT, Perplexity, and Google AI Overviews), PPC/SEM (Google/Meta/LinkedIn Ads), content & brand, email marketing, GA4, SEMrush, Ahrefs, Tableau, Power BI, A/B testing, reporting.
 - Websites: builds marketing sites on whatever fits the business — fully custom, WordPress, or Wix/Shopify (e.g. a 25+ page local-SEO site for Serene Touch, a Wix booking site for Paradise Wellness) — plus the SEO/GEO, tracking, and lead funnels around them.
 - MarTech & technical toolkit: marketing automation, GA4 conversion/event tracking, CRM & lead funnels, booking systems, AI content tools; comfortable with HTML/CSS, no-code platforms, tracking integrations, and Python/SQL for marketing data. Enough hands-on tech to launch and measure a campaign end-to-end without waiting on a developer.
-- Selected client work: Wai Nui Outrigger Canoe Club (marketing & website audit — competitor benchmarking, SEO review, member-journey analysis, 90-day plan), Serene Touch Pest Control (site + local SEO + lead funnel), Paradise Wellness (spa booking + local marketing), BarberBook (barbershop booking + retention), and a marketing-automation system he built (with built-in GEO / AI-search visibility audits).
+- Selected client work (all completed): Wai Nui Outrigger Canoe Club (marketing & website audit — competitor benchmarking, SEO review, member-journey analysis, 90-day plan), Serene Touch Pest Control (site + local SEO + lead funnel), Paradise Wellness (spa booking + local marketing), BarberBook (barbershop booking + retention).
 - POSITIONING — important: Nasser is a MARKETING professional with strong technical fluency, NOT a software engineer or developer, and he is not seeking developer roles. Describe him as a technical/data-driven marketer. Never call him a software engineer, developer, programmer, or coder; never pitch him for engineering jobs; don't lead with programming languages or frameworks. Frame the tech as marketing capability — the sites, tracking, automation, and reporting he sets up himself so campaigns launch and get measured without waiting on a dev team. If someone asks directly whether he codes: yes, he's hands-on with HTML/CSS, no-code platforms, and Python/SQL for marketing data — but he's a marketer, not an engineer.
 - Contact: email nassersaleh156@gmail.com; LinkedIn linkedin.com/in/nasser-saleh; résumé is downloadable on the site.
 
@@ -147,7 +148,7 @@ export default {
 
     if (!env.ANTHROPIC_API_KEY) return json({ error: 'server_misconfigured' }, 500, cors)
 
-    // Call Claude
+    // Call the AI model
     try {
       const res = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',

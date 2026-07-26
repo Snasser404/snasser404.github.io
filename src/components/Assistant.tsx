@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import {
   getResponse,
-  askClaude,
+  askAssistant,
   formatReply,
   escapeHtml,
   WELCOME_HTML,
@@ -44,7 +44,7 @@ export default function Assistant() {
   const [input, setInput] = useState('')
   const [thinking, setThinking] = useState(false)
   const [pendingJD, setPendingJD] = useState(false)
-  const apiHistory = useRef<ApiTurn[]>([]) // plain-text history for the Claude proxy
+  const apiHistory = useRef<ApiTurn[]>([]) // plain-text history for the AI proxy
   const scrollRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
 
@@ -70,7 +70,7 @@ export default function Assistant() {
 
     if (useAI) {
       try {
-        const reply = await askClaude(apiHistory.current)
+        const reply = await askAssistant(apiHistory.current)
         apiHistory.current = [...apiHistory.current, { role: 'assistant', content: reply }]
         setThinking(false)
         addBot(formatReply(reply))
@@ -197,7 +197,7 @@ export default function Assistant() {
                 <SendIcon />
               </button>
             </div>
-            <div className="assistant-foot">{useAI ? 'AI assistant · powered by Claude' : "Automated assistant · answers from Nasser's résumé"}</div>
+            <div className="assistant-foot">{useAI ? "AI assistant · answers from Nasser's background" : "Automated assistant · answers from Nasser's résumé"}</div>
           </motion.div>
         )}
       </AnimatePresence>

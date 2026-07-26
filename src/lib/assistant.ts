@@ -5,7 +5,7 @@ import { profile } from '../data/content'
    Answers common employer questions about Nasser and analyzes a
    pasted job description for fit. Grounded only in real résumé data.
 
-   UPGRADE PATH → real AI (Claude): replace the body of getResponse()
+   UPGRADE PATH → real AI: replace the body of getResponse()
    with a fetch() to a serverless proxy that holds your Anthropic key.
    See README "AI upgrade" for the Cloudflare Worker snippet.
    ============================================================ */
@@ -17,9 +17,9 @@ const EMAIL = profile.email
 const mailto = (subject = 'Opportunity for Nasser') => `mailto:${EMAIL}?subject=${encodeURIComponent(subject)}`
 
 /* ---------------------------------------------------------------
-   REAL AI (Claude) — optional upgrade.
+   REAL AI — optional upgrade.
    Paste your deployed Cloudflare Worker URL here to switch the
-   assistant from the built-in engine to real Claude AI. Leave it
+   assistant from the built-in engine to a hosted AI model. Leave it
    empty to keep the free, offline, in-browser engine.
    See worker/SETUP.md for how to deploy the Worker.
 ----------------------------------------------------------------*/
@@ -27,9 +27,9 @@ export const ASSISTANT_API_URL: string = '' // e.g. 'https://nasser-assistant.<y
 
 export type ApiTurn = { role: 'user' | 'assistant'; content: string }
 
-/** Calls the Claude proxy. Throws an Error with `.status` on failure so the
+/** Calls the AI proxy. Throws an Error with `.status` on failure so the
  *  caller can show a friendly message or fall back to the local engine. */
-export async function askClaude(history: ApiTurn[]): Promise<string> {
+export async function askAssistant(history: ApiTurn[]): Promise<string> {
   const res = await fetch(ASSISTANT_API_URL, {
     method: 'POST',
     headers: { 'content-type': 'application/json', 'x-portfolio': '1' },
@@ -54,7 +54,7 @@ function formatMarkup(s: string): string {
     .replace(/\*([^*]+)\*/g, '<em>$1</em>')
 }
 
-/** Format a real-AI (Claude) reply for display. Model output is untrusted, so
+/** Format a real-AI reply for display. Model output is untrusted, so
  *  escape HTML FIRST, then apply only light markdown + line breaks. */
 export function formatReply(text: string): string {
   return escapeHtml(text)
@@ -96,7 +96,7 @@ const intents: Intent[] = [
       `• **Marketing:** SEO (technical + local) + **GEO** (Generative Engine Optimization — visibility in AI answers), PPC/SEM (Google/Meta/LinkedIn Ads), content & brand, email<br>` +
       `• **Analytics & data:** GA4, SEMrush, Ahrefs, Tableau, Power BI, A/B testing, reporting<br>` +
       `• **Websites:** custom-built sites, WordPress, Wix/Shopify, landing pages<br>` +
-      `• **MarTech & automation:** marketing automation, CRM & lead funnels, Mailchimp/Brevo, booking systems, AI content (Claude)<br>` +
+      `• **MarTech & automation:** marketing automation, CRM & lead funnels, Mailchimp/Brevo, booking systems, AI content tools<br>` +
       `• **Technical toolkit:** HTML/CSS, no-code platforms, tracking & tool integrations, Python and SQL for marketing data<br>` +
       `• **Languages:** English & Arabic`,
   },
