@@ -85,7 +85,7 @@ export const featuredProjects: Project[] = [
     client: true,
     blurb:
       'Built the full digital presence for a Toronto-area pest-control business — a fast marketing site, 20+ location-targeted SEO landing pages, GA4 conversion tracking, and a booking/lead funnel that turns local searches into booked jobs.',
-    techStack: ['Custom-coded (HTML/CSS/JS)', 'Local SEO', 'GA4 + tracking', 'Lead funnel', 'Google Business', 'Schema markup'],
+    techStack: ['Custom-built site', 'Local SEO', 'GA4 + tracking', 'Lead funnel', 'Google Business', 'Schema markup'],
     highlights: [
       '25+ pages indexed; 20+ city-specific landing pages targeting GTA "pest control near me" searches',
       'GA4 + event tracking wired to measure calls, form fills, and bookings',
@@ -102,7 +102,7 @@ export const featuredProjects: Project[] = [
     client: true,
     blurb:
       'An online booking and customer-retention solution for a barbershop — 24/7 self-serve booking, automated reminders to cut no-shows, and a reviews/SEO loop to grow local visibility.',
-    techStack: ['Custom-coded app', 'Online booking', 'Automated reminders', 'Reviews / SEO', 'Mobile-first'],
+    techStack: ['Custom booking platform', 'Online booking', 'Automated reminders', 'Reviews / SEO', 'Mobile-first'],
     highlights: [
       'Self-serve 24/7 booking that captures appointments outside business hours',
       'Automated SMS/email reminders designed to reduce no-shows',
@@ -149,10 +149,10 @@ export type WebPlatform = { name: string; blurb: string; example?: string; accen
 
 export const webPlatforms: WebPlatform[] = [
   {
-    name: 'Custom-coded',
+    name: 'Fully custom',
     accent: '#2ECC71',
     blurb:
-      'Hand-built sites (HTML/CSS/JS) — fully bespoke, fast-loading, and tuned to rank. Best when you want something unique, high-performance, and built around SEO from day one.',
+      'A bespoke site built from scratch rather than a template — fast-loading, on-brand, and structured around SEO from day one. Best when you want something that looks like nobody else and ranks.',
     example: 'e.g. Serene Touch — a 31-page local-SEO website',
   },
   {
@@ -277,24 +277,24 @@ export const skillGroups: SkillGroup[] = [
     skills: [
       'Website development',
       'CMS (Wix · WordPress · Shopify)',
-      'Custom-coded sites (HTML/CSS/JS)',
+      'Custom-built websites',
       'Marketing automation',
       'CRM & lead funnels',
       'Mailchimp / Brevo',
       'Booking systems',
-      'AI content tools (Claude)',
+      'AI content tools',
       'Google Business · local',
     ],
   },
   {
-    group: 'Technical fluency',
+    group: 'Technical Toolkit',
     skills: [
-      'HTML & CSS',
-      'No-code / low-code',
-      'APIs & integrations',
-      'Python for data',
-      'SQL basics',
-      'Git / GitHub',
+      'HTML & CSS (hands-on)',
+      'No-code / low-code platforms',
+      'Tracking & tool integrations',
+      'Python for marketing data',
+      'SQL for reporting',
+      'Landing-page builds',
     ],
   },
 ]

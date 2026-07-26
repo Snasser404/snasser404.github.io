@@ -95,9 +95,9 @@ const intents: Intent[] = [
       `Nasser works across **marketing, data, and the tools that connect them**:<br>` +
       `• **Marketing:** SEO (technical + local) + **GEO** (Generative Engine Optimization — visibility in AI answers), PPC/SEM (Google/Meta/LinkedIn Ads), content & brand, email<br>` +
       `• **Analytics & data:** GA4, SEMrush, Ahrefs, Tableau, Power BI, A/B testing, reporting<br>` +
-      `• **Website development:** custom-coded (HTML/CSS/JS), WordPress, Wix/Shopify, landing pages<br>` +
+      `• **Websites:** custom-built sites, WordPress, Wix/Shopify, landing pages<br>` +
       `• **MarTech & automation:** marketing automation, CRM & lead funnels, Mailchimp/Brevo, booking systems, AI content (Claude)<br>` +
-      `• **Technical fluency:** HTML/CSS, APIs, Python for data, SQL basics<br>` +
+      `• **Technical toolkit:** HTML/CSS, no-code platforms, tracking & tool integrations, Python and SQL for marketing data<br>` +
       `• **Languages:** English & Arabic`,
   },
   {
@@ -112,7 +112,7 @@ const intents: Intent[] = [
   {
     keys: ['develop', 'software', 'build', 'code', 'coding', 'programming', 'technical', 'web app', 'apps', 'ai', 'automation', 'martech'],
     answer:
-      `Nasser is a **technical marketer** — he builds and runs the technology behind campaigns: marketing websites, local-SEO landing pages, **marketing automation**, GA4 conversion tracking, and booking/CRM funnels. On websites he builds on whatever fits the business — **custom-coded** (HTML/CSS/JS), **WordPress**, or **Wix/Shopify** — e.g. a 31-page custom-coded site for Serene Touch and a Wix booking site for Paradise Wellness. He's also fluent in **GEO (Generative Engine Optimization)** — getting brands cited in AI answers from ChatGPT, Perplexity, and Google AI Overviews, not just classic SEO. Backed by **Generative AI** and **AI Programming** credentials from Udacity. Enough tech to ship and measure a campaign end-to-end without waiting on a dev queue.`,
+      `Nasser is a **technical marketer** — a marketer who owns the tools rather than just briefing them. He sets up and runs **marketing automation**, GA4 conversion tracking, CRM and lead funnels, and builds the sites campaigns run on — custom-built, **WordPress**, or **Wix/Shopify** (e.g. a 25+ page local-SEO site for Serene Touch, a Wix booking site for Paradise Wellness). He's also fluent in **GEO (Generative Engine Optimization)** — getting brands cited in AI answers from ChatGPT, Perplexity, and Google AI Overviews, not just classic SEO. To be clear on scope: he's a marketing professional with strong technical fluency, not a software engineer — the value is launching and measuring campaigns end-to-end without waiting on a dev queue.`,
   },
   {
     keys: ['education', 'degree', 'study', 'studied', 'university', 'school', 'certif', 'qualif', 'nanodegree', 'credential'],
@@ -163,35 +163,21 @@ type Cat = 'dev' | 'ai' | 'data' | 'marketing' | 'soft'
 type Skill = { label: string; cat: Cat; keys: string[] }
 
 const SKILLS: Skill[] = [
-  // dev
-  { label: 'React', cat: 'dev', keys: ['react'] },
-  { label: 'Next.js', cat: 'dev', keys: ['next.js', 'nextjs', 'next js'] },
-  { label: 'TypeScript', cat: 'dev', keys: ['typescript'] },
-  { label: 'JavaScript', cat: 'dev', keys: ['javascript', 'es6'] },
-  { label: 'Node.js', cat: 'dev', keys: ['node.js', 'nodejs', 'node js'] },
+  // web / martech (marketing-side capability, not software engineering)
   { label: 'HTML & CSS', cat: 'dev', keys: ['html', 'css'] },
-  { label: 'Tailwind', cat: 'dev', keys: ['tailwind'] },
-  { label: 'Front-end', cat: 'dev', keys: ['front-end', 'frontend', 'front end'] },
-  { label: 'Full-stack', cat: 'dev', keys: ['full-stack', 'fullstack', 'full stack'] },
-  { label: 'Web development', cat: 'dev', keys: ['web develop', 'web application', 'web app', 'web design'] },
+  { label: 'Website management', cat: 'dev', keys: ['web develop', 'website manage', 'web design', 'website updates'] },
   { label: 'WordPress', cat: 'dev', keys: ['wordpress'] },
   { label: 'Wix / Shopify', cat: 'dev', keys: ['wix', 'shopify', 'squarespace', 'webflow'] },
   { label: 'CMS', cat: 'marketing', keys: ['cms', 'content management system'] },
   { label: 'Landing pages', cat: 'marketing', keys: ['landing page'] },
-  { label: 'PWA', cat: 'dev', keys: ['pwa', 'progressive web'] },
-  { label: 'Responsive UI', cat: 'dev', keys: ['responsive', 'ui/ux', 'user interface'] },
   // ai
   { label: 'AI', cat: 'ai', keys: ['artificial intelligence', ' ai ', 'ai-', 'ai/', 'genai', 'generative ai'] },
   { label: 'LLMs', cat: 'ai', keys: ['llm', 'large language model', 'claude', 'gpt', 'openai', 'anthropic', 'gemini'] },
-  { label: 'RAG / retrieval', cat: 'ai', keys: ['rag', 'retrieval-augmented', 'retrieval augmented', 'vector', 'embedding'] },
-  { label: 'Machine learning', cat: 'ai', keys: ['machine learning', 'ml ', 'ml,', 'ml.'] },
-  { label: 'Prompt engineering', cat: 'ai', keys: ['prompt'] },
-  { label: 'Automation', cat: 'ai', keys: ['automation', 'automate'] },
-  { label: 'Chatbots', cat: 'ai', keys: ['chatbot', 'conversational'] },
+  { label: 'AI content tools', cat: 'ai', keys: ['prompt', 'ai content', 'ai tools', 'copilot'] },
+  { label: 'Marketing automation', cat: 'ai', keys: ['automation', 'automate'] },
   // data
-  { label: 'Python', cat: 'data', keys: ['python', 'pandas', 'scikit'] },
-  { label: 'SQL / Postgres', cat: 'data', keys: ['sql', 'postgres', 'postgresql', 'database'] },
-  { label: 'Supabase', cat: 'data', keys: ['supabase'] },
+  { label: 'Python for data', cat: 'data', keys: ['python', 'pandas'] },
+  { label: 'SQL', cat: 'data', keys: ['sql', 'database', 'query'] },
   { label: 'Analytics (GA4)', cat: 'data', keys: ['google analytics', 'ga4', 'analytics'] },
   { label: 'Tableau', cat: 'data', keys: ['tableau'] },
   { label: 'Power BI', cat: 'data', keys: ['power bi', 'powerbi'] },
@@ -271,7 +257,7 @@ export function analyzeJobDescription(text: string): string {
     'marketing-focused':
       `Nasser brings **3+ years of hands-on marketing** — SEO, PPC, GA4 analytics, content & brand — with proven results (doubled site traffic, −20% CPC, +20% ROI). Bonus: he also builds the sites, tracking, and automation behind campaigns, so he executes end-to-end.`,
     'technical / MarTech':
-      `Nasser is a **marketer with strong technical fluency** — he builds marketing sites, automation, conversion tracking, and lead funnels (HTML/CSS, no-code/low-code, APIs, a bit of Python). A strong fit for technical-marketing / MarTech roles, backed by real campaign and analytics experience.`,
+      `Nasser is a **marketer with strong technical fluency** — he sets up marketing sites, automation, conversion tracking, and lead funnels himself (HTML/CSS, no-code platforms, tracking integrations, Python and SQL for data). A strong fit for MarTech, marketing-analytics, and insights roles, backed by real campaign experience and measured results.`,
     mixed:
       `Nasser pairs **3+ years of measurable marketing** with real **MarTech & data fluency** — a rare build-and-measure combination.`,
   }

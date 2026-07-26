@@ -2,7 +2,7 @@ import { useRef } from 'react'
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
 import type { Project } from '../data/content'
 import ProjectVisual from './ProjectVisual'
-import { ArrowUpRight, GitHub, Lock } from './icons'
+import { ArrowUpRight, Lock } from './icons'
 
 export default function ProjectCard({ project, index }: { project: Project; index: number }) {
   const ref = useRef<HTMLDivElement>(null)
@@ -86,17 +86,7 @@ export default function ProjectCard({ project, index }: { project: Project; inde
               Live site <ArrowUpRight width={15} height={15} />
             </a>
           )}
-          {project.repo && (
-            <a href={project.repo} target="_blank" rel="noopener noreferrer" className="proj-link">
-              <GitHub width={15} height={15} /> Code
-            </a>
-          )}
-          {project.repoPrivate && (
-            <span className="proj-link" style={{ color: 'var(--text-dim)', cursor: 'default' }}>
-              <Lock width={14} height={14} /> Private repo
-            </span>
-          )}
-          {!project.live && !project.repo && !project.repoPrivate && (
+          {!project.live && (
             <span className="proj-link" style={{ color: 'var(--text-dim)', cursor: 'default' }}>
               <Lock width={14} height={14} /> Case study on request
             </span>

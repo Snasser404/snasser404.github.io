@@ -2,7 +2,7 @@ import { useState } from 'react'
 import Reveal from './Reveal'
 import SectionHeading from './SectionHeading'
 import { profile } from '../data/content'
-import { Mail, Phone, MapPin, GitHub, LinkedIn, Download, ArrowUpRight } from './icons'
+import { Mail, Phone, MapPin, Globe, LinkedIn, Download, ArrowUpRight } from './icons'
 
 /**
  * To enable real form submissions (no email client needed), create a free
@@ -82,7 +82,7 @@ export default function Contact() {
     { icon: Mail, label: profile.email, href: `mailto:${profile.email}` },
     { icon: Phone, label: profile.phone, href: `tel:${profile.phone.replace(/[^0-9+]/g, '')}` },
     { icon: LinkedIn, label: 'linkedin.com/in/nasser-saleh', href: profile.linkedin },
-    { icon: GitHub, label: 'github.com/Snasser404', href: profile.github },
+    { icon: Globe, label: 'nassersaleh.ca', href: 'https://nassersaleh.ca' },
   ]
 
   return (

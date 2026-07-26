@@ -1,13 +1,13 @@
 import Reveal from './Reveal'
 import SectionHeading from './SectionHeading'
 import { about, profile } from '../data/content'
-import { Code, Megaphone, MapPin } from './icons'
+import { Chart, Megaphone, MapPin } from './icons'
 
 export default function About() {
   return (
     <section id="about" className="section">
       <div className="container-x">
-        <SectionHeading index="01" eyebrow="About" title="Marketing instinct, engineering execution." />
+        <SectionHeading index="01" eyebrow="About" title="A marketer who owns the tools, not just the brief." />
 
         <div className="about-layout">
           {/* Portrait / monogram panel */}
@@ -24,7 +24,7 @@ export default function About() {
                   <span className="about-monogram">NS</span>
                   <div style={{ display: 'flex', gap: 10, marginTop: 18 }}>
                     <span className="about-pill"><Megaphone width={15} height={15} /> Marketing</span>
-                    <span className="about-pill"><Code width={15} height={15} /> MarTech &amp; Data</span>
+                    <span className="about-pill"><Chart width={15} height={15} /> MarTech &amp; Data</span>
                   </div>
                 </div>
               )}

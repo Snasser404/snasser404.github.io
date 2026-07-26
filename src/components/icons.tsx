@@ -75,9 +75,17 @@ export const Sparkle = (p: SVGProps<SVGSVGElement>) => (
   </svg>
 )
 
-export const Code = (p: SVGProps<SVGSVGElement>) => (
+export const Globe = (p: SVGProps<SVGSVGElement>) => (
   <svg {...base(p)}>
-    <path d="m16 18 6-6-6-6M8 6l-6 6 6 6" />
+    <circle cx="12" cy="12" r="9" />
+    <path d="M3 12h18M12 3a15 15 0 0 1 0 18a15 15 0 0 1 0-18Z" />
+  </svg>
+)
+
+export const Chart = (p: SVGProps<SVGSVGElement>) => (
+  <svg {...base(p)}>
+    <path d="M3 3v18h18" />
+    <path d="m7 14 3.5-4 3 3L20 6" />
   </svg>
 )
 

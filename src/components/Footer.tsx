@@ -1,5 +1,5 @@
 import { profile } from '../data/content'
-import { GitHub, LinkedIn, Mail } from './icons'
+import { LinkedIn, Mail } from './icons'
 
 export default function Footer() {
   return (
@@ -16,9 +16,6 @@ export default function Footer() {
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <a href={profile.github} target="_blank" rel="noopener noreferrer" className="footer-icon" aria-label="GitHub">
-            <GitHub width={18} height={18} />
-          </a>
           <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="footer-icon" aria-label="LinkedIn">
             <LinkedIn width={18} height={18} />
           </a>
@@ -28,7 +25,7 @@ export default function Footer() {
         </div>
 
         <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: 'var(--text-dim)', margin: 0, width: '100%', textAlign: 'center', paddingTop: 8 }}>
-          © {2026} Nasser Saleh — Designed & built with React, Three.js & a marketer's eye.
+          © {2026} Nasser Saleh — Designed, built &amp; optimized in-house. Toronto, Canada.
         </p>
       </div>
     </footer>
