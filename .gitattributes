@@ -1,0 +1,10 @@
+# Never apply line-ending conversion to binaries — it silently corrupts them.
+*.pdf   binary
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.webp  binary
+*.woff  binary
+*.woff2 binary
+*.ico   binary
