@@ -95,8 +95,7 @@ export default function Contact() {
           <Reveal>
             <div>
               <p style={{ fontSize: '1.1rem', color: 'var(--text-soft)', maxWidth: 460 }}>
-                Open to software, marketing, and hybrid roles — plus freelance builds. Drop a line and I'll get back to you
-                quickly.
+                Open to marketing, insights, and MarTech roles in Toronto. Drop a line and I'll get back to you quickly.
               </p>
 
               <div className="assistant-callout">

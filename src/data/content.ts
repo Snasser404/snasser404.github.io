@@ -43,10 +43,10 @@ export const about = {
   /** Replace with a real professional headshot at /public/assets/headshot.jpg */
   headshot: '',
   paragraphs: [
-    "I'm a digital marketing specialist based in Toronto who works at the intersection of marketing, data, and technology. Over the last three-plus years I've run PPC and SEO campaigns, owned analytics in GA4 and SEMrush, and led content and brand work across non-profit and for-profit teams — consistently turning data into decisions that move traffic, engagement, and ROI.",
+    "I'm a digital marketing specialist based in Toronto who works at the intersection of marketing, data, and technology. Over the last four years I've run PPC and SEO campaigns, owned analytics in GA4 and SEMrush, produced competitive and audience research, and led content and brand work across non-profit and for-profit teams — consistently turning data into decisions that move traffic, engagement, and ROI.",
     "What sets me apart is the tech side. I don't just brief the tools — I set them up and run them: marketing websites, local-SEO landing pages, marketing-automation workflows, conversion tracking, and booking/CRM funnels. That lets me launch a campaign end-to-end and measure exactly what's working, without waiting on a dev queue.",
     "I also work at the front edge of search. Beyond classic SEO, I focus on Generative Engine Optimization (GEO) — making sure a brand actually shows up in AI answers from ChatGPT, Perplexity, and Google's AI Overviews, where more and more buying decisions now start.",
-    'My foundation is two years of marketing studies at the University of Toronto, plus hands-on credentials in AI and data analytics from Udacity, BrainStation, Google, and the Lebanese American University. Bilingual in English and Arabic.',
+    'My foundation is a diploma in IT Management & Data Analytics from the Lebanese American University, plus hands-on credentials in digital marketing, AI, and data from Google, Udacity, and BrainStation. Bilingual in English and Arabic.',
   ],
   stats: [
     { value: '+100%', label: 'Website traffic', sub: 'doubled at GlobalDWS' },
@@ -61,6 +61,22 @@ export const about = {
    setting `image` (a path under /public/projects). Add real client names,
    logos, or results where you have them. */
 export const featuredProjects: Project[] = [
+  {
+    name: 'Wai Nui Outrigger Canoe Club',
+    category: 'Research & Insights',
+    accent: '#0891b2',
+    status: 'Delivered',
+    client: true,
+    blurb:
+      'A full marketing and website audit for an Oakville community sports club — competitor benchmarking, an SEO and content review, and a member-journey analysis, distilled into a prioritized 90-day action plan a volunteer-run board could actually execute.',
+    techStack: ['Competitive benchmarking', 'Audience & member research', 'SEO / content audit', 'Journey mapping', '90-day roadmap'],
+    highlights: [
+      'Competitor benchmarking against comparable clubs and community-sport organizations',
+      'Member-journey analysis from first search through to signup and retention',
+      'SEO, content, and site-structure review tied to how prospective members actually search',
+      'Findings prioritized into a 90-day action plan, sized for a volunteer team',
+    ],
+  },
   {
     name: 'Serene Touch Pest Control',
     category: 'Local SEO · Web · Lead Gen',
@@ -124,7 +140,6 @@ export const featuredProjects: Project[] = [
       'Local marketing + analytics to drive and measure bookings',
       'Launched as a live pilot the business can run day-to-day',
     ],
-    live: 'https://nassersaleh156.wixsite.com/paradise-wellness',
   },
 ]
 
@@ -225,11 +240,8 @@ export type DesignTile = { label: string; tag: string; image?: string }
 
 export const designGallery: DesignTile[] = [
   { label: 'Social creative', tag: 'Instagram · LinkedIn' },
-  { label: 'One-pagers', tag: 'Sales collateral' },
+  { label: 'One-pagers & case studies', tag: 'Sales collateral' },
   { label: 'Newsletters', tag: 'Mailchimp · Brevo' },
-  { label: 'Catalogues', tag: 'Product' },
-  { label: 'Banners & ads', tag: 'Display · Social' },
-  { label: 'Brand kit', tag: 'Identity & guidelines' },
 ]
 
 export type SkillGroup = { group: string; skills: string[] }
@@ -297,14 +309,16 @@ export type Experience = {
 
 export const experience: Experience[] = [
   {
-    company: 'Freelance — Digital Marketing & MarTech',
-    role: 'Digital Marketing & MarTech Specialist',
-    location: 'Toronto · Remote',
+    company: 'Manara Digital',
+    role: 'Digital Marketing & Insights Consultant',
+    location: 'Toronto, Ontario',
     period: '2023 – Present',
     bullets: [
-      'Deliver end-to-end digital marketing for small businesses and brands — websites, local SEO, paid & organic campaigns, automation, and analytics.',
-      'Engagements span pest control (Serene Touch), wellness/spa (Paradise Wellness), and personal services (BarberBook): web builds, SEO, booking funnels, and conversion tracking.',
-      'Build the MarTech behind the marketing — GA4 + event tracking, CRM/lead funnels, and AI-assisted content automation — so campaigns are measurable and scalable.',
+      'Deliver competitive reviews and audience research for small-business and non-profit clients, turning category and consumer findings into prioritized, budget-aware recommendations.',
+      'Produced a full marketing and website audit for an Oakville community sports club — competitor benchmarking, SEO review, and member-journey analysis distilled into a 90-day action plan.',
+      'Build and run the marketing technology behind campaigns: websites, local SEO & GEO, GA4 event tracking, booking and lead funnels, and marketing automation.',
+      'Build recurring reporting in Excel and Power BI, using Python and AI automation to cut manual data-preparation time.',
+      'Client engagements span pest control (Serene Touch), wellness/spa (Paradise Wellness), and personal services (BarberBook).',
     ],
   },
   {
@@ -347,7 +361,6 @@ export const experience: Experience[] = [
 export type Credential = { title: string; org: string; year: string; kind: 'degree' | 'cert' | 'study' }
 
 export const education: Credential[] = [
-  { title: 'Marketing — 2 years of study', org: 'University of Toronto, Mississauga', year: '2 yrs', kind: 'study' },
   { title: 'Digital Marketing & E-commerce', org: 'Google Career Certificate', year: '2022', kind: 'cert' },
   { title: 'Generative AI — Nanodegree', org: 'Udacity', year: '2024', kind: 'cert' },
   { title: 'AI Automation, Ethics & Responsible AI', org: 'BrainStation', year: '2024', kind: 'cert' },

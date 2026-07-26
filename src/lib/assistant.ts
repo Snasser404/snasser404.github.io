@@ -82,7 +82,8 @@ const intents: Intent[] = [
   {
     keys: ['experience', 'work history', 'background', 'career', 'worked', 'employment', 'roles', 'jobs'],
     answer:
-      `Nasser has **3+ years in digital marketing** across non-profit and for-profit teams:<br>` +
+      `Nasser has **four years in digital marketing** across non-profit and for-profit teams:<br>` +
+      `• **Manara Digital** — Digital Marketing & Insights Consultant (2023–present): competitive reviews and audience research for small-business and non-profit clients, plus the websites, SEO/GEO, tracking and automation behind their campaigns.<br>` +
       `• **GlobalDWS** — Digital Marketing Specialist (2023–24): led a team of 3, built a new company website end-to-end, and grew social engagement **+50%** and website traffic **+100%**.<br>` +
       `• **Faster Accessories** — Digital Marketing Specialist (2022–23): **+40%** traffic via SEO; ran PPC that cut CPC **20%** and lifted CTR **25%**.<br>` +
       `• **Ajjerni Rentals** — Data Analyst & Market Research Intern (2021–22): BI reporting that supported **+15% ROI** and **+20%** retention.<br><br>` +
@@ -116,17 +117,16 @@ const intents: Intent[] = [
   {
     keys: ['education', 'degree', 'study', 'studied', 'university', 'school', 'certif', 'qualif', 'nanodegree', 'credential'],
     answer:
-      `• **Marketing** — University of Toronto, Mississauga (2 years of study)<br>` +
+      `• **Diploma in IT Management & Data Analytics** — Lebanese American University (2022)<br>` +
       `• **Generative AI** — Nanodegree, Udacity (2024)<br>` +
       `• **AI Programming with Python** — Nanodegree, Udacity (2023)<br>` +
       `• **AI Automation, Ethics & Responsible AI** — BrainStation (2024)<br>` +
-      `• **Digital Marketing & E-commerce** — Google Career Certificate (2022)<br>` +
-      `• **Diploma in IT Management & Data Analytics** — Lebanese American University (2022)`,
+      `• **Digital Marketing & E-commerce** — Google Career Certificate (2022)`,
   },
   {
     keys: ['available', 'availability', 'open to', 'hiring', 'looking for work', 'job search', 'start', 'freelance', 'contract'],
     answer:
-      `Yes — Nasser is **open to opportunities**: digital marketing, MarTech, and growth/analytics roles, plus freelance engagements. He's based in **Toronto, Ontario**. The fastest way to start a conversation is to [email him](${mailto()}) or use the contact form on this page.`,
+      `Yes — Nasser is **open to marketing, insights, and MarTech roles in Toronto**. The fastest way to start a conversation is to [email him](${mailto()}) or use the contact form on this page.`,
   },
   {
     keys: ['location', 'based', 'where', 'remote', 'relocat', 'toronto', 'canada', 'timezone'],
