@@ -19,7 +19,15 @@ type Props = {
 }
 
 /** Scroll-triggered reveal with a soft blur+rise. Used throughout the site. */
+const SSR = typeof window === 'undefined'
+
 export default function Reveal({ children, delay = 0, className, as = 'div' }: Props) {
+  // During prerender emit plain, fully-visible markup so crawlers and AI
+  // engines read the text (no opacity:0 / transform in the static HTML).
+  if (SSR) {
+    const Tag = as
+    return <Tag className={className}>{children}</Tag>
+  }
   const MotionTag = motion[as] as typeof motion.div
   return (
     <MotionTag

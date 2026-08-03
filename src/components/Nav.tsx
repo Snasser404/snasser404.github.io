@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { navItems, profile } from '../data/content'
+import { track } from '../lib/analytics'
 import { Download } from './icons'
+
+const SSR = typeof window === 'undefined'
 
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false)
@@ -21,7 +24,7 @@ export default function Nav() {
 
   return (
     <motion.header
-      initial={{ y: -80, opacity: 0 }}
+      initial={SSR ? false : { y: -80, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.7, ease: [0.21, 0.47, 0.32, 0.98] }}
       style={{
@@ -80,6 +83,7 @@ export default function Nav() {
             target="_blank"
             rel="noopener noreferrer"
             className="btn btn-ghost"
+            onClick={() => track('resume_download', { location: 'nav' })}
             style={{ marginLeft: 12, padding: '0.55rem 1rem', fontSize: '0.85rem' }}
           >
             <Download width={15} height={15} /> Résumé
@@ -116,6 +120,7 @@ export default function Nav() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn btn-ghost"
+                onClick={() => track('resume_download', { location: 'mobile_nav' })}
                 style={{ marginTop: 8, justifyContent: 'center' }}
               >
                 <Download width={15} height={15} /> Download Résumé

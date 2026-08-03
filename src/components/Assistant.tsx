@@ -11,6 +11,7 @@ import {
   type ChatMsg,
   type ApiTurn,
 } from '../lib/assistant'
+import { track } from '../lib/analytics'
 
 const FIT_PROMPT = 'Check my fit for a role'
 const useAI = !!ASSISTANT_API_URL
@@ -66,6 +67,7 @@ export default function Assistant() {
     const force = pendingJD
     setPendingJD(false)
     apiHistory.current = [...apiHistory.current, { role: 'user', content: clean }]
+    track('assistant_message', { chars: clean.length })
     setThinking(true)
 
     if (useAI) {
@@ -122,7 +124,7 @@ export default function Assistant() {
         {!open && (
           <motion.button
             className="assistant-launcher"
-            onClick={() => setOpen(true)}
+            onClick={() => { setOpen(true); track('assistant_open') }}
             initial={{ opacity: 0, scale: 0.8, y: 12 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 12 }}

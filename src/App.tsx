@@ -1,4 +1,6 @@
+import { useEffect } from 'react'
 import { motion, useScroll, useSpring } from 'framer-motion'
+import { initAnalytics, initScrollTracking } from './lib/analytics'
 import Nav from './components/Nav'
 import Hero from './components/Hero'
 import About from './components/About'
@@ -15,6 +17,11 @@ import Assistant from './components/Assistant'
 export default function App() {
   const { scrollYProgress } = useScroll()
   const scaleX = useSpring(scrollYProgress, { stiffness: 120, damping: 24, restDelta: 0.001 })
+
+  useEffect(() => {
+    initAnalytics()
+    return initScrollTracking()
+  }, [])
 
   return (
     <>

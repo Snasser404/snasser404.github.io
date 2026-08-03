@@ -6,6 +6,8 @@ import { ArrowDown, ArrowUpRight, Sparkle } from './icons'
 // Lazy-load the WebGL scene so first paint isn't blocked by Three.js.
 const Scene3D = lazy(() => import('./Scene3D'))
 
+const SSR = typeof window === 'undefined'
+
 const container = {
   hidden: {},
   show: { transition: { staggerChildren: 0.12, delayChildren: 0.2 } },
@@ -25,9 +27,11 @@ export default function Hero() {
     >
       {/* 3D backdrop — shifted right on desktop so it never sits under the text */}
       <div className="hero-scene">
-        <Suspense fallback={null}>
-          <Scene3D />
-        </Suspense>
+        {!SSR && (
+          <Suspense fallback={null}>
+            <Scene3D />
+          </Suspense>
+        )}
       </div>
       {/* readability vignette over the canvas, on the text side */}
       <div
@@ -44,7 +48,7 @@ export default function Hero() {
       <motion.div
         className="container-x"
         variants={container}
-        initial="hidden"
+        initial={SSR ? false : "hidden"}
         animate="show"
         style={{ position: 'relative', zIndex: 2, paddingTop: 90, width: '100%' }}
       >

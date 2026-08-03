@@ -4,6 +4,8 @@ import type { Project } from '../data/content'
 import ProjectVisual from './ProjectVisual'
 import { ArrowUpRight, Lock } from './icons'
 
+const SSR = typeof window === 'undefined'
+
 export default function ProjectCard({ project, index }: { project: Project; index: number }) {
   const ref = useRef<HTMLDivElement>(null)
   const mx = useMotionValue(0)
@@ -30,7 +32,7 @@ export default function ProjectCard({ project, index }: { project: Project; inde
       ref={ref}
       onMouseMove={onMove}
       onMouseLeave={onLeave}
-      initial={{ opacity: 0, y: 36 }}
+      initial={SSR ? false : { opacity: 0, y: 36 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-60px' }}
       transition={{ duration: 0.6, delay: (index % 2) * 0.08, ease: [0.21, 0.47, 0.32, 0.98] }}

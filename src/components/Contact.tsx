@@ -2,6 +2,7 @@ import { useState } from 'react'
 import Reveal from './Reveal'
 import SectionHeading from './SectionHeading'
 import { profile } from '../data/content'
+import { track } from '../lib/analytics'
 import { Mail, Phone, MapPin, Globe, LinkedIn, Download, ArrowUpRight } from './icons'
 
 /**
@@ -41,6 +42,7 @@ export default function Contact() {
     setErrors(found)
     if (Object.keys(found).length > 0) {
       setStatus('idle')
+      track('contact_form_error', { fields: Object.keys(found).join(',') })
       return
     }
 
@@ -60,6 +62,7 @@ export default function Contact() {
         })
         if (res.ok) {
           setStatus('sent')
+          track('contact_form_submit', { method: 'web3forms' })
           form.reset()
         } else setStatus('error')
       } catch {
@@ -69,6 +72,7 @@ export default function Contact() {
       // mailto fallback — works with zero setup
       const body = encodeURIComponent(`${message}\n\n— ${name} (${email})`)
       const subject = encodeURIComponent(`Portfolio message from ${name}`)
+      track('contact_form_submit', { method: 'mailto' })
       window.location.href = `mailto:${profile.email}?subject=${subject}&body=${body}`
       setStatus('sent')
     }
@@ -79,10 +83,10 @@ export default function Contact() {
     setErrors((prev) => (prev[key] ? { ...prev, [key]: undefined } : prev))
 
   const contactLinks = [
-    { icon: Mail, label: profile.email, href: `mailto:${profile.email}` },
-    { icon: Phone, label: profile.phone, href: `tel:${profile.phone.replace(/[^0-9+]/g, '')}` },
-    { icon: LinkedIn, label: 'linkedin.com/in/nasser-saleh', href: profile.linkedin },
-    { icon: Globe, label: 'nassersaleh.ca', href: 'https://nassersaleh.ca' },
+    { icon: Mail, label: profile.email, href: `mailto:${profile.email}`, method: 'email' },
+    { icon: Phone, label: profile.phone, href: `tel:${profile.phone.replace(/[^0-9+]/g, '')}`, method: 'phone' },
+    { icon: LinkedIn, label: 'linkedin.com/in/nasser-saleh', href: profile.linkedin, method: 'linkedin' },
+    { icon: Globe, label: 'nassersaleh.ca', href: 'https://nassersaleh.ca', method: 'website' },
   ]
 
   return (
@@ -115,6 +119,7 @@ export default function Contact() {
                     target={c.href.startsWith('http') ? '_blank' : undefined}
                     rel="noopener noreferrer"
                     className="card contact-link glass-hover"
+                    onClick={() => track('contact_click', { method: c.method })}
                   >
                     <span className="contact-link-icon">
                       <c.icon width={17} height={17} />
@@ -130,6 +135,7 @@ export default function Contact() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn btn-primary"
+                  onClick={() => track('resume_download', { location: 'contact' })}
                 >
                   <Download width={16} height={16} /> Download résumé
                 </a>
