@@ -34,3 +34,4 @@ Thumbs.db
 # local tooling / editor config (not needed in the public repo)
 .claude/
 dist-ssr/
+lighthouse-report*

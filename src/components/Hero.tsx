@@ -1,4 +1,4 @@
-import { Suspense, lazy } from 'react'
+import { Suspense, lazy, useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { profile } from '../data/content'
 import { ArrowDown, ArrowUpRight, Sparkle } from './icons'
@@ -20,6 +20,48 @@ const item = {
 export default function Hero() {
   const go = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
 
+  /* Hold the WebGL scene back until the page is painted and idle. It's
+     decorative, so it must never compete with first paint — and we skip it
+     entirely for reduced-motion, low-core, or data-saver visitors. */
+  const [showScene, setShowScene] = useState(false)
+  useEffect(() => {
+    const nav = navigator as Navigator & {
+      deviceMemory?: number
+      connection?: { saveData?: boolean }
+    }
+    const skip =
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
+      nav.connection?.saveData === true ||
+      (nav.hardwareConcurrency ?? 8) <= 2 ||
+      (nav.deviceMemory ?? 8) <= 2
+    if (skip) return
+
+    type IdleWindow = Window & {
+      requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number
+      cancelIdleCallback?: (handle: number) => void
+    }
+    const w = window as IdleWindow
+
+    let cancelled = false
+    let idleId: number | undefined
+    let timerId: number | undefined
+    const start = () => {
+      if (!cancelled) setShowScene(true)
+    }
+
+    if (typeof w.requestIdleCallback === 'function') {
+      idleId = w.requestIdleCallback(start, { timeout: 2500 })
+    } else {
+      timerId = window.setTimeout(start, 1200)
+    }
+
+    return () => {
+      cancelled = true
+      if (idleId !== undefined) w.cancelIdleCallback?.(idleId)
+      if (timerId !== undefined) clearTimeout(timerId)
+    }
+  }, [])
+
   return (
     <section
       id="hero"
@@ -27,7 +69,7 @@ export default function Hero() {
     >
       {/* 3D backdrop — shifted right on desktop so it never sits under the text */}
       <div className="hero-scene">
-        {!SSR && (
+        {!SSR && showScene && (
           <Suspense fallback={null}>
             <Scene3D />
           </Suspense>

@@ -169,7 +169,7 @@ export default function Scene3D() {
     <div ref={host} style={{ position: 'absolute', inset: 0 }}>
     <Canvas
       camera={{ position: [0, 0, 7.5], fov: 45 }}
-      dpr={[1, 2]}
+      dpr={[1, 1.5]}
       frameloop={active ? 'always' : 'never'}
       gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
       resize={{ debounce: 0 }}
@@ -185,7 +185,7 @@ export default function Scene3D() {
           <Core />
           <DataRings />
           <Satellites />
-          <ParticleField count={typeof window !== 'undefined' && window.innerWidth < 768 ? 550 : 1400} />
+          <ParticleField count={typeof window !== 'undefined' && window.innerWidth < 768 ? 450 : 900} />
         </Rig>
       </Suspense>
     </Canvas>
