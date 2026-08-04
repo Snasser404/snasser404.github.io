@@ -137,7 +137,7 @@ export default function Contact() {
                   className="btn btn-primary"
                   onClick={() => track('resume_download', { location: 'contact' })}
                 >
-                  <Download width={16} height={16} /> Download résumé
+                  <Download width={16} height={16} /> Download Resume
                 </a>
                 <span style={{ display: 'inline-flex', alignItems: 'center', gap: 7, color: 'var(--text-dim)', fontSize: '0.85rem' }}>
                   <MapPin width={15} height={15} /> {profile.location}

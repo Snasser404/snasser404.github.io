@@ -10,7 +10,7 @@
                    Optional. Use GA4 alone if you don't need a tag manager.
 
    Events sent (all visible in GA4 → Reports → Realtime / Events):
-     resume_download        — someone downloaded the résumé PDF
+     resume_download        — someone downloaded the resume PDF
      contact_click          — email / phone / linkedin / website click
      contact_form_submit    — contact form submitted successfully
      contact_form_error     — form submitted with validation errors

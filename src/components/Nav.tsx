@@ -86,7 +86,7 @@ export default function Nav() {
             onClick={() => track('resume_download', { location: 'nav' })}
             style={{ marginLeft: 12, padding: '0.55rem 1rem', fontSize: '0.85rem' }}
           >
-            <Download width={15} height={15} /> Résumé
+            <Download width={15} height={15} /> Resume
           </a>
         </div>
 
@@ -123,7 +123,7 @@ export default function Nav() {
                 onClick={() => track('resume_download', { location: 'mobile_nav' })}
                 style={{ marginTop: 8, justifyContent: 'center' }}
               >
-                <Download width={15} height={15} /> Download Résumé
+                <Download width={15} height={15} /> Download Resume
               </a>
             </div>
           </motion.div>

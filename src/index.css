@@ -294,7 +294,7 @@ h1, h2, h3, h4, .section-title, .eyebrow {
   border-top: 1px solid var(--line);
 }
 
-/* Collapse to a hamburger before the 6 links + résumé get cramped */
+/* Collapse to a hamburger before the 6 links + resume get cramped */
 @media (max-width: 1000px) {
   .nav-desktop {
     display: none;

@@ -3,7 +3,7 @@ import { profile } from '../data/content'
 /* ============================================================
    PORTFOLIO ASSISTANT — in-browser, no backend, no API key.
    Answers common employer questions about Nasser and analyzes a
-   pasted job description for fit. Grounded only in real résumé data.
+   pasted job description for fit. Grounded only in real resume data.
 
    UPGRADE PATH → real AI: replace the body of getResponse()
    with a fetch() to a serverless proxy that holds your Anthropic key.
@@ -75,7 +75,7 @@ export const SUGGESTIONS = [
   'How do I contact him?',
 ]
 
-/* ---------- intent knowledge base (grounded in the résumé) ---------- */
+/* ---------- intent knowledge base (grounded in the resume) ---------- */
 type Intent = { keys: string[]; answer: string }
 
 const intents: Intent[] = [
@@ -87,7 +87,7 @@ const intents: Intent[] = [
       `• **GlobalDWS** — Digital Marketing Specialist (2023–24): led a team of 3, built a new company website end-to-end, and grew social engagement **+50%** and website traffic **+100%**.<br>` +
       `• **Faster Accessories** — Digital Marketing Specialist (2022–23): **+40%** traffic via SEO; ran PPC that cut CPC **20%** and lifted CTR **25%**.<br>` +
       `• **Ajjerni Rentals** — Data Analyst & Market Research Intern (2021–22): BI reporting that supported **+15% ROI** and **+20%** retention.<br><br>` +
-      `Full history is in his [résumé](${RESUME}).`,
+      `Full history is in his [resume](${RESUME}).`,
   },
   {
     keys: ['skill', 'tech stack', 'stack', 'technolog', 'tools', 'know how', 'can he do', 'capable', 'proficient'],
@@ -143,12 +143,12 @@ const intents: Intent[] = [
       `His edge is being a **marketer who's genuinely technical**. He runs the campaigns *and* builds the MarTech behind them — websites, automation, GA4 tracking, lead funnels — so work ships fast and everything is measurable. Three-plus years of results (doubled traffic, −20% cost-per-click, +20% ROI), with the data and analytics chops to prove it. Bilingual EN/AR, fast-moving, detail-oriented.`,
   },
   {
-    keys: ['contact', 'reach', 'email', 'hire', 'get in touch', 'connect', 'linkedin', 'message', 'talk', 'resume', 'résumé', 'cv'],
+    keys: ['contact', 'reach', 'email', 'hire', 'get in touch', 'connect', 'linkedin', 'message', 'talk', 'resume', 'resume', 'cv'],
     answer:
       `Easiest ways to reach Nasser:<br>` +
       `• **Email:** [${EMAIL}](${mailto()})<br>` +
       `• **LinkedIn:** [linkedin.com/in/nasser-saleh](${profile.linkedin})<br>` +
-      `• **Résumé:** [download the PDF](${RESUME})<br>` +
+      `• **Resume:** [download the PDF](${RESUME})<br>` +
       `• Or use the **contact form** in the Contact section.`,
   },
   {
@@ -271,7 +271,7 @@ export function analyzeJobDescription(text: string): string {
     `**Fit: ${level}** — this reads like a **${focus}** role.<br><br>` +
     `**Matched strengths** (found in your description):<br>${shown.map((l) => `• ${l}`).join('<br>')}${more}<br><br>` +
     `${pitchByFocus[focus]}<br><br>` +
-    `Want to take it further? [Email Nasser](${mailto('Role that fits Nasser')}) or [download his résumé](${RESUME}).<br>` +
+    `Want to take it further? [Email Nasser](${mailto('Role that fits Nasser')}) or [download his resume](${RESUME}).<br>` +
     `<em>Note: this is an automated keyword check — Nasser will give you the real, detailed answer.</em>`
   )
 }
@@ -312,7 +312,7 @@ export function getResponse(text: string, forceJD = false): string {
   return formatMarkup(
     `I'm best at questions about **Nasser's experience, skills, results, education, availability, and how to reach him** — ` +
     `or paste a **job description** and I'll check the fit.<br><br>` +
-    `You can also [email him directly](${mailto()}) or [grab his résumé](${RESUME}). What would you like to know?`,
+    `You can also [email him directly](${mailto()}) or [grab his resume](${RESUME}). What would you like to know?`,
   )
 }
 

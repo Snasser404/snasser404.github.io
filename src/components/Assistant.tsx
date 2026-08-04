@@ -199,7 +199,7 @@ export default function Assistant() {
                 <SendIcon />
               </button>
             </div>
-            <div className="assistant-foot">{useAI ? "AI assistant · answers from Nasser's background" : "Automated assistant · answers from Nasser's résumé"}</div>
+            <div className="assistant-foot">{useAI ? "AI assistant · answers from Nasser's background" : "Automated assistant · answers from Nasser's resume"}</div>
           </motion.div>
         )}
       </AnimatePresence>
