@@ -422,7 +422,7 @@ h1, h2, h3, h4, .section-title, .eyebrow {
   position: relative;
   border-radius: var(--radius);
   overflow: hidden;
-  min-height: 420px;
+  min-height: 560px; /* portrait proportions, balances the bio column */
   display: flex;
   flex-direction: column;
 }

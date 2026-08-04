@@ -16,8 +16,18 @@ export default function About() {
               {about.headshot ? (
                 <img
                   src={about.headshot}
-                  alt={profile.name}
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 'inherit' }}
+                  alt={`${profile.name} — ${profile.roleTitle}`}
+                  width={900}
+                  height={900}
+                  style={{
+                    width: '100%',
+                    flex: 1,
+                    minHeight: 0,
+                    objectFit: 'cover',
+                    objectPosition: 'center 22%',
+                    // only the top corners — the location/languages bar sits below
+                    borderRadius: 'var(--radius) var(--radius) 0 0',
+                  }}
                 />
               ) : (
                 <div className="about-portrait-fallback">

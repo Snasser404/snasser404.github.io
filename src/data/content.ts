@@ -40,8 +40,8 @@ export const profile = {
 }
 
 export const about = {
-  /** Replace with a real professional headshot at /public/assets/headshot.jpg */
-  headshot: '',
+  /** Regenerate with: python scripts/make_headshot.py "<path to photo>" */
+  headshot: `${import.meta.env.BASE_URL}assets/headshot.jpg`,
   paragraphs: [
     "I'm a digital marketing specialist based in Toronto who works at the intersection of marketing, data, and technology. Over the last four years I've run PPC and SEO campaigns, owned analytics in GA4 and SEMrush, produced competitive and audience research, and led content and brand work across non-profit and for-profit teams — consistently turning data into decisions that move traffic, engagement, and ROI.",
     "What sets me apart is the tech side. I don't just brief the tools — I set them up and run them: marketing websites, local-SEO landing pages, marketing-automation workflows, conversion tracking, and booking/CRM funnels. That lets me launch a campaign end-to-end and measure exactly what's working, without waiting on a dev queue.",
