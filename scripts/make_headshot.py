@@ -33,11 +33,14 @@ def main() -> int:
     top = int((h - side) * 0.30) if h > w else (h - side) // 2
     im = im.crop((left, top, left + side, top + side))
 
-    im = im.resize((SIZE, SIZE), Image.LANCZOS)
+    # Never upscale — enlarging a smaller source just softens it.
+    target = min(SIZE, side)
+    if target != side:
+        im = im.resize((target, target), Image.LANCZOS)
 
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
-    im.save(OUT, "JPEG", quality=88, optimize=True, progressive=True)
-    print(f"WROTE {OUT}  ({os.path.getsize(OUT)/1024:.0f} KB, {SIZE}x{SIZE}, from {w}x{h})")
+    im.save(OUT, "JPEG", quality=92, optimize=True, progressive=True)
+    print(f"WROTE {OUT}  ({os.path.getsize(OUT)/1024:.0f} KB, {target}x{target}, from {w}x{h})")
     print("Next: set about.headshot = '/assets/headshot.jpg' in src/data/content.ts")
     return 0
 
