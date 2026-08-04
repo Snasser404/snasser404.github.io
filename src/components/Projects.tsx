@@ -1,7 +1,7 @@
 import SectionHeading from './SectionHeading'
 import ProjectCard from './ProjectCard'
 import Reveal from './Reveal'
-import { featuredProjects, webPlatforms } from '../data/content'
+import { featuredProjects, services } from '../data/content'
 
 export default function Projects() {
   return (
@@ -10,25 +10,25 @@ export default function Projects() {
         <SectionHeading
           index="02"
           eyebrow="Selected Work · Clients"
-          title="Websites that market themselves — built and run for clients."
+          title="Marketing programs I've run for clients."
         />
 
-        {/* Website development — the "how", customer-facing */}
+        {/* What I take on — customer-facing */}
         <Reveal>
           <p className="work-lead">
-            I build the website on whatever platform fits your business — then handle the SEO, GEO, tracking, and lead
-            funnels that make it actually perform.
+            I take on the marketing function end to end — strategy and research, the campaigns that run off
+            it, the reporting that proves what worked, and the commercial growth work around it.
           </p>
         </Reveal>
-        <div className="web-platforms">
-          {webPlatforms.map((p, i) => (
-            <Reveal key={p.name} delay={(i % 3) * 0.06}>
-              <div className="web-card card">
-                <span className="web-card-name" style={{ color: p.accent }}>
-                  {p.name}
+        <div className="service-grid">
+          {services.map((s, i) => (
+            <Reveal key={s.name} delay={(i % 4) * 0.06}>
+              <div className="service-card card">
+                <span className="service-card-name" style={{ color: s.accent }}>
+                  {s.name}
                 </span>
-                <p>{p.blurb}</p>
-                {p.example && <span className="web-card-eg">{p.example}</span>}
+                <p>{s.blurb}</p>
+                {s.example && <span className="service-card-eg">{s.example}</span>}
               </div>
             </Reveal>
           ))}

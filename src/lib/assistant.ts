@@ -83,7 +83,7 @@ const intents: Intent[] = [
     keys: ['experience', 'work history', 'background', 'career', 'worked', 'employment', 'roles', 'jobs'],
     answer:
       `Nasser has **four years in digital marketing** across non-profit and for-profit teams:<br>` +
-      `• **Manara Digital** — Digital Marketing & Insights Consultant (2023–present): competitive reviews and audience research for small-business and non-profit clients, plus the websites, SEO/GEO, tracking and automation behind their campaigns.<br>` +
+      `• **Manara Digital** — Digital Marketing & Insights Consultant (2023–present): manages end-to-end marketing for small-business and non-profit clients — strategy and competitive research, campaigns, local SEO/GEO, retention and reputation, and the reporting behind it.<br>` +
       `• **GlobalDWS** — Digital Marketing Specialist (2023–24): led a team of 3, built a new company website end-to-end, and grew social engagement **+50%** and website traffic **+100%**.<br>` +
       `• **Faster Accessories** — Digital Marketing Specialist (2022–23): **+40%** traffic via SEO; ran PPC that cut CPC **20%** and lifted CTR **25%**.<br>` +
       `• **Ajjerni Rentals** — Data Analyst & Market Research Intern (2021–22): BI reporting that supported **+15% ROI** and **+20%** retention.<br><br>` +
@@ -112,7 +112,7 @@ const intents: Intent[] = [
   {
     keys: ['develop', 'software', 'build', 'code', 'coding', 'programming', 'technical', 'web app', 'apps', 'ai', 'automation', 'martech'],
     answer:
-      `Nasser is a **technical marketer** — a marketer who owns the tools rather than just briefing them. He sets up and runs **marketing automation**, GA4 conversion tracking, CRM and lead funnels, and builds the sites campaigns run on — custom-built, **WordPress**, or **Wix/Shopify** (e.g. a 25+ page local-SEO site for Serene Touch, a Wix booking site for Paradise Wellness). He's also fluent in **GEO (Generative Engine Optimization)** — getting brands cited in AI answers from ChatGPT, Perplexity, and Google AI Overviews, not just classic SEO. To be clear on scope: he's a marketing professional with strong technical fluency, not a software engineer — the value is launching and measuring campaigns end-to-end without waiting on a dev queue.`,
+      `Nasser is a **technical marketer** — a marketer who owns the tools rather than just briefing them. He sets up and runs **marketing automation**, GA4 conversion tracking, CRM and lead funnels, and manages the web presence campaigns run on (WordPress, Wix/Shopify, or custom). He's also fluent in **GEO (Generative Engine Optimization)** — getting brands cited in AI answers from ChatGPT, Perplexity, and Google AI Overviews, not just classic SEO. To be clear on scope: he's a marketing professional with strong technical fluency, not a software engineer — the value is launching and measuring campaigns end-to-end without waiting on a dev queue.`,
   },
   {
     keys: ['education', 'degree', 'study', 'studied', 'university', 'school', 'certif', 'qualif', 'nanodegree', 'credential'],

@@ -52,7 +52,7 @@ export const about = {
     { value: '+100%', label: 'Website traffic', sub: 'doubled at GlobalDWS' },
     { value: '+40%', label: 'SEO traffic', sub: 'in 5 months' },
     { value: '−20%', label: 'Cost-per-click', sub: 'on paid search' },
-    { value: '4+', label: 'Client builds', sub: 'web · SEO · automation' },
+    { value: '4+', label: 'Client engagements', sub: 'strategy · campaigns · growth' },
   ],
 }
 
@@ -63,95 +63,100 @@ export const about = {
 export const featuredProjects: Project[] = [
   {
     name: 'Wai Nui Outrigger Canoe Club',
-    category: 'Research & Insights',
+    category: 'Marketing Strategy & Research',
     accent: '#0891b2',
     status: 'Completed',
     client: true,
     blurb:
-      'A full marketing and website audit for an Oakville community sports club — competitor benchmarking, an SEO and content review, and a member-journey analysis, distilled into a prioritized 90-day action plan a volunteer-run board could actually execute.',
-    techStack: ['Competitive benchmarking', 'Audience & member research', 'SEO / content audit', 'Journey mapping', '90-day roadmap'],
+      'A full marketing audit for an Oakville community sports club — competitor benchmarking, an audience and content review, and a member-journey analysis, distilled into a prioritized 90-day marketing plan a volunteer-run board could actually execute.',
+    techStack: ['Competitive benchmarking', 'Audience & member research', 'Content & channel audit', 'Journey mapping', '90-day roadmap'],
     highlights: [
       'Competitor benchmarking against comparable clubs and community-sport organizations',
       'Member-journey analysis from first search through to signup and retention',
-      'SEO, content, and site-structure review tied to how prospective members actually search',
-      'Findings prioritized into a 90-day action plan, sized for a volunteer team',
+      'Content, channel, and search review tied to how prospective members actually look for a club',
+      'Findings prioritized into a 90-day marketing plan, sized for a volunteer team',
     ],
   },
   {
     name: 'Serene Touch Pest Control',
-    category: 'Local SEO · Web · Lead Gen',
+    category: 'Local Marketing & Lead Generation',
     accent: '#2ECC71',
-    status: 'Completed · Live',
+    status: 'Completed',
     client: true,
     blurb:
-      'Built the full digital presence for a Toronto-area pest-control business — a fast marketing site, 20+ location-targeted SEO landing pages, GA4 conversion tracking, and a booking/lead funnel that turns local searches into booked jobs.',
-    techStack: ['Custom-built site', 'Local SEO', 'GA4 + tracking', 'Lead funnel', 'Google Business', 'Schema markup'],
+      'Ran the local marketing program for a Toronto-area pest-control business — search strategy across 20+ service areas, Google Business and reputation management, content and campaign planning, and reporting that ties every enquiry back to its source.',
+    techStack: ['Local SEO strategy', 'Google Business', 'Content planning', 'Lead generation', 'Campaign management', 'GA4 reporting'],
     highlights: [
-      '25+ pages indexed; 20+ city-specific landing pages targeting GTA "pest control near me" searches',
-      'GA4 + event tracking wired to measure calls, form fills, and bookings',
-      'LocalBusiness + FAQ schema for rich results, Google Business, and AI-answer (GEO) readiness',
-      'A booking & lead funnel connecting search traffic to scheduled service',
+      'Local search strategy across 20+ GTA service areas, aimed at high-intent "near me" demand',
+      'Google Business Profile and review management to strengthen local visibility and trust',
+      'Conversion tracking so calls, form fills, and bookings are attributed to the right channel',
+      'Ongoing reporting and optimization measured against enquiry volume',
     ],
     live: 'https://serenetouch.ca/',
   },
   {
     name: 'BarberBook',
-    category: 'Booking & Retention',
+    category: 'Client Marketing & Retention',
     accent: '#6C5CE7',
     status: 'Completed',
     client: true,
     blurb:
-      'An online booking and customer-retention solution for a barbershop — 24/7 self-serve booking, automated reminders to cut no-shows, and a reviews/SEO loop to grow local visibility.',
-    techStack: ['Custom booking platform', 'Online booking', 'Automated reminders', 'Reviews / SEO', 'Mobile-first'],
+      'Marketing and customer-retention program for a barbershop — a promotions calendar built around demand, reputation and review management, and a follow-up journey designed to turn first visits into repeat bookings and cut no-shows.',
+    techStack: ['Local marketing', 'Promotions & offers', 'Reputation management', 'Retention campaigns', 'Customer comms'],
     highlights: [
-      'Self-serve 24/7 booking that captures appointments outside business hours',
-      'Automated SMS/email reminders designed to reduce no-shows',
-      'Review-generation + local-SEO loop to lift discovery and trust',
-      'Mobile-first flow built around how clients actually book',
+      'Promotions and offers calendar planned around peak and quiet periods',
+      'Review and reputation strategy to improve local discovery and trust',
+      'Automated reminders and follow-ups to reduce no-shows and win back lapsed clients',
+      'Retention journey turning first-time visits into repeat bookings',
     ],
   },
   {
     name: 'Paradise Wellness',
-    category: 'Spa · Booking & Growth',
+    category: 'Spa Marketing & Business Growth',
     accent: '#FF7AB6',
     status: 'Completed',
     client: true,
     blurb:
-      'Digital presence and booking growth for a Mississauga spa — an online booking funnel with memberships and promotions, plus the local marketing and analytics to keep the calendar full.',
-    techStack: ['Built on Wix', 'Online booking', 'Memberships / promos', 'Local marketing', 'GA4', 'Email'],
+      'Marketing and growth management for a Mississauga spa — membership and package campaigns, local customer acquisition, seasonal promotions, and reporting on what actually fills the calendar, including input on how the membership offer was packaged and priced.',
+    techStack: ['Local marketing', 'Membership campaigns', 'Promotions & packages', 'Email marketing', 'Business development', 'GA4 reporting'],
     highlights: [
-      'Online booking funnel with memberships, packages, and promo codes',
-      'Service catalog and scheduling for a 7-day, multi-room operation',
-      'Local marketing + analytics to drive and measure bookings',
-      'Handed over live, with the business able to run it day-to-day',
+      'Membership and package campaigns to lift repeat visits and prepaid revenue',
+      'Local acquisition marketing across search, social, and Google Business',
+      'Email and seasonal promotional campaigns tied to demand cycles',
+      'Booking and campaign reporting used to steer where budget went next',
     ],
   },
 ]
 
-/* ---- Website development — the platforms I build on, customer-facing ----
-   I build (and market) the site on whatever fits the business. */
-export type WebPlatform = { name: string; blurb: string; example?: string; accent: string }
+/* ---- What I take on for a client, customer-facing ---- */
+export type ServiceArea = { name: string; blurb: string; example?: string; accent: string }
 
-export const webPlatforms: WebPlatform[] = [
+export const services: ServiceArea[] = [
   {
-    name: 'Fully custom',
-    accent: '#2ECC71',
+    name: 'Marketing strategy',
+    accent: '#0891b2',
     blurb:
-      'A bespoke site built from scratch rather than a template — fast-loading, on-brand, and structured around SEO from day one. Best when you want something that looks like nobody else and ranks.',
-    example: 'e.g. Serene Touch — a 31-page local-SEO website',
+      'Positioning, audience and competitor research, and a channel plan sized to the budget — so spend goes where it actually returns instead of everywhere at once.',
+    example: 'e.g. Wai Nui — audit to 90-day plan',
   },
   {
-    name: 'WordPress',
+    name: 'Campaign management',
     accent: '#4f46e5',
     blurb:
-      'Flexible, content-rich sites you and your team can update yourselves — blog, service pages, plugins, forms, and lead capture without touching code.',
+      'Day-to-day ownership of search, paid, social, content, and email — planned, launched, optimized, and reported on, so campaigns keep improving rather than just running.',
   },
   {
-    name: 'Wix & Shopify',
-    accent: '#FF7AB6',
+    name: 'Analytics & reporting',
+    accent: '#7c3aed',
     blurb:
-      'Quick, budget-friendly launches and online stores you can manage day-to-day — the fastest way to get a polished, working site live.',
-    example: 'e.g. Paradise Wellness — spa booking site',
+      'Tracking set up properly, then plain-English reporting that answers what worked, what it cost, and what to do next month.',
+  },
+  {
+    name: 'Growth & business development',
+    accent: '#0d9488',
+    blurb:
+      'Offers, promotions, memberships, retention, and reputation — the commercial side of marketing that turns first-time customers into repeat revenue.',
+    example: 'e.g. Paradise Wellness — membership campaigns',
   },
 ]
 
@@ -301,9 +306,9 @@ export const experience: Experience[] = [
     bullets: [
       'Deliver competitive reviews and audience research for small-business and non-profit clients, turning category and consumer findings into prioritized, budget-aware recommendations.',
       'Produced a full marketing and website audit for an Oakville community sports club — competitor benchmarking, SEO review, and member-journey analysis distilled into a 90-day action plan.',
-      'Build and run the marketing technology behind campaigns: websites, local SEO & GEO, GA4 event tracking, booking and lead funnels, and marketing automation.',
+      'Manage end-to-end marketing programs for clients — strategy, local SEO and GEO, campaigns, promotions, and reputation management — plus the tracking and automation that measure them.',
       'Build recurring reporting in Excel and Power BI, using Python and AI automation to cut manual data-preparation time.',
-      'Client engagements span pest control (Serene Touch), wellness/spa (Paradise Wellness), and personal services (BarberBook).',
+      'Client engagements span pest control (Serene Touch), wellness/spa (Paradise Wellness), personal services (BarberBook), and non-profit sport (Wai Nui) — covering strategy, campaign management, retention, and business development.',
     ],
   },
   {

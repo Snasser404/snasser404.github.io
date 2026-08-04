@@ -39,9 +39,10 @@ campaigns can be launched, tracked, and measured end to end without waiting on a
 ## Experience
 
 - **Manara Digital** — Digital Marketing & Insights Consultant, Toronto (2023–present).
-  Competitive reviews and audience research for small-business and non-profit clients;
-  builds the websites, SEO/GEO, GA4 tracking, funnels, and automation behind their
-  campaigns; recurring reporting in Excel and Power BI.
+  Manages end-to-end marketing programs for small-business and non-profit clients —
+  strategy, competitive and audience research, campaigns, local SEO/GEO, promotions,
+  retention and reputation — plus the GA4 tracking and recurring Excel/Power BI reporting
+  behind them.
 - **GlobalDWS** — Digital Marketing Specialist, North York, Ontario (June 2023–July 2024).
   Grew social engagement 50% and website traffic 100%; led a cross-functional team of three;
   delivered a new corporate website end to end; wrote case studies used as thought leadership.
@@ -54,15 +55,17 @@ campaigns can be launched, tracked, and measured end to end without waiting on a
 
 ## Selected client work (completed)
 
-- **Wai Nui Outrigger Canoe Club** — research and insights: competitor benchmarking, SEO and
-  content review, member-journey analysis, delivered as a prioritized 90-day action plan.
-- **Serene Touch Pest Control** — custom-built marketing site with 20+ location-targeted local
-  SEO pages, GA4 conversion tracking, schema markup, and a booking/lead funnel. Live at
-  https://serenetouch.ca
-- **BarberBook** — online booking and customer-retention solution for a barbershop: 24/7
-  self-serve booking, automated reminders to reduce no-shows, reviews and local SEO loop.
-- **Paradise Wellness** — booking funnel with memberships and promotions for a Mississauga
-  spa, plus the local marketing and analytics behind it.
+- **Wai Nui Outrigger Canoe Club** — marketing strategy and research: competitor benchmarking,
+  audience and content review, member-journey analysis, delivered as a prioritized 90-day
+  marketing plan.
+- **Serene Touch Pest Control** — local marketing and lead generation: search strategy across
+  20+ GTA service areas, Google Business and reputation management, campaign planning, and
+  conversion reporting. Live at https://serenetouch.ca
+- **BarberBook** — client marketing and retention for a barbershop: promotions calendar,
+  reputation and review management, and a follow-up journey to reduce no-shows and drive
+  repeat visits.
+- **Paradise Wellness** — spa marketing and business growth: membership and package campaigns,
+  local customer acquisition, seasonal promotions, and booking performance reporting.
 
 ## Education and certifications
 
