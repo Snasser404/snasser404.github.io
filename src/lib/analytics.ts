@@ -20,7 +20,7 @@
      scroll_depth           — 25 / 50 / 75 / 90 % of the page reached
    ============================================================ */
 
-export const GA4_MEASUREMENT_ID = '' // e.g. 'G-XXXXXXXXXX'
+export const GA4_MEASUREMENT_ID = 'G-NJ992HNVP4'
 export const GTM_CONTAINER_ID = '' // e.g. 'GTM-XXXXXXX'  (optional)
 
 type Params = Record<string, string | number | boolean>
