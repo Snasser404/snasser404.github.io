@@ -2,11 +2,13 @@ import { useRef } from 'react'
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
 import type { Project } from '../data/content'
 import ProjectVisual from './ProjectVisual'
+import { useContent } from '../lib/i18n'
 import { ArrowUpRight, Lock } from './icons'
 
 const SSR = typeof window === 'undefined'
 
 export default function ProjectCard({ project, index }: { project: Project; index: number }) {
+  const { ui } = useContent()
   const ref = useRef<HTMLDivElement>(null)
   const mx = useMotionValue(0)
   const my = useMotionValue(0)
@@ -58,7 +60,7 @@ export default function ProjectCard({ project, index }: { project: Project; inde
 
         <h3 style={{ fontFamily: 'var(--font-sans)', fontSize: '1.5rem', fontWeight: 600, margin: '0.7rem 0 0', letterSpacing: '-0.01em' }}>
           {project.name}
-          {project.client && <span className="client-tag">Client</span>}
+          {project.client && <span className="client-tag">{ui.work.clientTag}</span>}
         </h3>
 
         <p style={{ marginTop: 10, color: 'var(--text-soft)', fontSize: '0.95rem', lineHeight: 1.6 }}>{project.blurb}</p>
@@ -85,12 +87,12 @@ export default function ProjectCard({ project, index }: { project: Project; inde
         <div className="project-links">
           {project.live && (
             <a href={project.live} target="_blank" rel="noopener noreferrer" className="proj-link primary" style={{ color: accent }}>
-              Live site <ArrowUpRight width={15} height={15} />
+              {ui.work.liveSite} <ArrowUpRight width={15} height={15} />
             </a>
           )}
           {!project.live && (
             <span className="proj-link" style={{ color: 'var(--text-dim)', cursor: 'default' }}>
-              <Lock width={14} height={14} /> Case study on request
+              <Lock width={14} height={14} /> {ui.work.caseStudyOnRequest}
             </span>
           )}
         </div>

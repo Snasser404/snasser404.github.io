@@ -367,3 +367,106 @@ export const navItems = [
   { id: 'experience', label: 'Experience' },
   { id: 'contact', label: 'Contact' },
 ]
+
+/* ---- UI strings (everything not covered by the data above) ----
+   Mirrored 1:1 in content.ar.ts — keep the two in sync when editing. */
+export const ui = {
+  /** Document <title> / meta description. The prerendered HTML keeps the
+      English pair — this only swaps them for a visitor who picks Arabic. */
+  meta: {
+    title: 'Nasser Saleh — Digital Marketing & MarTech Specialist',
+    description:
+      'Toronto-based digital marketing & MarTech specialist. SEO & GEO, paid search, GA4 analytics, marketing automation, and the websites and funnels behind them.',
+  },
+
+  langName: 'English',
+  langSwitchTo: 'العربية',
+  langSwitchLabel: 'Switch language to Arabic',
+
+  nav: { menu: 'Menu', resume: 'Resume', downloadResume: 'Download Resume', backToTop: 'Back to top' },
+
+  hero: {
+    availability: 'Available for work',
+    viewWork: 'View my work',
+    getInTouch: 'Get in touch',
+    scrollDown: 'Scroll down',
+  },
+
+  about: {
+    eyebrow: 'About',
+    title: 'A marketer who owns the tools, not just the brief.',
+    pillMarketing: 'Marketing',
+    pillMartech: 'MarTech & Data',
+  },
+
+  work: {
+    eyebrow: 'Selected Work · Clients',
+    title: "Marketing programs I've run for clients.",
+    lead: 'I take on the marketing function end to end — strategy and research, the campaigns that run off it, the reporting that proves what worked, and the commercial growth work around it.',
+    subhead: 'Selected client work',
+    clientTag: 'Client',
+    liveSite: 'Live site',
+    caseStudyOnRequest: 'Case study on request',
+  },
+
+  campaigns: {
+    eyebrow: 'Campaigns & Results',
+    title: 'Campaigns and creative that moved the numbers.',
+    designTitle: 'Design & Content',
+    designLead: 'Creative I produce across the funnel — selected samples available on request.',
+    samplesOnRequest: 'Samples on request',
+  },
+
+  skills: { eyebrow: 'Skills & Stack', title: "A marketer's toolkit, backed by data & tech." },
+
+  experience: { eyebrow: 'Experience', title: 'Where the marketing results were made.' },
+
+  education: {
+    eyebrow: 'Education & Certifications',
+    title: 'Credentials across marketing, AI, and data.',
+    certificate: 'Certificate',
+    degree: 'Degree',
+    university: 'University',
+  },
+
+  contact: {
+    eyebrow: 'Contact',
+    title: "Let's build something worth marketing.",
+    intro: "Open to marketing, insights, and MarTech roles in Toronto. Drop a line and I'll get back to you quickly.",
+    calloutStrong: 'Want a fast read on fit?',
+    calloutBody:
+      "Open the assistant in the corner — ask anything about my background, or paste a job description and it'll tell you how well I match and where I'm strong.",
+    name: 'Name',
+    email: 'Email',
+    message: 'Message',
+    namePlaceholder: 'Your name',
+    emailPlaceholder: 'you@example.com',
+    messagePlaceholder: 'What are you building?',
+    send: 'Send message',
+    sending: 'Sending…',
+    sentButton: 'Message ready ✓',
+    errName: 'Please enter your name.',
+    errEmail: 'Please enter your email.',
+    errEmailInvalid: 'Please enter a valid email address.',
+    errMessage: 'Please add a short message.',
+    sentOk: 'Thanks! Your message was sent.',
+    sentMailto: 'Thanks! Your email app should have opened — if not, write to',
+    sendFailed: 'Something went wrong. Please email me directly at',
+    letsTalk: "Let's talk",
+  },
+
+  assistant: {
+    launcher: 'Ask about me',
+    open: "Open Nasser's assistant",
+    title: "Nasser's Assistant",
+    subtitle: 'Ask anything · or paste a job description',
+    close: 'Close',
+    send: 'Send',
+    placeholder: 'Ask about Nasser, or paste a job description…',
+    placeholderJD: 'Paste the job description…',
+    footLocal: "Automated assistant · answers from Nasser's resume",
+    footAI: "AI assistant · answers from Nasser's background",
+  },
+
+  footer: { note: 'Designed, built & optimized in-house. Toronto, Canada.' },
+}

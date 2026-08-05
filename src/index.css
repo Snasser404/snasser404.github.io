@@ -39,9 +39,12 @@
   --radius-sm: 12px;
   --maxw: 1180px;
 
-  --font-sans: 'Space Grotesk Variable', 'Inter Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-body: 'Inter Variable', 'Space Grotesk Variable', system-ui, -apple-system, sans-serif;
-  --font-mono: 'JetBrains Mono Variable', ui-monospace, 'Cascadia Code', Consolas, monospace;
+  /* 'Noto Sans Arabic Variable' is appended to every stack: the Latin faces
+     carry no Arabic glyphs, so the browser falls through to it per-character.
+     That keeps mixed EN/AR strings readable in either language. */
+  --font-sans: 'Space Grotesk Variable', 'Inter Variable', 'Noto Sans Arabic Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-body: 'Inter Variable', 'Space Grotesk Variable', 'Noto Sans Arabic Variable', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, 'Cascadia Code', Consolas, 'Noto Sans Arabic Variable', monospace;
 
   color-scheme: light;
 }
@@ -111,6 +114,15 @@ h1, h2, h3, h4, .section-title, .eyebrow {
     opacity: 0.5;
     transform: translateY(-6%) scale(1.05);
   }
+}
+
+/* Readability vignette over the hero canvas, on whichever side the text sits */
+.hero-vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(72% 85% at 20% 50%, rgba(245, 247, 252, 0.92), rgba(245, 247, 252, 0.55) 52%, transparent 78%);
 }
 
 /* The R3F hero canvas must always fill its backdrop container */
@@ -1277,6 +1289,108 @@ h1, h2, h3, h4, .section-title, .eyebrow {
 .assistant-callout strong {
   color: var(--text);
   font-weight: 600;
+}
+
+/* ---------- Language switcher ---------- */
+.lang-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-inline-start: 6px;
+  padding: 0.5rem 0.8rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.6);
+  color: var(--text-soft);
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.82rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+}
+.lang-toggle:hover {
+  color: var(--electric);
+  border-color: var(--electric);
+  transform: translateY(-1px);
+}
+
+/* ============================================================
+   ARABIC / RTL
+   `lang` and `dir` are set on <html> by LangProvider.
+   ============================================================ */
+
+/* Latin display faces are tuned tight; Arabic needs room to breathe. */
+[lang='ar'] h1,
+[lang='ar'] h2,
+[lang='ar'] h3,
+[lang='ar'] .section-title,
+[lang='ar'] .gradient-text {
+  letter-spacing: 0 !important;
+}
+[lang='ar'] h1 {
+  line-height: 1.22 !important;
+}
+[lang='ar'] .section-title {
+  line-height: 1.35;
+}
+/* Arabic has no uppercase — the tracked-out eyebrow style just looks broken. */
+[lang='ar'] .eyebrow {
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* --- mirrored layout --- */
+[dir='rtl'] .hero-vignette {
+  background: radial-gradient(72% 85% at 80% 50%, rgba(245, 247, 252, 0.92), rgba(245, 247, 252, 0.55) 52%, transparent 78%);
+}
+@media (min-width: 861px) {
+  [dir='rtl'] .hero-scene {
+    transform: translateX(-16%);
+  }
+}
+
+[dir='rtl'] .project-highlights li {
+  padding-left: 0;
+  padding-right: 1.3rem;
+}
+[dir='rtl'] .hl-dot {
+  left: auto;
+  right: 0;
+}
+[dir='rtl'] .client-tag {
+  margin-left: 0;
+  margin-right: 10px;
+}
+[dir='rtl'] .job-bullets {
+  padding-left: 0;
+  padding-right: 1.1rem;
+}
+
+/* Fixed-position overlays don't follow `direction` — flip them by hand. */
+[dir='rtl'] .fab-stack {
+  right: auto;
+  left: clamp(16px, 3vw, 28px);
+}
+[dir='rtl'] .assistant-launcher,
+[dir='rtl'] .assistant-panel {
+  left: auto;
+  right: clamp(16px, 3vw, 28px);
+}
+[dir='rtl'] .assistant-launcher {
+  padding: 0.7rem 0.95rem 0.7rem 1.1rem;
+}
+[dir='rtl'] .assistant-launcher-dot {
+  right: auto;
+  left: 12px;
+}
+[dir='rtl'] .bubble-bot {
+  border-bottom-left-radius: 14px;
+  border-bottom-right-radius: 5px;
+}
+[dir='rtl'] .bubble-user {
+  border-bottom-right-radius: 14px;
+  border-bottom-left-radius: 5px;
 }
 
 /* Respect reduced motion */

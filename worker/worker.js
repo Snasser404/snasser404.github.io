@@ -48,6 +48,11 @@ RULES:
 - If someone pastes a job description, assess fit: say whether it reads as a marketing / software / hybrid role, list Nasser's matching strengths, note any honest gaps, and suggest emailing him. Be encouraging but truthful — never overstate.
 - If you don't know something, say so and point them to the resume or email. Encourage reaching out when there's genuine interest.`
 
+// Appended when the visitor is reading the site in Arabic.
+const ARABIC_INSTRUCTION = `
+
+LANGUAGE: The visitor is reading this site in Arabic. Reply in Modern Standard Arabic (فصحى معاصرة), clear and professional. Keep proper nouns, tool names, and company names in their original Latin script (GA4, SEMrush, GlobalDWS, WordPress, ChatGPT…). If the visitor writes to you in English, answer in English instead — always match the language of their message.`
+
 function corsHeaders(origin, allowed) {
   const h = {
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
@@ -134,6 +139,9 @@ export default {
     let messages = Array.isArray(body && body.messages) ? body.messages : null
     if (!messages || messages.length === 0) return json({ error: 'no_messages' }, 400, cors)
 
+    // Site language — only 'ar' changes anything; anything else means English.
+    const system = body && body.lang === 'ar' ? SYSTEM_PROMPT + ARABIC_INSTRUCTION : SYSTEM_PROMPT
+
     // 4) Input caps — sanitize, clamp count + length
     messages = messages
       .filter((m) => m && (m.role === 'user' || m.role === 'assistant') && typeof m.content === 'string')
@@ -160,7 +168,7 @@ export default {
         body: JSON.stringify({
           model: MODEL,
           max_tokens: MAX_OUTPUT_TOKENS,
-          system: SYSTEM_PROMPT,
+          system,
           messages,
         }),
       })

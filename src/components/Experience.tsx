@@ -1,12 +1,13 @@
 import Reveal from './Reveal'
 import SectionHeading from './SectionHeading'
-import { experience } from '../data/content'
+import { useContent } from '../lib/i18n'
 
 export default function Experience() {
+  const { experience, ui } = useContent()
   return (
     <section id="experience" className="section" style={{ paddingTop: 0 }}>
       <div className="container-x">
-        <SectionHeading index="05" eyebrow="Experience" title="Where the marketing results were made." />
+        <SectionHeading index="05" eyebrow={ui.experience.eyebrow} title={ui.experience.title} />
         <div className="timeline">
           {experience.map((job, i) => (
             <Reveal key={job.company} delay={i * 0.08}>

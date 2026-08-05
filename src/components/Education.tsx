@@ -1,12 +1,13 @@
 import Reveal from './Reveal'
 import SectionHeading from './SectionHeading'
-import { education } from '../data/content'
+import { useContent } from '../lib/i18n'
 
 export default function Education() {
+  const { education, ui } = useContent()
   return (
     <section id="education" className="section" style={{ paddingTop: 0 }}>
       <div className="container-x">
-        <SectionHeading index="06" eyebrow="Education & Certifications" title="Credentials across marketing, AI, and data." />
+        <SectionHeading index="06" eyebrow={ui.education.eyebrow} title={ui.education.title} />
         <div className="edu-grid">
           {education.map((c, i) => (
             <Reveal key={c.title} delay={(i % 3) * 0.05}>
@@ -19,7 +20,7 @@ export default function Education() {
                       color: c.kind === 'cert' ? 'var(--violet)' : 'var(--cyan)',
                     }}
                   >
-                    {c.kind === 'cert' ? 'Certificate' : c.kind === 'study' ? 'University' : 'Degree'}
+                    {c.kind === 'cert' ? ui.education.certificate : c.kind === 'study' ? ui.education.university : ui.education.degree}
                   </span>
                   <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: 'var(--text-dim)' }}>{c.year}</span>
                 </div>

@@ -1,6 +1,6 @@
 import { Suspense, lazy, useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { profile } from '../data/content'
+import { useContent } from '../lib/i18n'
 import { ArrowDown, ArrowUpRight, Sparkle } from './icons'
 
 // Lazy-load the WebGL scene so first paint isn't blocked by Three.js.
@@ -18,6 +18,7 @@ const item = {
 }
 
 export default function Hero() {
+  const { profile, ui } = useContent()
   const go = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
 
   /* Hold the WebGL scene back until the page is painted and idle. It's
@@ -75,17 +76,8 @@ export default function Hero() {
           </Suspense>
         )}
       </div>
-      {/* readability vignette over the canvas, on the text side */}
-      <div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          zIndex: 1,
-          pointerEvents: 'none',
-          background:
-            'radial-gradient(72% 85% at 20% 50%, rgba(245,247,252,0.92), rgba(245,247,252,0.55) 52%, transparent 78%)',
-        }}
-      />
+      {/* readability vignette over the canvas, on the text side (flips in RTL) */}
+      <div className="hero-vignette" />
 
       <motion.div
         className="container-x"
@@ -96,7 +88,7 @@ export default function Hero() {
       >
         <motion.div variants={item} style={{ marginBottom: 22 }}>
           <span className="chip" style={{ borderColor: 'rgba(34,211,238,0.4)', color: 'var(--text)' }}>
-            <Sparkle width={14} height={14} style={{ color: 'var(--cyan)' }} /> {profile.location} · Available for work
+            <Sparkle width={14} height={14} style={{ color: 'var(--cyan)' }} /> {profile.location} · {ui.hero.availability}
           </span>
         </motion.div>
 
@@ -138,10 +130,10 @@ export default function Hero() {
 
         <motion.div variants={item} style={{ marginTop: 30, display: 'flex', gap: 14, flexWrap: 'wrap' }}>
           <button onClick={() => go('work')} className="btn btn-primary">
-            View my work <ArrowUpRight width={16} height={16} />
+            {ui.hero.viewWork} <ArrowUpRight width={16} height={16} />
           </button>
           <button onClick={() => go('contact')} className="btn btn-ghost">
-            Get in touch
+            {ui.hero.getInTouch}
           </button>
         </motion.div>
 
@@ -156,7 +148,7 @@ export default function Hero() {
       {/* scroll cue */}
       <motion.button
         onClick={() => go('about')}
-        aria-label="Scroll down"
+        aria-label={ui.hero.scrollDown}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.4 }}

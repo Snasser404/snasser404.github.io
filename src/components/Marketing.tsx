@@ -1,16 +1,13 @@
 import Reveal from './Reveal'
 import SectionHeading from './SectionHeading'
-import { marketingProjects, designGallery } from '../data/content'
+import { useContent } from '../lib/i18n'
 
 export default function Marketing() {
+  const { marketingProjects, designGallery, ui } = useContent()
   return (
     <section id="marketing" className="section" style={{ paddingTop: 0 }}>
       <div className="container-x">
-        <SectionHeading
-          index="03"
-          eyebrow="Campaigns & Results"
-          title="Campaigns and creative that moved the numbers."
-        />
+        <SectionHeading index="03" eyebrow={ui.campaigns.eyebrow} title={ui.campaigns.title} />
 
         {/* Case studies */}
         <div className="mkt-grid">
@@ -66,10 +63,8 @@ export default function Marketing() {
         {/* Design & content gallery (placeholders to fill) */}
         <Reveal>
           <div className="design-head">
-            <h3 style={{ fontFamily: 'var(--font-sans)', fontSize: '1.3rem', fontWeight: 600, margin: 0 }}>Design & Content</h3>
-            <span style={{ fontSize: '0.86rem', color: 'var(--text-dim)' }}>
-              Creative I produce across the funnel — selected samples available on request.
-            </span>
+            <h3 style={{ fontFamily: 'var(--font-sans)', fontSize: '1.3rem', fontWeight: 600, margin: 0 }}>{ui.campaigns.designTitle}</h3>
+            <span style={{ fontSize: '0.86rem', color: 'var(--text-dim)' }}>{ui.campaigns.designLead}</span>
           </div>
         </Reveal>
 
@@ -84,7 +79,7 @@ export default function Marketing() {
                     <span className="design-tile-badge">{tile.label[0]}</span>
                     <span className="design-tile-label">{tile.label}</span>
                     <span className="design-tile-tag">{tile.tag}</span>
-                    <span className="design-tile-req">Samples on request</span>
+                    <span className="design-tile-req">{ui.campaigns.samplesOnRequest}</span>
                   </>
                 )}
               </div>

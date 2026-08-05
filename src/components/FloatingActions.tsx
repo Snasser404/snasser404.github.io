@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
+import { useContent } from '../lib/i18n'
 import { Mail } from './icons'
 
 function ArrowUp() {
@@ -12,6 +13,7 @@ function ArrowUp() {
 
 /** Floating quick-actions: jump to Contact, and back to top. Appear after scrolling. */
 export default function FloatingActions() {
+  const { ui } = useContent()
   const [show, setShow] = useState(false)
 
   useEffect(() => {
@@ -34,10 +36,10 @@ export default function FloatingActions() {
           exit={{ opacity: 0, y: 20, scale: 0.9 }}
           transition={{ duration: 0.3, ease: [0.21, 0.47, 0.32, 0.98] }}
         >
-          <button className="btn btn-primary fab-contact" onClick={toContact} aria-label="Jump to contact">
-            <Mail width={16} height={16} /> Let's talk
+          <button className="btn btn-primary fab-contact" onClick={toContact} aria-label={ui.contact.letsTalk}>
+            <Mail width={16} height={16} /> {ui.contact.letsTalk}
           </button>
-          <button className="fab-top" onClick={toTop} aria-label="Back to top">
+          <button className="fab-top" onClick={toTop} aria-label={ui.nav.backToTop}>
             <ArrowUp />
           </button>
         </motion.div>

@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { navItems, profile } from '../data/content'
+import { useContent } from '../lib/i18n'
+import LangToggle from './LangToggle'
 import { track } from '../lib/analytics'
 import { Download } from './icons'
 
 const SSR = typeof window === 'undefined'
 
 export default function Nav() {
+  const { navItems, profile, ui } = useContent()
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
 
@@ -66,8 +68,8 @@ export default function Nav() {
           >
             NS
           </span>
-          <span style={{ fontFamily: 'var(--font-sans)', fontWeight: 600, letterSpacing: '-0.01em', color: 'var(--text)' }}>
-            Nasser&nbsp;Saleh
+          <span style={{ fontFamily: 'var(--font-sans)', fontWeight: 600, letterSpacing: '-0.01em', color: 'var(--text)', whiteSpace: 'nowrap' }}>
+            {profile.name}
           </span>
         </button>
 
@@ -84,14 +86,15 @@ export default function Nav() {
             rel="noopener noreferrer"
             className="btn btn-ghost"
             onClick={() => track('resume_download', { location: 'nav' })}
-            style={{ marginLeft: 12, padding: '0.55rem 1rem', fontSize: '0.85rem' }}
+            style={{ marginInlineStart: 12, padding: '0.55rem 1rem', fontSize: '0.85rem' }}
           >
-            <Download width={15} height={15} /> Resume
+            <Download width={15} height={15} /> {ui.nav.resume}
           </a>
+          <LangToggle />
         </div>
 
         {/* Mobile toggle */}
-        <button className="nav-burger" aria-label="Menu" onClick={() => setOpen((o) => !o)}>
+        <button className="nav-burger" aria-label={ui.nav.menu} onClick={() => setOpen((o) => !o)}>
           <span style={{ transform: open ? 'translateY(5px) rotate(45deg)' : 'none' }} />
           <span style={{ opacity: open ? 0 : 1 }} />
           <span style={{ transform: open ? 'translateY(-5px) rotate(-45deg)' : 'none' }} />
@@ -111,7 +114,7 @@ export default function Nav() {
           >
             <div className="container-x" style={{ display: 'flex', flexDirection: 'column', paddingBlock: 14, gap: 4 }}>
               {navItems.map((item) => (
-                <button key={item.id} onClick={() => go(item.id)} className="nav-link" style={{ textAlign: 'left', padding: '0.7rem 0' }}>
+                <button key={item.id} onClick={() => go(item.id)} className="nav-link" style={{ textAlign: 'start', padding: '0.7rem 0' }}>
                   {item.label}
                 </button>
               ))}
@@ -123,8 +126,11 @@ export default function Nav() {
                 onClick={() => track('resume_download', { location: 'mobile_nav' })}
                 style={{ marginTop: 8, justifyContent: 'center' }}
               >
-                <Download width={15} height={15} /> Download Resume
+                <Download width={15} height={15} /> {ui.nav.downloadResume}
               </a>
+              <div style={{ marginTop: 8 }}>
+                <LangToggle block />
+              </div>
             </div>
           </motion.div>
         )}

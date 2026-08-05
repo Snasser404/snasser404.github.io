@@ -2,18 +2,18 @@ import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import {
   getResponse,
+  getPack,
   askAssistant,
+  formatMarkup,
   formatReply,
   escapeHtml,
-  WELCOME_HTML,
-  SUGGESTIONS,
   ASSISTANT_API_URL,
   type ChatMsg,
   type ApiTurn,
 } from '../lib/assistant'
+import { useContent, useLang } from '../lib/i18n'
 import { track } from '../lib/analytics'
 
-const FIT_PROMPT = 'Check my fit for a role'
 const useAI = !!ASSISTANT_API_URL
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
 
@@ -40,8 +40,13 @@ function SendIcon() {
 }
 
 export default function Assistant() {
+  const { lang } = useLang()
+  const { ui } = useContent()
+  const pack = getPack(lang)
+  const welcome = formatMarkup(pack.welcome)
+
   const [open, setOpen] = useState(false)
-  const [messages, setMessages] = useState<ChatMsg[]>([{ role: 'bot', html: WELCOME_HTML }])
+  const [messages, setMessages] = useState<ChatMsg[]>([{ role: 'bot', html: welcome }])
   const [input, setInput] = useState('')
   const [thinking, setThinking] = useState(false)
   const [pendingJD, setPendingJD] = useState(false)
@@ -52,6 +57,14 @@ export default function Assistant() {
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' })
   }, [messages, thinking, open])
+
+  /* Switching language mid-chat would leave a bilingual transcript the
+     engine can't follow — start the conversation over in the new language. */
+  useEffect(() => {
+    setMessages([{ role: 'bot', html: formatMarkup(getPack(lang).welcome) }])
+    setPendingJD(false)
+    apiHistory.current = []
+  }, [lang])
 
   useEffect(() => {
     if (open) setTimeout(() => inputRef.current?.focus(), 250)
@@ -72,7 +85,7 @@ export default function Assistant() {
 
     if (useAI) {
       try {
-        const reply = await askAssistant(apiHistory.current)
+        const reply = await askAssistant(apiHistory.current, lang)
         apiHistory.current = [...apiHistory.current, { role: 'assistant', content: reply }]
         setThinking(false)
         addBot(formatReply(reply))
@@ -81,20 +94,20 @@ export default function Assistant() {
         const err = e as { status?: number; reply?: string }
         // Worker sent a friendly rate-limit / daily-cap message → show it.
         // Any other failure → fall back to the built-in engine so the bot still answers.
-        addBot(err.reply ? formatReply(err.reply) : getResponse(clean, force))
+        addBot(err.reply ? formatReply(err.reply) : getResponse(clean, force, lang))
       }
     } else {
       await sleep(420) // brief, natural typing pause for the local engine
       setThinking(false)
-      addBot(getResponse(clean, force))
+      addBot(getResponse(clean, force, lang))
     }
   }
 
   const onSuggestion = async (s: string) => {
     if (thinking) return
-    if (s === FIT_PROMPT) {
+    if (s === pack.fitPrompt) {
       setMessages((m) => [...m, { role: 'user', html: escapeHtml(s) }])
-      const promptText = "Sure — paste the **job description** (or just the key requirements) and I'll map them to Nasser's background and assess the fit."
+      const promptText = pack.jdAsk
       apiHistory.current = [
         ...apiHistory.current,
         { role: 'user', content: s },
@@ -129,11 +142,11 @@ export default function Assistant() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 12 }}
             transition={{ duration: 0.25 }}
-            aria-label="Open Nasser's assistant"
+            aria-label={ui.assistant.open}
           >
             <span className="assistant-launcher-dot" />
             <ChatIcon />
-            <span className="assistant-launcher-label">Ask about me</span>
+            <span className="assistant-launcher-label">{ui.assistant.launcher}</span>
           </motion.button>
         )}
       </AnimatePresence>
@@ -148,17 +161,17 @@ export default function Assistant() {
             exit={{ opacity: 0, y: 24, scale: 0.96 }}
             transition={{ duration: 0.28, ease: [0.21, 0.47, 0.32, 0.98] }}
             role="dialog"
-            aria-label="Portfolio assistant"
+            aria-label={ui.assistant.title}
           >
             <header className="assistant-head">
               <div className="assistant-head-id">
                 <span className="assistant-avatar"><ChatIcon /></span>
                 <div>
-                  <div className="assistant-title">Nasser's Assistant</div>
-                  <div className="assistant-sub"><span className="assistant-online" /> Ask anything · or paste a job description</div>
+                  <div className="assistant-title">{ui.assistant.title}</div>
+                  <div className="assistant-sub"><span className="assistant-online" /> {ui.assistant.subtitle}</div>
                 </div>
               </div>
-              <button className="assistant-x" onClick={() => setOpen(false)} aria-label="Close">
+              <button className="assistant-x" onClick={() => setOpen(false)} aria-label={ui.assistant.close}>
                 <CloseIcon />
               </button>
             </header>
@@ -177,7 +190,7 @@ export default function Assistant() {
 
               {messages.length <= 1 && !thinking && (
                 <div className="assistant-suggestions">
-                  {SUGGESTIONS.map((s) => (
+                  {pack.suggestions.map((s) => (
                     <button key={s} className="assistant-chip" onClick={() => onSuggestion(s)}>
                       {s}
                     </button>
@@ -191,15 +204,15 @@ export default function Assistant() {
                 ref={inputRef}
                 rows={1}
                 value={input}
-                placeholder={pendingJD ? 'Paste the job description…' : 'Ask about Nasser, or paste a job description…'}
+                placeholder={pendingJD ? ui.assistant.placeholderJD : ui.assistant.placeholder}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={onKeyDown}
               />
-              <button className="assistant-send" onClick={() => submit(input)} disabled={!input.trim() || thinking} aria-label="Send">
+              <button className="assistant-send" onClick={() => submit(input)} disabled={!input.trim() || thinking} aria-label={ui.assistant.send}>
                 <SendIcon />
               </button>
             </div>
-            <div className="assistant-foot">{useAI ? "AI assistant · answers from Nasser's background" : "Automated assistant · answers from Nasser's resume"}</div>
+            <div className="assistant-foot">{useAI ? ui.assistant.footAI : ui.assistant.footLocal}</div>
           </motion.div>
         )}
       </AnimatePresence>

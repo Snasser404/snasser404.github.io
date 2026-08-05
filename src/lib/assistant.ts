@@ -1,39 +1,44 @@
 import { profile } from '../data/content'
+import { pack as arPack } from './assistant.ar'
 
 /* ============================================================
    PORTFOLIO ASSISTANT — in-browser, no backend, no API key.
    Answers common employer questions about Nasser and analyzes a
    pasted job description for fit. Grounded only in real resume data.
 
-   UPGRADE PATH → real AI: replace the body of getResponse()
-   with a fetch() to a serverless proxy that holds your Anthropic key.
-   See README "AI upgrade" for the Cloudflare Worker snippet.
+   Bilingual: the matching logic lives here, the wording lives in a
+   language "pack" (English below, Arabic in assistant.ar.ts).
+
+   UPGRADE PATH → real AI: set ASSISTANT_API_URL to a serverless
+   proxy that holds the Anthropic key. See worker/SETUP.md.
    ============================================================ */
 
 export type ChatMsg = { role: 'user' | 'bot'; html: string }
+export type Lang = 'en' | 'ar'
 
 const RESUME = `${import.meta.env.BASE_URL}${profile.resume}`
-const EMAIL = profile.email
-const mailto = (subject = 'Opportunity for Nasser') => `mailto:${EMAIL}?subject=${encodeURIComponent(subject)}`
+const EMAIL = 'nassersaleh156@gmail.com'
+export const mailto = (subject = 'Opportunity for Nasser') =>
+  `mailto:${EMAIL}?subject=${encodeURIComponent(subject)}`
 
 /* ---------------------------------------------------------------
    REAL AI — optional upgrade.
    Paste your deployed Cloudflare Worker URL here to switch the
    assistant from the built-in engine to a hosted AI model. Leave it
    empty to keep the free, offline, in-browser engine.
-   See worker/SETUP.md for how to deploy the Worker.
 ----------------------------------------------------------------*/
 export const ASSISTANT_API_URL: string = '' // e.g. 'https://nasser-assistant.<your-subdomain>.workers.dev'
 
 export type ApiTurn = { role: 'user' | 'assistant'; content: string }
 
 /** Calls the AI proxy. Throws an Error with `.status` on failure so the
- *  caller can show a friendly message or fall back to the local engine. */
-export async function askAssistant(history: ApiTurn[]): Promise<string> {
+ *  caller can show a friendly message or fall back to the local engine.
+ *  `lang` tells the Worker which language to answer in. */
+export async function askAssistant(history: ApiTurn[], lang: Lang = 'en'): Promise<string> {
   const res = await fetch(ASSISTANT_API_URL, {
     method: 'POST',
     headers: { 'content-type': 'application/json', 'x-portfolio': '1' },
-    body: JSON.stringify({ messages: history }),
+    body: JSON.stringify({ messages: history, lang }),
   })
   const data = await res.json().catch(() => ({}))
   if (!res.ok) {
@@ -47,7 +52,7 @@ export async function askAssistant(history: ApiTurn[]): Promise<string> {
 
 /** Convert the lightweight markup used in answers (**bold**, [text](url)) to HTML.
  *  <br>/<em> are already HTML and pass through. Content is from this module only. */
-function formatMarkup(s: string): string {
+export function formatMarkup(s: string): string {
   return s
     .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
     .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
@@ -62,103 +67,164 @@ export function formatReply(text: string): string {
     .replace(/\n/g, '<br>')
 }
 
-const WELCOME_RAW =
-  `Hi! 👋 I'm Nasser's assistant. Ask me anything about his background — or **paste a job description** and I'll check how well he fits.<br><br>` +
-  `Try: <em>"What's his experience?"</em> · <em>"What tools does he use?"</em> · <em>"Is he a fit for my role?"</em>`
+/* ---------- shape of a language pack ---------- */
+export type Intent = { keys: string[]; answer: string }
 
-export const WELCOME_HTML = formatMarkup(WELCOME_RAW)
+export type Pack = {
+  welcome: string
+  /** Chips shown before the first question. `fitPrompt` must be one of them. */
+  suggestions: string[]
+  fitPrompt: string
+  /** Bot reply when the visitor picks "check my fit". */
+  jdAsk: string
+  greeting: RegExp
+  greetingPrefix: string
+  intents: Intent[]
+  fallback: string
+  /** Labels for the matched-skill list, in the pack's language. */
+  skillLabels: Record<string, string>
+  jd: {
+    tooFew: string
+    focus: { hybrid: string; marketing: string; technical: string; mixed: string }
+    level: { strong: string; good: string; worth: string }
+    pitch: { hybrid: string; marketing: string; technical: string; mixed: string }
+    intro: string
+    fitLine: (level: string, focus: string) => string
+    matchedHeader: string
+    more: (n: number) => string
+    cta: string
+    note: string
+  }
+}
 
-export const SUGGESTIONS = [
-  'What is his experience?',
-  'What are his skills?',
-  'Check my fit for a role',
-  'How do I contact him?',
-]
+/* ---------- English pack ---------- */
+const enPack: Pack = {
+  welcome:
+    `Hi! 👋 I'm Nasser's assistant. Ask me anything about his background — or **paste a job description** and I'll check how well he fits.<br><br>` +
+    `Try: <em>"What's his experience?"</em> · <em>"What tools does he use?"</em> · <em>"Is he a fit for my role?"</em>`,
+  suggestions: ['What is his experience?', 'What are his skills?', 'Check my fit for a role', 'How do I contact him?'],
+  fitPrompt: 'Check my fit for a role',
+  jdAsk:
+    "Sure — paste the **job description** (or just the key requirements) and I'll map them to Nasser's background and assess the fit.",
+  greeting: /^(hi|hey|hello|yo|sup|good (morning|afternoon|evening))\b/,
+  greetingPrefix: 'Hey! 👋 ',
+  intents: [
+    {
+      keys: ['experience', 'work history', 'background', 'career', 'worked', 'employment', 'roles', 'jobs'],
+      answer:
+        `Nasser has **four years in digital marketing** across non-profit and for-profit teams:<br>` +
+        `• **Manara Digital** — Digital Marketing & Insights Consultant (2023–present): manages end-to-end marketing for small-business and non-profit clients — strategy and competitive research, campaigns, local SEO/GEO, retention and reputation, and the reporting behind it.<br>` +
+        `• **GlobalDWS** — Digital Marketing Specialist (2023–24): led a team of 3, built a new company website end-to-end, and grew social engagement **+50%** and website traffic **+100%**.<br>` +
+        `• **Faster Accessories** — Digital Marketing Specialist (2022–23): **+40%** traffic via SEO; ran PPC that cut CPC **20%** and lifted CTR **25%**.<br>` +
+        `• **Ajjerni Rentals** — Data Analyst & Market Research Intern (2021–22): BI reporting that supported **+15% ROI** and **+20%** retention.<br><br>` +
+        `Full history is in his [resume](${RESUME}).`,
+    },
+    {
+      keys: ['skill', 'tech stack', 'stack', 'technolog', 'tools', 'know how', 'can he do', 'capable', 'proficient'],
+      answer:
+        `Nasser works across **marketing, data, and the tools that connect them**:<br>` +
+        `• **Marketing:** SEO (technical + local) + **GEO** (Generative Engine Optimization — visibility in AI answers), PPC/SEM (Google/Meta/LinkedIn Ads), content & brand, email<br>` +
+        `• **Analytics & data:** GA4, SEMrush, Ahrefs, Tableau, Power BI, A/B testing, reporting<br>` +
+        `• **Websites:** custom-built sites, WordPress, Wix/Shopify, landing pages<br>` +
+        `• **MarTech & automation:** marketing automation, CRM & lead funnels, Mailchimp/Brevo, booking systems, AI content tools<br>` +
+        `• **Technical toolkit:** HTML/CSS, no-code platforms, tracking & tool integrations, Python and SQL for marketing data<br>` +
+        `• **Languages:** English & Arabic`,
+    },
+    {
+      keys: ['result', 'metric', 'achievement', 'impact', 'number', 'kpi', 'roi', 'traffic', 'grew', 'growth'],
+      answer:
+        `A few measurable wins:<br>` +
+        `• **+100%** website traffic & **+50%** social engagement (GlobalDWS)<br>` +
+        `• **+40%** traffic via SEO; **−20%** cost-per-click & **+25%** CTR on paid (Faster Accessories)<br>` +
+        `• **+20%** campaign ROI from budget reallocation; reached **10,000+** prospects<br>` +
+        `• **+15% ROI** and **+20%** customer retention from BI reporting (Ajjerni Rentals)`,
+    },
+    {
+      keys: ['develop', 'software', 'build', 'code', 'coding', 'programming', 'technical', 'web app', 'apps', 'ai', 'automation', 'martech'],
+      answer:
+        `Nasser is a **technical marketer** — a marketer who owns the tools rather than just briefing them. He sets up and runs **marketing automation**, GA4 conversion tracking, CRM and lead funnels, and manages the web presence campaigns run on (WordPress, Wix/Shopify, or custom). He's also fluent in **GEO (Generative Engine Optimization)** — getting brands cited in AI answers from ChatGPT, Perplexity, and Google AI Overviews, not just classic SEO. To be clear on scope: he's a marketing professional with strong technical fluency, not a software engineer — the value is launching and measuring campaigns end-to-end without waiting on a dev queue.`,
+    },
+    {
+      keys: ['education', 'degree', 'study', 'studied', 'university', 'school', 'certif', 'qualif', 'nanodegree', 'credential'],
+      answer:
+        `• **Diploma in IT Management & Data Analytics** — Lebanese American University (2022)<br>` +
+        `• **Generative AI** — Nanodegree, Udacity (2024)<br>` +
+        `• **AI Programming with Python** — Nanodegree, Udacity (2023)<br>` +
+        `• **AI Automation, Ethics & Responsible AI** — BrainStation (2024)<br>` +
+        `• **Digital Marketing & E-commerce** — Google Career Certificate (2022)`,
+    },
+    {
+      keys: ['available', 'availability', 'open to', 'hiring', 'looking for work', 'job search', 'start', 'freelance', 'contract'],
+      answer:
+        `Yes — Nasser is **open to marketing, insights, and MarTech roles in Toronto**. The fastest way to start a conversation is to [email him](${mailto()}) or use the contact form on this page.`,
+    },
+    {
+      keys: ['location', 'based', 'where', 'remote', 'relocat', 'toronto', 'canada', 'timezone'],
+      answer:
+        `Nasser is based in **Toronto, Ontario, Canada**. For specifics on remote/hybrid/relocation, [reach out directly](${mailto()}) — he's happy to discuss what works for the role.`,
+    },
+    {
+      keys: ['language', 'bilingual', 'arabic', 'english', 'speak'],
+      answer: `Nasser is **bilingual in English and Arabic**.`,
+    },
+    {
+      keys: ['why', 'strength', 'stand out', 'unique', 'hire him', 'good fit', 'sell', 'pitch', 'special'],
+      answer:
+        `His edge is being a **marketer who's genuinely technical**. He runs the campaigns *and* builds the MarTech behind them — websites, automation, GA4 tracking, lead funnels — so work ships fast and everything is measurable. Three-plus years of results (doubled traffic, −20% cost-per-click, +20% ROI), with the data and analytics chops to prove it. Bilingual EN/AR, fast-moving, detail-oriented.`,
+    },
+    {
+      keys: ['contact', 'reach', 'email', 'hire', 'get in touch', 'connect', 'linkedin', 'message', 'talk', 'resume', 'cv'],
+      answer:
+        `Easiest ways to reach Nasser:<br>` +
+        `• **Email:** [${EMAIL}](${mailto()})<br>` +
+        `• **LinkedIn:** [linkedin.com/in/nasser-saleh](${profile.linkedin})<br>` +
+        `• **Resume:** [download the PDF](${RESUME})<br>` +
+        `• Or use the **contact form** in the Contact section.`,
+    },
+    {
+      keys: ['salary', 'rate', 'compensation', 'pay', 'budget', 'expectation', 'cost'],
+      answer:
+        `Compensation is best discussed directly — it depends on the role, scope, and arrangement. [Email Nasser](${mailto('Role & compensation')}) and he'll be glad to talk specifics.`,
+    },
+  ],
+  fallback:
+    `I'm best at questions about **Nasser's experience, skills, results, education, availability, and how to reach him** — ` +
+    `or paste a **job description** and I'll check the fit.<br><br>` +
+    `You can also [email him directly](${mailto()}) or [grab his resume](${RESUME}). What would you like to know?`,
+  skillLabels: {}, // English labels are the canonical ones — no remapping needed
+  jd: {
+    tooFew:
+      `I couldn't pick out many overlapping keywords from that. Paste a fuller description (responsibilities + required skills), ` +
+      `or tell me the 3–4 must-haves and I'll map them to Nasser's background. You can also just [email him](${mailto('Role for Nasser')}).`,
+    focus: {
+      hybrid: 'hybrid (marketing + tech)',
+      marketing: 'marketing-focused',
+      technical: 'technical / MarTech',
+      mixed: 'mixed',
+    },
+    level: { strong: 'Strong fit', good: 'Good fit', worth: 'Worth a conversation' },
+    pitch: {
+      hybrid: `This role wants someone who can **market *and* build the tech to execute it** — Nasser's sweet spot. He runs campaigns and owns the MarTech behind them (websites, automation, GA4, lead funnels), so he closes the usual gap between marketing and the tools.`,
+      marketing: `Nasser brings **3+ years of hands-on marketing** — SEO, PPC, GA4 analytics, content & brand — with proven results (doubled site traffic, −20% CPC, +20% ROI). Bonus: he also builds the sites, tracking, and automation behind campaigns, so he executes end-to-end.`,
+      technical: `Nasser is a **marketer with strong technical fluency** — he sets up marketing sites, automation, conversion tracking, and lead funnels himself (HTML/CSS, no-code platforms, tracking integrations, Python and SQL for data). A strong fit for MarTech, marketing-analytics, and insights roles, backed by real campaign experience and measured results.`,
+      mixed: `Nasser pairs **3+ years of measurable marketing** with real **MarTech & data fluency** — a rare build-and-measure combination.`,
+    },
+    intro: `Here's how Nasser lines up with this role 👇`,
+    fitLine: (level, focus) => `**Fit: ${level}** — this reads like a **${focus}** role.`,
+    matchedHeader: `**Matched strengths** (found in your description):`,
+    more: (n) => ` …and ${n} more`,
+    cta: `Want to take it further? [Email Nasser](${mailto('Role that fits Nasser')}) or [download his resume](${RESUME}).`,
+    note: `<em>Note: this is an automated keyword check — Nasser will give you the real, detailed answer.</em>`,
+  },
+}
 
-/* ---------- intent knowledge base (grounded in the resume) ---------- */
-type Intent = { keys: string[]; answer: string }
+export const PACKS: Record<Lang, Pack> = { en: enPack, ar: arPack }
+export const getPack = (lang: Lang = 'en'): Pack => PACKS[lang] ?? enPack
 
-const intents: Intent[] = [
-  {
-    keys: ['experience', 'work history', 'background', 'career', 'worked', 'employment', 'roles', 'jobs'],
-    answer:
-      `Nasser has **four years in digital marketing** across non-profit and for-profit teams:<br>` +
-      `• **Manara Digital** — Digital Marketing & Insights Consultant (2023–present): manages end-to-end marketing for small-business and non-profit clients — strategy and competitive research, campaigns, local SEO/GEO, retention and reputation, and the reporting behind it.<br>` +
-      `• **GlobalDWS** — Digital Marketing Specialist (2023–24): led a team of 3, built a new company website end-to-end, and grew social engagement **+50%** and website traffic **+100%**.<br>` +
-      `• **Faster Accessories** — Digital Marketing Specialist (2022–23): **+40%** traffic via SEO; ran PPC that cut CPC **20%** and lifted CTR **25%**.<br>` +
-      `• **Ajjerni Rentals** — Data Analyst & Market Research Intern (2021–22): BI reporting that supported **+15% ROI** and **+20%** retention.<br><br>` +
-      `Full history is in his [resume](${RESUME}).`,
-  },
-  {
-    keys: ['skill', 'tech stack', 'stack', 'technolog', 'tools', 'know how', 'can he do', 'capable', 'proficient'],
-    answer:
-      `Nasser works across **marketing, data, and the tools that connect them**:<br>` +
-      `• **Marketing:** SEO (technical + local) + **GEO** (Generative Engine Optimization — visibility in AI answers), PPC/SEM (Google/Meta/LinkedIn Ads), content & brand, email<br>` +
-      `• **Analytics & data:** GA4, SEMrush, Ahrefs, Tableau, Power BI, A/B testing, reporting<br>` +
-      `• **Websites:** custom-built sites, WordPress, Wix/Shopify, landing pages<br>` +
-      `• **MarTech & automation:** marketing automation, CRM & lead funnels, Mailchimp/Brevo, booking systems, AI content tools<br>` +
-      `• **Technical toolkit:** HTML/CSS, no-code platforms, tracking & tool integrations, Python and SQL for marketing data<br>` +
-      `• **Languages:** English & Arabic`,
-  },
-  {
-    keys: ['result', 'metric', 'achievement', 'impact', 'number', 'kpi', 'roi', 'traffic', 'grew', 'growth'],
-    answer:
-      `A few measurable wins:<br>` +
-      `• **+100%** website traffic & **+50%** social engagement (GlobalDWS)<br>` +
-      `• **+40%** traffic via SEO; **−20%** cost-per-click & **+25%** CTR on paid (Faster Accessories)<br>` +
-      `• **+20%** campaign ROI from budget reallocation; reached **10,000+** prospects<br>` +
-      `• **+15% ROI** and **+20%** customer retention from BI reporting (Ajjerni Rentals)`,
-  },
-  {
-    keys: ['develop', 'software', 'build', 'code', 'coding', 'programming', 'technical', 'web app', 'apps', 'ai', 'automation', 'martech'],
-    answer:
-      `Nasser is a **technical marketer** — a marketer who owns the tools rather than just briefing them. He sets up and runs **marketing automation**, GA4 conversion tracking, CRM and lead funnels, and manages the web presence campaigns run on (WordPress, Wix/Shopify, or custom). He's also fluent in **GEO (Generative Engine Optimization)** — getting brands cited in AI answers from ChatGPT, Perplexity, and Google AI Overviews, not just classic SEO. To be clear on scope: he's a marketing professional with strong technical fluency, not a software engineer — the value is launching and measuring campaigns end-to-end without waiting on a dev queue.`,
-  },
-  {
-    keys: ['education', 'degree', 'study', 'studied', 'university', 'school', 'certif', 'qualif', 'nanodegree', 'credential'],
-    answer:
-      `• **Diploma in IT Management & Data Analytics** — Lebanese American University (2022)<br>` +
-      `• **Generative AI** — Nanodegree, Udacity (2024)<br>` +
-      `• **AI Programming with Python** — Nanodegree, Udacity (2023)<br>` +
-      `• **AI Automation, Ethics & Responsible AI** — BrainStation (2024)<br>` +
-      `• **Digital Marketing & E-commerce** — Google Career Certificate (2022)`,
-  },
-  {
-    keys: ['available', 'availability', 'open to', 'hiring', 'looking for work', 'job search', 'start', 'freelance', 'contract'],
-    answer:
-      `Yes — Nasser is **open to marketing, insights, and MarTech roles in Toronto**. The fastest way to start a conversation is to [email him](${mailto()}) or use the contact form on this page.`,
-  },
-  {
-    keys: ['location', 'based', 'where', 'remote', 'relocat', 'toronto', 'canada', 'timezone'],
-    answer:
-      `Nasser is based in **Toronto, Ontario, Canada**. For specifics on remote/hybrid/relocation, [reach out directly](${mailto()}) — he's happy to discuss what works for the role.`,
-  },
-  {
-    keys: ['language', 'bilingual', 'arabic', 'english', 'speak'],
-    answer: `Nasser is **bilingual in English and Arabic**.`,
-  },
-  {
-    keys: ['why', 'strength', 'stand out', 'unique', 'hire him', 'good fit', 'sell', 'pitch', 'special'],
-    answer:
-      `His edge is being a **marketer who's genuinely technical**. He runs the campaigns *and* builds the MarTech behind them — websites, automation, GA4 tracking, lead funnels — so work ships fast and everything is measurable. Three-plus years of results (doubled traffic, −20% cost-per-click, +20% ROI), with the data and analytics chops to prove it. Bilingual EN/AR, fast-moving, detail-oriented.`,
-  },
-  {
-    keys: ['contact', 'reach', 'email', 'hire', 'get in touch', 'connect', 'linkedin', 'message', 'talk', 'resume', 'resume', 'cv'],
-    answer:
-      `Easiest ways to reach Nasser:<br>` +
-      `• **Email:** [${EMAIL}](${mailto()})<br>` +
-      `• **LinkedIn:** [linkedin.com/in/nasser-saleh](${profile.linkedin})<br>` +
-      `• **Resume:** [download the PDF](${RESUME})<br>` +
-      `• Or use the **contact form** in the Contact section.`,
-  },
-  {
-    keys: ['salary', 'rate', 'compensation', 'pay', 'budget', 'expectation', 'cost'],
-    answer:
-      `Compensation is best discussed directly — it depends on the role, scope, and arrangement. [Email Nasser](${mailto('Role & compensation')}) and he'll be glad to talk specifics.`,
-  },
-]
-
-/* ---------- skill taxonomy for job-description matching ---------- */
+/* ---------- skill taxonomy for job-description matching ----------
+   Keys stay English: pasted job descriptions are overwhelmingly English,
+   even when the visitor is reading the site in Arabic. The `label` is a
+   stable id; the Arabic pack translates it via `skillLabels`. */
 type Cat = 'dev' | 'ai' | 'data' | 'marketing' | 'soft'
 type Skill = { label: string; cat: Cat; keys: string[] }
 
@@ -172,7 +238,7 @@ const SKILLS: Skill[] = [
   { label: 'Landing pages', cat: 'marketing', keys: ['landing page'] },
   // ai
   { label: 'AI', cat: 'ai', keys: ['artificial intelligence', ' ai ', 'ai-', 'ai/', 'genai', 'generative ai'] },
-  { label: 'LLMs', cat: 'ai', keys: ['llm', 'large language model', 'claude', 'gpt', 'openai', 'anthropic', 'gemini'] },
+  { label: 'LLMs', cat: 'ai', keys: ['llm', 'large language model', 'gpt', 'openai', 'anthropic', 'gemini'] },
   { label: 'AI content tools', cat: 'ai', keys: ['prompt', 'ai content', 'ai tools', 'copilot'] },
   { label: 'Marketing automation', cat: 'ai', keys: ['automation', 'automate'] },
   // data
@@ -215,13 +281,16 @@ export function looksLikeJobDescription(text: string): boolean {
     'experience in', 'experience with', 'proficient', 'must have', 'nice to have',
     'years of experience', 'about the role', 'about you', 'who you are', 'what you', 'job description',
     'we’re hiring', "we're hiring", 'the role', 'skills:', 'preferred',
+    // Arabic signals
+    'المسؤوليات', 'المتطلبات', 'المؤهلات', 'الوصف الوظيفي', 'نبحث عن', 'خبرة في', 'سنوات خبرة', 'المهارات',
   ]
   const hits = signals.filter((s) => t.includes(s)).length
   return text.length > 280 || hits >= 2
 }
 
 /** Analyze a job description against Nasser's profile. */
-export function analyzeJobDescription(text: string): string {
+export function analyzeJobDescription(text: string, lang: Lang = 'en'): string {
+  const p = getPack(lang)
   const t = ` ${text.toLowerCase()} `
   const matched: Skill[] = []
   for (const s of SKILLS) {
@@ -231,48 +300,32 @@ export function analyzeJobDescription(text: string): string {
   const seen = new Set<string>()
   const uniq = matched.filter((s) => (seen.has(s.label) ? false : (seen.add(s.label), true)))
 
-  if (uniq.length < 2) {
-    return (
-      `I couldn't pick out many overlapping keywords from that. Paste a fuller description (responsibilities + required skills), ` +
-      `or tell me the 3–4 must-haves and I'll map them to Nasser's background. You can also just [email him](${mailto('Role for Nasser')}).`
-    )
-  }
+  if (uniq.length < 2) return p.jd.tooFew
 
   const catCount = (c: Cat) => uniq.filter((s) => s.cat === c).length
   const mkt = catCount('marketing')
   const tech = catCount('dev') + catCount('ai') + catCount('data')
 
-  let focus: string
-  if (mkt >= 2 && tech >= 2) focus = 'hybrid (marketing + tech)'
-  else if (mkt > tech) focus = 'marketing-focused'
-  else if (tech > mkt) focus = 'technical / MarTech'
-  else focus = 'mixed'
+  let key: keyof Pack['jd']['focus']
+  if (mkt >= 2 && tech >= 2) key = 'hybrid'
+  else if (mkt > tech) key = 'marketing'
+  else if (tech > mkt) key = 'technical'
+  else key = 'mixed'
 
   const n = uniq.length
-  const level = n >= 8 ? 'Strong fit' : n >= 5 ? 'Good fit' : 'Worth a conversation'
+  const level = n >= 8 ? p.jd.level.strong : n >= 5 ? p.jd.level.good : p.jd.level.worth
 
-  const pitchByFocus: Record<string, string> = {
-    'hybrid (marketing + tech)':
-      `This role wants someone who can **market *and* build the tech to execute it** — Nasser's sweet spot. He runs campaigns and owns the MarTech behind them (websites, automation, GA4, lead funnels), so he closes the usual gap between marketing and the tools.`,
-    'marketing-focused':
-      `Nasser brings **3+ years of hands-on marketing** — SEO, PPC, GA4 analytics, content & brand — with proven results (doubled site traffic, −20% CPC, +20% ROI). Bonus: he also builds the sites, tracking, and automation behind campaigns, so he executes end-to-end.`,
-    'technical / MarTech':
-      `Nasser is a **marketer with strong technical fluency** — he sets up marketing sites, automation, conversion tracking, and lead funnels himself (HTML/CSS, no-code platforms, tracking integrations, Python and SQL for data). A strong fit for MarTech, marketing-analytics, and insights roles, backed by real campaign experience and measured results.`,
-    mixed:
-      `Nasser pairs **3+ years of measurable marketing** with real **MarTech & data fluency** — a rare build-and-measure combination.`,
-  }
-
-  const list = uniq.map((s) => s.label)
+  const list = uniq.map((s) => p.skillLabels[s.label] ?? s.label)
   const shown = list.slice(0, 12)
-  const more = list.length > shown.length ? ` …and ${list.length - shown.length} more` : ''
+  const more = list.length > shown.length ? p.jd.more(list.length - shown.length) : ''
 
   return (
-    `Here's how Nasser lines up with this role 👇<br><br>` +
-    `**Fit: ${level}** — this reads like a **${focus}** role.<br><br>` +
-    `**Matched strengths** (found in your description):<br>${shown.map((l) => `• ${l}`).join('<br>')}${more}<br><br>` +
-    `${pitchByFocus[focus]}<br><br>` +
-    `Want to take it further? [Email Nasser](${mailto('Role that fits Nasser')}) or [download his resume](${RESUME}).<br>` +
-    `<em>Note: this is an automated keyword check — Nasser will give you the real, detailed answer.</em>`
+    `${p.jd.intro}<br><br>` +
+    `${p.jd.fitLine(level, p.jd.focus[key])}<br><br>` +
+    `${p.jd.matchedHeader}<br>${shown.map((l) => `• ${l}`).join('<br>')}${more}<br><br>` +
+    `${p.jd.pitch[key]}<br><br>` +
+    `${p.jd.cta}<br>` +
+    `${p.jd.note}`
   )
 }
 
@@ -281,25 +334,26 @@ export function analyzeJobDescription(text: string): string {
  * user text is never echoed as HTML).
  * @param forceJD when true, treat the message as a job description regardless of length.
  */
-export function getResponse(text: string, forceJD = false): string {
+export function getResponse(text: string, forceJD = false, lang: Lang = 'en'): string {
+  const p = getPack(lang)
   const raw = text.trim()
-  if (!raw) return WELCOME_HTML
+  if (!raw) return formatMarkup(p.welcome)
 
   if (forceJD || looksLikeJobDescription(raw)) {
-    return formatMarkup(analyzeJobDescription(raw))
+    return formatMarkup(analyzeJobDescription(raw, lang))
   }
 
   const t = ` ${raw.toLowerCase()} `
 
   // greetings
-  if (/^(hi|hey|hello|yo|sup|good (morning|afternoon|evening))\b/.test(raw.toLowerCase())) {
-    return `Hey! 👋 ${WELCOME_HTML}`
+  if (p.greeting.test(raw.toLowerCase())) {
+    return p.greetingPrefix + formatMarkup(p.welcome)
   }
 
   // score intents by keyword hits
   let best: Intent | null = null
   let bestScore = 0
-  for (const intent of intents) {
+  for (const intent of p.intents) {
     const score = intent.keys.reduce((acc, k) => (t.includes(k) ? acc + 1 : acc), 0)
     if (score > bestScore) {
       bestScore = score
@@ -308,12 +362,7 @@ export function getResponse(text: string, forceJD = false): string {
   }
   if (best && bestScore > 0) return formatMarkup(best.answer)
 
-  // fallback
-  return formatMarkup(
-    `I'm best at questions about **Nasser's experience, skills, results, education, availability, and how to reach him** — ` +
-    `or paste a **job description** and I'll check the fit.<br><br>` +
-    `You can also [email him directly](${mailto()}) or [grab his resume](${RESUME}). What would you like to know?`,
-  )
+  return formatMarkup(p.fallback)
 }
 
 export { escapeHtml }

@@ -1,24 +1,18 @@
 import SectionHeading from './SectionHeading'
 import ProjectCard from './ProjectCard'
 import Reveal from './Reveal'
-import { featuredProjects, services } from '../data/content'
+import { useContent } from '../lib/i18n'
 
 export default function Projects() {
+  const { featuredProjects, services, ui } = useContent()
   return (
     <section id="work" className="section" style={{ paddingTop: 'clamp(2rem, 5vw, 4rem)' }}>
       <div className="container-x">
-        <SectionHeading
-          index="02"
-          eyebrow="Selected Work · Clients"
-          title="Marketing programs I've run for clients."
-        />
+        <SectionHeading index="02" eyebrow={ui.work.eyebrow} title={ui.work.title} />
 
         {/* What I take on — customer-facing */}
         <Reveal>
-          <p className="work-lead">
-            I take on the marketing function end to end — strategy and research, the campaigns that run off
-            it, the reporting that proves what worked, and the commercial growth work around it.
-          </p>
+          <p className="work-lead">{ui.work.lead}</p>
         </Reveal>
         <div className="service-grid">
           {services.map((s, i) => (
@@ -36,7 +30,7 @@ export default function Projects() {
 
         {/* Client proof */}
         <Reveal>
-          <h3 className="work-subhead">Selected client work</h3>
+          <h3 className="work-subhead">{ui.work.subhead}</h3>
         </Reveal>
         <div className="project-grid">
           {featuredProjects.map((p, i) => (

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import Reveal from './Reveal'
 import SectionHeading from './SectionHeading'
-import { profile } from '../data/content'
+import { useContent } from '../lib/i18n'
 import { track } from '../lib/analytics'
 import { Mail, Phone, MapPin, Globe, LinkedIn, Download, ArrowUpRight } from './icons'
 
@@ -18,15 +18,17 @@ type Errors = { name?: string; email?: string; message?: string }
 const isEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)
 
 export default function Contact() {
+  const { profile, ui } = useContent()
+  const c = ui.contact
   const [status, setStatus] = useState<Status>('idle')
   const [errors, setErrors] = useState<Errors>({})
 
   const validate = (name: string, email: string, message: string): Errors => {
     const e: Errors = {}
-    if (!name.trim()) e.name = 'Please enter your name.'
-    if (!email.trim()) e.email = 'Please enter your email.'
-    else if (!isEmail(email)) e.email = 'Please enter a valid email address.'
-    if (!message.trim()) e.message = 'Please add a short message.'
+    if (!name.trim()) e.name = c.errName
+    if (!email.trim()) e.email = c.errEmail
+    else if (!isEmail(email)) e.email = c.errEmailInvalid
+    if (!message.trim()) e.message = c.errMessage
     return e
   }
 
@@ -92,39 +94,35 @@ export default function Contact() {
   return (
     <section id="contact" className="section">
       <div className="container-x">
-        <SectionHeading index="07" eyebrow="Contact" title="Let's build something worth marketing." />
+        <SectionHeading index="07" eyebrow={c.eyebrow} title={c.title} />
 
         <div className="contact-layout">
           {/* Left: pitch + direct links */}
           <Reveal>
             <div>
-              <p style={{ fontSize: '1.1rem', color: 'var(--text-soft)', maxWidth: 460 }}>
-                Open to marketing, insights, and MarTech roles in Toronto. Drop a line and I'll get back to you quickly.
-              </p>
+              <p style={{ fontSize: '1.1rem', color: 'var(--text-soft)', maxWidth: 460 }}>{c.intro}</p>
 
               <div className="assistant-callout">
                 <span className="assistant-callout-icon">💬</span>
                 <p>
-                  <strong>Want a fast read on fit?</strong> Open the <strong>assistant</strong> in the bottom-left corner —
-                  ask anything about my background, or <strong>paste a job description</strong> and it'll tell you how well I
-                  match and where I'm strong.
+                  <strong>{c.calloutStrong}</strong> {c.calloutBody}
                 </p>
               </div>
 
               <div className="contact-links">
-                {contactLinks.map((c) => (
+                {contactLinks.map((link) => (
                   <a
-                    key={c.label}
-                    href={c.href}
-                    target={c.href.startsWith('http') ? '_blank' : undefined}
+                    key={link.label}
+                    href={link.href}
+                    target={link.href.startsWith('http') ? '_blank' : undefined}
                     rel="noopener noreferrer"
                     className="card contact-link glass-hover"
-                    onClick={() => track('contact_click', { method: c.method })}
+                    onClick={() => track('contact_click', { method: link.method })}
                   >
                     <span className="contact-link-icon">
-                      <c.icon width={17} height={17} />
+                      <link.icon width={17} height={17} />
                     </span>
-                    <span style={{ fontSize: '0.9rem', color: 'var(--text)' }}>{c.label}</span>
+                    <span dir="ltr" style={{ fontSize: '0.9rem', color: 'var(--text)' }}>{link.label}</span>
                   </a>
                 ))}
               </div>
@@ -137,7 +135,7 @@ export default function Contact() {
                   className="btn btn-primary"
                   onClick={() => track('resume_download', { location: 'contact' })}
                 >
-                  <Download width={16} height={16} /> Download Resume
+                  <Download width={16} height={16} /> {ui.nav.downloadResume}
                 </a>
                 <span style={{ display: 'inline-flex', alignItems: 'center', gap: 7, color: 'var(--text-dim)', fontSize: '0.85rem' }}>
                   <MapPin width={15} height={15} /> {profile.location}
@@ -151,21 +149,21 @@ export default function Contact() {
             <form className="card contact-form" onSubmit={onSubmit} noValidate>
               {status === 'sent' && (
                 <div className="form-banner form-banner--ok" role="status">
-                  Thanks! {WEB3FORMS_ACCESS_KEY ? 'Your message was sent.' : 'Your email app should have opened — if not, write to ' + profile.email + '.'}
+                  {WEB3FORMS_ACCESS_KEY ? c.sentOk : `${c.sentMailto} ${profile.email}.`}
                 </div>
               )}
               {status === 'error' && (
                 <div className="form-banner form-banner--err" role="alert">
-                  Something went wrong. Please email me directly at {profile.email}.
+                  {c.sendFailed} {profile.email}.
                 </div>
               )}
 
               <label className="field">
-                <span>Name</span>
+                <span>{c.name}</span>
                 <input
                   name="name"
                   type="text"
-                  placeholder="Your name"
+                  placeholder={c.namePlaceholder}
                   aria-invalid={!!errors.name}
                   onChange={() => clearError('name')}
                 />
@@ -173,11 +171,12 @@ export default function Contact() {
               </label>
 
               <label className="field">
-                <span>Email</span>
+                <span>{c.email}</span>
                 <input
                   name="email"
                   type="email"
-                  placeholder="you@example.com"
+                  dir="ltr"
+                  placeholder={c.emailPlaceholder}
                   aria-invalid={!!errors.email}
                   onChange={() => clearError('email')}
                 />
@@ -185,11 +184,11 @@ export default function Contact() {
               </label>
 
               <label className="field">
-                <span>Message</span>
+                <span>{c.message}</span>
                 <textarea
                   name="message"
                   rows={4}
-                  placeholder="What are you building?"
+                  placeholder={c.messagePlaceholder}
                   aria-invalid={!!errors.message}
                   onChange={() => clearError('message')}
                 />
@@ -197,7 +196,7 @@ export default function Contact() {
               </label>
 
               <button type="submit" className="btn btn-primary" style={{ justifyContent: 'center' }} disabled={status === 'sending'}>
-                {status === 'sending' ? 'Sending…' : status === 'sent' ? 'Message ready ✓' : 'Send message'}
+                {status === 'sending' ? c.sending : status === 'sent' ? c.sentButton : c.send}
                 {status === 'idle' && <ArrowUpRight width={16} height={16} />}
               </button>
             </form>

@@ -1,14 +1,15 @@
 import Reveal from './Reveal'
 import SectionHeading from './SectionHeading'
-import { skillGroups } from '../data/content'
+import { useContent } from '../lib/i18n'
 
 const accents = ['#22d3ee', '#6366f1', '#a855f7', '#34e0c4', '#3D9DF6', '#fbbf24']
 
 export default function Skills() {
+  const { skillGroups, ui } = useContent()
   return (
     <section id="skills" className="section">
       <div className="container-x">
-        <SectionHeading index="04" eyebrow="Skills & Stack" title="A marketer's toolkit, backed by data & tech." />
+        <SectionHeading index="04" eyebrow={ui.skills.eyebrow} title={ui.skills.title} />
         <div className="skills-grid">
           {skillGroups.map((g, i) => {
             const accent = accents[i % accents.length]

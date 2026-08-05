@@ -1,13 +1,14 @@
 import Reveal from './Reveal'
 import SectionHeading from './SectionHeading'
-import { about, profile } from '../data/content'
+import { useContent } from '../lib/i18n'
 import { Chart, Megaphone, MapPin } from './icons'
 
 export default function About() {
+  const { about, profile, ui } = useContent()
   return (
     <section id="about" className="section">
       <div className="container-x">
-        <SectionHeading index="01" eyebrow="About" title="A marketer who owns the tools, not just the brief." />
+        <SectionHeading index="01" eyebrow={ui.about.eyebrow} title={ui.about.title} />
 
         <div className="about-layout">
           {/* Portrait / monogram panel */}
@@ -33,8 +34,8 @@ export default function About() {
                 <div className="about-portrait-fallback">
                   <span className="about-monogram">NS</span>
                   <div style={{ display: 'flex', gap: 10, marginTop: 18 }}>
-                    <span className="about-pill"><Megaphone width={15} height={15} /> Marketing</span>
-                    <span className="about-pill"><Chart width={15} height={15} /> MarTech &amp; Data</span>
+                    <span className="about-pill"><Megaphone width={15} height={15} /> {ui.about.pillMarketing}</span>
+                    <span className="about-pill"><Chart width={15} height={15} /> {ui.about.pillMartech}</span>
                   </div>
                 </div>
               )}

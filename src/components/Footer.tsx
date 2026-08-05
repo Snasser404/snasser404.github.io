@@ -1,7 +1,8 @@
-import { profile } from '../data/content'
+import { useContent } from '../lib/i18n'
 import { LinkedIn, Mail } from './icons'
 
 export default function Footer() {
+  const { profile, ui } = useContent()
   return (
     <footer style={{ borderTop: '1px solid var(--line)', paddingBlock: '2.4rem', position: 'relative', zIndex: 1 }}>
       <div
@@ -25,7 +26,7 @@ export default function Footer() {
         </div>
 
         <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.74rem', color: 'var(--text-dim)', margin: 0, width: '100%', textAlign: 'center', paddingTop: 8 }}>
-          © {2026} Nasser Saleh — Designed, built &amp; optimized in-house. Toronto, Canada.
+          © {2026} {profile.name} — {ui.footer.note}
         </p>
       </div>
     </footer>
