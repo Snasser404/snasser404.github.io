@@ -28,25 +28,49 @@ FONTS = {
 
 PLATES = [
     dict(
-        key="A", slug="A-gradient-monogram", name="Gradient Monogram",
+        key="E", slug="E-search-result", name="Search Result", series=2,
+        use="The card is the thing he sells. The front is an organic search listing; the back is "
+            "the AI answer that cites him. SEO on one side, GEO on the other.",
+        stock="16 pt smooth matte",
+    ),
+    dict(
+        key="F", slug="F-tracked", name="Tracked", series=2,
+        use="The joke is also the proof. Scan the QR and the visit lands in his GA4 tagged as "
+            "utm_source=card — the business card becomes a measurable channel.",
+        stock="16 pt smooth matte, or soft-touch",
+    ),
+    dict(
+        key="G", slug="G-portrait", name="Portrait", series=2, vertical=True,
+        use="Vertical, and the only card with his face on it. In a stack of landscape cards the "
+            "orientation alone does half the work; people remember a face.",
+        stock="16 pt matte — the duotone flattens on gloss",
+    ),
+    dict(
+        key="H", slug="H-one-number", name="One Number", series=2,
+        use="The loudest card in the box. One result at poster scale on the front, everything "
+            "that qualifies it on the back. Confident, and slightly reckless.",
+        stock="16 pt smooth matte",
+    ),
+    dict(
+        key="A", slug="A-gradient-monogram", name="Gradient Monogram", series=1,
         use="Hand it to anyone. Same white ground, monogram and gradient as nassersaleh.ca, "
             "so the card and the site read as one brand.",
         stock="16 pt smooth matte",
     ),
     dict(
-        key="B", slug="B-dark-signal", name="Dark Signal",
+        key="B", slug="B-dark-signal", name="Dark Signal", series=1,
         use="When the card has to pitch for you. The back lists what you actually run, so someone "
             "you met at a conference knows the offer without asking.",
         stock="16 pt smooth matte",
     ),
     dict(
-        key="C", slug="C-editorial-ledger", name="Editorial Ledger",
+        key="C", slug="C-editorial-ledger", name="Editorial Ledger", series=1,
         use="Boardroom and consulting introductions. No gradients, no tech signalling — a name "
             "that looks expensive and ages well.",
         stock="Uncoated textured, e.g. Mohawk Superfine",
     ),
     dict(
-        key="D", slug="D-bilingual", name="Bilingual — English ⇄ العربية",
+        key="D", slug="D-bilingual", name="Bilingual — English ⇄ العربية", series=1,
         use="Toronto's Arabic-speaking business community, and any Gulf-market work. Hand it over "
             "either way up; neither side is the back.",
         stock="16 pt smooth matte",
@@ -54,30 +78,46 @@ PLATES = [
 ]
 
 SPEC = [
-    ("Trim", "3.5 × 2 in&nbsp;&nbsp;(89 × 51 mm)"),
+    ("Trim", "3.5 × 2 in&nbsp;&nbsp;(89 × 51 mm)<br>plate G is 2 × 3.5 in"),
     ("Bleed", "0.125 in, all four edges"),
     ("Resolution", "300 dpi"),
     ("Colour", "RGB — printer converts to CMYK"),
     ("Sides", "2 — PDF p.1 front, p.2 back"),
+    ("QR", "tagged per card — scans land in GA4"),
     ("Faces", "Space Grotesk · Inter · JetBrains Mono · Noto Sans Arabic"),
 ]
 
 NOTES = [
+    ("Every QR is tagged, so you can tell which card worked.",
+     "Each one points at nassersaleh.ca with its own campaign parameter — card A carries "
+     "utm_campaign=a, card E carries e, and so on. Scans show up in GA4 under source "
+     "<em>card</em>, so after a few months of handing them out you will know which design "
+     "actually got scanned. Print two designs and you have an A/B test."),
     ("Send the PDF, not the PNG.",
      "The PDF carries the 0.125 in bleed every printer asks for. The PNG is cropped to the trim "
      "line — it is for email signatures, LinkedIn and decks, and would print with white slivers "
      "along the edges."),
     ("Expect gradients to soften.",
      "The files are RGB and every online printer converts to CMYK on their end. Cyan-to-violet is "
-     "outside the CMYK gamut, so A, B and D will print a little less vivid than they look here. "
-     "That is normal and not worth fixing."),
+     "outside the CMYK gamut, so the gradient plates will print a little less vivid than they "
+     "look here. That is normal and not worth fixing."),
     ("Do not scale the file down.",
-     "The QR codes are 0.42 in — just above the size where phone cameras start failing. Printing "
-     "smaller than 3.5 × 2 in will break them."),
+     "The QR codes are 0.5 in — comfortably scannable, but they are sized for this trim. Printing "
+     "smaller than the stated size will start breaking them."),
     ("Ask for the stock listed on each plate.",
      "It changes the card more than any design choice here. Matte for the dark and gradient "
-     "plates; uncoated textured for the Editorial Ledger, which is built for it."),
+     "plates; uncoated textured for the Editorial Ledger, which is built for it; matte for the "
+     "Portrait, because gloss flattens a duotone."),
 ]
+
+SERIES = {
+    2: ("Series 2 — concept-led",
+        "These take a position. Each one is built on something only Nasser can claim: that he is "
+        "the person you hire to be found, and to prove it worked."),
+    1: ("Series 1 — classic",
+        "Safer, quieter, and none the worse for it. If the card needs to do nothing but be handed "
+        "over cleanly, take one of these."),
+}
 
 
 def plate_html(p):
@@ -85,21 +125,25 @@ def plate_html(p):
     front = CARDS / f"{p['slug']}-front.png"
     back = CARDS / f"{p['slug']}-back.png"
     side_labels = ("English", "العربية") if p["key"] == "D" else ("Front", "Back")
+    tall = p.get("vertical", False)
+    cls = "proofs proofs--tall" if tall else "proofs"
+    w, h = (600, 1050) if tall else (1050, 600)
+    fmt = "2 × 3.5 in, vertical" if tall else ""
     return f"""
     <section class="plate" id="plate-{p['key']}">
       <div class="plate-head">
         <span class="plate-key" aria-hidden="true">{p['key']}</span>
         <div class="plate-id">
-          <h2>{p['name']}</h2>
+          <h2>{p['name']}{f' <span class="fmt">{fmt}</span>' if fmt else ''}</h2>
           <p class="use">{p['use']}</p>
         </div>
       </div>
 
-      <div class="proofs">
+      <div class="{cls}">
         <figure>
           <div class="board">
             <img id="img-{p['key']}-f" src="data:image/png;base64,{b64(front)}"
-                 alt="{p['name']} card, {side_labels[0].lower()} side" width="1050" height="600">
+                 alt="{p['name']} card, {side_labels[0].lower()} side" width="{w}" height="{h}">
             <span class="safe" aria-hidden="true"></span>
           </div>
           <figcaption>{side_labels[0]}</figcaption>
@@ -107,7 +151,7 @@ def plate_html(p):
         <figure>
           <div class="board">
             <img id="img-{p['key']}-b" src="data:image/png;base64,{b64(back)}"
-                 alt="{p['name']} card, {side_labels[1].lower()} side" width="1050" height="600">
+                 alt="{p['name']} card, {side_labels[1].lower()} side" width="{w}" height="{h}">
             <span class="safe" aria-hidden="true"></span>
           </div>
           <figcaption>{side_labels[1]}</figcaption>
@@ -374,11 +418,48 @@ HTML = f"""<title>Business Cards — Nasser Saleh</title>
   }}
   .use {{ margin: 0; color: var(--ink-2); font-size: .93rem; max-width: 62ch; }}
 
+  .fmt {{
+    font-family: var(--mono);
+    font-size: .62rem;
+    font-weight: 500;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: 2px;
+    padding: .1rem .38rem;
+    margin-inline-start: .5rem;
+    vertical-align: middle;
+    white-space: nowrap;
+  }}
+
+  /* Series divider — the one place the page raises its voice. */
+  .series {{
+    display: flex;
+    flex-direction: column;
+    gap: .35rem;
+    padding-top: clamp(.75rem, 2vw, 1.5rem);
+    border-top: 2px solid var(--ink);
+  }}
+  .series h2 {{
+    font-family: var(--display);
+    font-size: clamp(1.3rem, 3.2vw, 1.75rem);
+    font-weight: 600;
+    letter-spacing: -.02em;
+    margin: 0;
+  }}
+  .series p {{ margin: 0; color: var(--ink-2); font-size: .95rem; max-width: 64ch; }}
+
   .proofs {{
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: clamp(.9rem, 2.5vw, 1.5rem);
   }}
+  /* The vertical card would blow up to full column width at 2:3.5, so cap it. */
+  .proofs--tall {{ grid-template-columns: repeat(auto-fit, minmax(190px, 260px)); }}
+  .proofs--tall .board {{ aspect-ratio: 2 / 3.5; }}
+  /* Safe area on the vertical trim: 0.125in of 2in across, of 3.5in down. */
+  .proofs--tall .safe {{ inset: 3.571% 6.25%; }}
   figure {{ margin: 0; display: flex; flex-direction: column; gap: .5rem; }}
   .board {{
     position: relative;
@@ -511,7 +592,7 @@ HTML = f"""<title>Business Cards — Nasser Saleh</title>
         <path d="M12 0v6.2M12 17.8V24M0 12h6.2M17.8 12H24"/>
       </svg>
       <h1>Business cards</h1>
-      <p class="lede">Four concepts for Nasser Saleh, front and back. Pick one, download the PDF,
+      <p class="lede">Eight concepts for Nasser Saleh, front and back. Pick one, download the PDF,
         send it to a printer — the files are already set up the way they will ask for.</p>
     </div>
     <dl class="spec">
@@ -529,7 +610,11 @@ HTML = f"""<title>Business Cards — Nasser Saleh</title>
       absorbs how far the guillotine drifts.</span>
   </div>
 
-  {''.join(plate_html(p) for p in PLATES)}
+  {''.join(
+      (f'<div class="series"><h2>{SERIES[s][0]}</h2><p>{SERIES[s][1]}</p></div>'
+       if i == 0 or PLATES[i - 1]['series'] != s else '') + plate_html(p)
+      for i, p in enumerate(PLATES) for s in [p['series']]
+  )}
 
   <section class="notes">
     <h2>Before you send it to the printer</h2>

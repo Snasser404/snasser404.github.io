@@ -19,7 +19,7 @@ import arabic_reshaper
 import qrcode
 from bidi.algorithm import get_display
 from fontTools.ttLib import TTFont
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ImageOps
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 FONTS = ROOT / "business-cards" / ".fonts"
@@ -107,6 +107,25 @@ SERVICES = [
     (TEAL,     "Websites — custom, WordPress, Wix"),
 ]
 
+# Every literal drawn by concepts E–H, so check_coverage() sees them too.
+# The en-dashes, the true minus in "−20%" and "·" are the ones that bite.
+SERIES_2_COPY = [
+    "digital marketing specialist toronto",
+    "Nasser Saleh — Digital Marketing", "& MarTech Specialist",
+    "Toronto. SEO & GEO, paid search, GA4 analytics and the automation behind them. "
+    "+100% traffic, −20% cost-per-click.",
+    "AI ANSWER", "CITED SOURCE",
+    "Nasser Saleh is a Toronto digital marketer who builds and runs the technology "
+    "behind growth — so campaigns launch, and get measured, without waiting on a dev team.",
+    "MEASURED, LIKE EVERYTHING ELSE I RUN", "utm_source", "utm_medium", "utm_campaign",
+    "card", "print", "Scan it.",
+    "It lands in my analytics next to every other channel. That is the whole point.",
+    "DIGITAL MARKETING · MARTECH", "+100%",
+    "WEBSITE TRAFFIC  ·  GLOBALDWS  ·  12 MONTHS",
+    "+40%", "−20%", "+20%",
+    "SEO traffic, 5 months", "cost-per-click, paid search", "campaign ROI",
+]
+
 # ---------------------------------------------------------------- fonts
 _cache = {}
 
@@ -135,7 +154,7 @@ def check_coverage():
     """Fail loudly rather than silently printing .notdef boxes."""
     latin = set()
     for t in (NAME, TITLE, PHONE, EMAIL, CITY, CITY_LONG, SITE, LINKEDIN,
-              TAG_1, TAG_2, *(s for _, s in SERVICES)):
+              TAG_1, TAG_2, *(s for _, s in SERVICES), *SERIES_2_COPY):
         latin |= set(t)
     problems = []
     for stem in ("space-grotesk", "inter", "jetbrains-mono"):
@@ -216,7 +235,13 @@ def draw_tracked(d, xy, text, fnt, fill, tracking, anchor="ls"):
         x += fnt.getlength(ch) + tracking
 
 
-QR_PX = 126  # 0.42in at 300dpi — comfortably above the ~0.4in scan floor
+QR_PX = 150  # 0.5in at 300dpi — the tagged URLs are longer, so give them room
+
+
+def card_url(slug):
+    """Every card's QR carries its own campaign tag, so GA4 shows which design
+    actually got scanned. Marketing that's measured, including the card."""
+    return f"https://{SITE}/?utm_source=card&utm_medium=print&utm_campaign={slug[0].lower()}"
 
 
 def qr_image(data, size, fg, bg):
@@ -226,8 +251,46 @@ def qr_image(data, size, fg, bg):
                       error_correction=qrcode.constants.ERROR_CORRECT_L)
     q.add_data(data)
     q.make(fit=True)
+    modules = q.modules_count
+    if size / modules < 3.6:  # ~0.012in per module; below this, scans get flaky
+        raise SystemExit(f"QR too dense: {modules} modules in {size}px for {data}")
     img = q.make_image(fill_color=fg, back_color=bg).convert("RGB")
     return img.resize((size, size), Image.NEAREST)
+
+
+def wrap(text, fnt, max_w):
+    """Greedy word wrap measured in the actual font."""
+    words, lines, line = text.split(), [], ""
+    for w in words:
+        trial = f"{line} {w}".strip()
+        if fnt.getlength(trial) <= max_w or not line:
+            line = trial
+        else:
+            lines.append(line)
+            line = w
+    if line:
+        lines.append(line)
+    return lines
+
+
+def grad_ring(img, box, radius, width, stops=BRAND):
+    """A rounded-rectangle border painted with a gradient."""
+    mask = Image.new("L", img.size, 0)
+    ImageDraw.Draw(mask).rounded_rectangle(box, radius=radius, outline=255, width=width)
+    img.paste(lin_grad(img.width, img.height, stops), (0, 0), mask)
+
+
+def duotone(src, shadow, highlight, size):
+    """Map a photo onto a two-colour ramp, cropped to fill `size`.
+    Keeps the portrait on-brand instead of dropping a raw snapshot on the card."""
+    w, h = size
+    im = Image.open(src).convert("L")
+    scale = max(w / im.width, h / im.height)
+    im = im.resize((round(im.width * scale), round(im.height * scale)), Image.LANCZOS)
+    left, top = (im.width - w) // 2, 0  # bias to the top: keep the head in frame
+    im = im.crop((left, top, left + w, top + h))
+    im = ImageOps.autocontrast(im, cutoff=1)
+    return ImageOps.colorize(im, black=shadow, white=highlight)
 
 
 def trimmed(img):
@@ -252,7 +315,7 @@ def trim_guides(img):
 # ================================================================ CONCEPT A
 # "Gradient Monogram" — same light ground, monogram and cyan->violet gradient
 # as the live site. The cohesive choice.
-def a_front():
+def a_front(url):
     img = canvas(WHITE)
     d = ImageDraw.Draw(img)
 
@@ -278,7 +341,7 @@ def a_front():
     return img
 
 
-def a_back():
+def a_back(url):
     img = canvas(PAPER)
     d = ImageDraw.Draw(img)
     for gx in range(0, W, 54):
@@ -292,7 +355,7 @@ def a_back():
     d.text((W / 2, BASE_1), SITE, font=font("jetbrains-mono", 27, 500),
            fill=ELECTRIC, anchor="ms")
 
-    qr = qr_image(f"https://{SITE}", QR_PX, "#171a22", "#f7f9fd")
+    qr = qr_image(url, QR_PX, "#171a22", "#f7f9fd")
     img.paste(qr, (W - M - QR_PX, M))
     return img
 
@@ -300,7 +363,7 @@ def a_back():
 # ================================================================ CONCEPT B
 # "Dark Signal" — MarTech voice. Deep ink, a data-signal line, services read
 # like a capability readout.
-def b_front():
+def b_front(url):
     img = canvas(INK_DEEP)
     d = ImageDraw.Draw(img)
 
@@ -328,7 +391,7 @@ def b_front():
     return img
 
 
-def b_back():
+def b_back(url):
     img = canvas(INK_DEEP)
     d = ImageDraw.Draw(img)
     for gx in range(M, W - M, 26):
@@ -346,14 +409,14 @@ def b_back():
 
     d.text((M, BASE_1), LINKEDIN, font=font("jetbrains-mono", 23, 400),
            fill=(140, 148, 168), anchor="ls")
-    qr = qr_image(f"https://{SITE}", QR_PX, "#e6eaf4", "#0d0f16")
+    qr = qr_image(url, QR_PX, "#e6eaf4", "#0d0f16")
     img.paste(qr, (W - M - QR_PX, H - M - QR_PX))
     return img
 
 
 # ================================================================ CONCEPT C
 # "Editorial Ledger" — the quiet, premium consultant card. No gradients.
-def c_front():
+def c_front(url):
     img = canvas(CREAM)
     d = ImageDraw.Draw(img)
     d.line([(M, M + 30), (M + 96, M + 30)], fill=INDIGO_DK, width=4)
@@ -370,7 +433,7 @@ def c_front():
     return img
 
 
-def c_back():
+def c_back(url):
     img = canvas(CREAM)
     d = ImageDraw.Draw(img)
     cx, cy = W / 2, M + 74
@@ -386,7 +449,7 @@ def c_back():
 # ================================================================ CONCEPT D
 # "Bilingual" — English one side, Arabic the other. The card is the
 # differentiator; hand it over either way up.
-def d_side(arabic):
+def d_side(url, arabic):
     img = canvas(INK)
     d = ImageDraw.Draw(img)
     img.paste(lin_grad(W, 90, BRAND), (0, 0))
@@ -422,19 +485,299 @@ def d_side(arabic):
         d.text((M, BASE_2), f"{PHONE} · {EMAIL}", font=mono, fill=(140, 148, 170), anchor="ls")
         d.text((M, BASE_1), f"{CITY_LONG} · {SITE}", font=mono, fill=(140, 148, 170), anchor="ls")
 
-    qr = qr_image(f"https://{SITE}", QR_PX, "#e8ecf6", "#171a22")
+    qr = qr_image(url, QR_PX, "#e8ecf6", "#171a22")
     qx = M if arabic else W - M - QR_PX
     img.paste(qr, (qx, M + 118))
     return img
 
 
+# ================================================================ CONCEPT E
+# "Search Result" — the card IS the thing he sells. Front is an organic search
+# listing; back is the AI answer that cites him. SEO on one side, GEO on the
+# other. No real search engine is named or branded.
+SERP_LINK = (26, 13, 171)
+SERP_URL = (26, 115, 61)
+SERP_BODY = (77, 81, 86)
+SERP_HEAD = (32, 33, 36)
+
+
+def e_front(url):
+    img = canvas(WHITE)
+    d = ImageDraw.Draw(img)
+
+    # search field
+    fx0, fy0, fx1, fy1 = M, M, W - M, M + 78
+    d.rounded_rectangle([fx0, fy0, fx1, fy1], radius=39, outline=(223, 225, 229), width=3)
+    cx, cy = fx0 + 46, (fy0 + fy1) / 2
+    d.ellipse([cx - 13, cy - 13, cx + 13, cy + 13], outline=(140, 146, 156), width=4)
+    d.line([(cx + 9, cy + 9), (cx + 19, cy + 19)], fill=(140, 146, 156), width=4)
+    d.text((fx0 + 84, cy + 10), "digital marketing specialist toronto",
+           font=font("inter", 28, 400), fill=SERP_BODY, anchor="ls")
+
+    # result
+    y = fy0 + 148
+    chip = 34
+    d.rounded_rectangle([M, y - chip + 4, M + chip, y + 4], radius=10, fill=(244, 245, 250),
+                        outline=(226, 229, 240), width=2)
+    grad_text(img, (M + chip / 2, y - chip / 2 + 5), "NS", font("space-grotesk", 18, 700), anchor="mm")
+    d.text((M + chip + 16, y), SITE, font=font("inter", 24, 400), fill=SERP_URL, anchor="ls")
+
+    d.text((M, y + 66), NAME + " — Digital Marketing", font=font("inter", 40, 400),
+           fill=SERP_LINK, anchor="ls")
+    d.text((M, y + 114), "& MarTech Specialist", font=font("inter", 40, 400),
+           fill=SERP_LINK, anchor="ls")
+
+    snippet = ("Toronto. SEO & GEO, paid search, GA4 analytics and the automation "
+               "behind them. +100% traffic, −20% cost-per-click.")
+    yy = y + 168
+    for line in wrap(snippet, font("inter", 25, 400), W - 2 * M)[:2]:
+        d.text((M, yy), line, font=font("inter", 25, 400), fill=SERP_BODY, anchor="ls")
+        yy += 38
+
+    d.text((W - M, BASE_1), f"{PHONE}  ·  {EMAIL}", font=font("jetbrains-mono", 21, 400),
+           fill=(150, 156, 168), anchor="rs")
+    return img
+
+
+def e_back(url):
+    img = canvas(WHITE)
+    d = ImageDraw.Draw(img)
+
+    # The panel stops well short of the bottom — the citation row and QR live
+    # outside it, the way a real answer box separates body from sources.
+    box = [M - 22, M - 14, W - M + 22, 452]
+    d.rounded_rectangle(box, radius=26, fill=(250, 251, 255))
+    grad_ring(img, box, radius=26, width=3)
+
+    # sparkle mark + label
+    sx, sy = M + 8, M + 26
+    d.polygon([(sx, sy - 15), (sx + 5, sy - 5), (sx + 15, sy), (sx + 5, sy + 5),
+               (sx, sy + 15), (sx - 5, sy + 5), (sx - 15, sy), (sx - 5, sy - 5)], fill=ELECTRIC)
+    draw_tracked(d, (sx + 30, sy + 8), "AI ANSWER", font("jetbrains-mono", 20, 500), ELECTRIC, 4)
+
+    body = font("inter", 28, 400)
+    answer = ("Nasser Saleh is a Toronto digital marketer who builds and runs the technology "
+              "behind growth — so campaigns launch, and get measured, without waiting on a dev team.")
+    yy = M + 90
+    for line in wrap(answer, body, W - 2 * M - 20)[:4]:
+        d.text((M, yy), line, font=body, fill=SERP_HEAD, anchor="ls")
+        yy += 42
+
+    draw_tracked(d, (M, 512), "CITED SOURCE", font("jetbrains-mono", 18, 500), FAINT, 4)
+    d.rounded_rectangle([M, 526, M + 250, 580], radius=27,
+                        fill=WHITE, outline=(219, 223, 236), width=3)
+    d.text((M + 26, 566), SITE, font=font("inter", 24, 500), fill=SERP_LINK, anchor="ls")
+
+    img.paste(qr_image(url, QR_PX, "#202124", "#ffffff"), (W - M - QR_PX, 448))
+    return img
+
+
+# ================================================================ CONCEPT F
+# "Tracked" — the joke is the proof. The QR really does carry UTM parameters,
+# so scans of this card show up in his GA4 alongside every other channel.
+def f_front(url):
+    img = canvas((250, 250, 252))
+    d = ImageDraw.Draw(img)
+    # Tall enough that ~10px still shows after the bleed is trimmed off — a bar
+    # thinner than the bleed would simply disappear on the cut card.
+    img.paste(lin_grad(W, B + 10, BRAND), (0, 0))
+
+    draw_tracked(d, (M, M + 40), "MEASURED, LIKE EVERYTHING ELSE I RUN",
+                 font("jetbrains-mono", 20, 500), FAINT, 4.2)
+
+    mono_b = font("jetbrains-mono", 44, 600)
+    mono_q = font("jetbrains-mono", 44, 400)
+    d.text((M, M + 148), SITE, font=mono_b, fill=INK, anchor="ls")
+    x = M + mono_b.getlength(SITE)
+    d.text((x, M + 148), "/?", font=mono_q, fill=(178, 184, 198), anchor="ls")
+
+    q = font("jetbrains-mono", 30, 400)
+    for i, (k, v) in enumerate([("utm_source", "card"), ("utm_medium", "print"),
+                                ("utm_campaign", "f")]):
+        yy = M + 216 + i * 46
+        d.text((M + 26, yy), k, font=q, fill=(126, 133, 150), anchor="ls")
+        xk = M + 26 + q.getlength(k)
+        d.text((xk, yy), "=", font=q, fill=(190, 195, 208), anchor="ls")
+        d.text((xk + q.getlength("="), yy), v, font=q, fill=ELECTRIC, anchor="ls")
+
+    d.text((M, BASE_1), f"{NAME}  ·  {TITLE}", font=font("inter", 25, 450),
+           fill=MUTED, anchor="ls")
+    return img
+
+
+def f_back(url):
+    img = canvas(INK_DEEP)
+    d = ImageDraw.Draw(img)
+
+    qr = qr_image(url, 232, "#0d0f16", "#ffffff")
+    pad = 18
+    plate = Image.new("RGB", (232 + pad * 2, 232 + pad * 2), WHITE)
+    plate.paste(qr, (pad, pad))
+    img.paste(plate, (M, (H - (232 + pad * 2)) // 2))
+
+    tx = M + 232 + pad * 2 + 54
+    d.text((tx, 250), "Scan it.", font=font("space-grotesk", 54, 600), fill=WHITE, anchor="ls")
+    body = font("inter", 26, 400)
+    yy = 306
+    for line in wrap("It lands in my analytics next to every other channel. That is the whole point.",
+                     body, W - M - tx)[:3]:
+        d.text((tx, yy), line, font=body, fill=(168, 176, 196), anchor="ls")
+        yy += 38
+
+    d.text((tx, BASE_1), f"{PHONE} · {EMAIL}", font=font("jetbrains-mono", 21, 400),
+           fill=(122, 130, 150), anchor="ls")
+    return img
+
+
+# ================================================================ CONCEPT G
+# "Portrait" — vertical, and the only card with his face on it. In a stack of
+# landscape cards, the orientation alone does half the work.
+GW = int((TRIM_H + 2 * BLEED) * DPI)   # 675 — portrait swaps the axes
+GH = int((TRIM_W + 2 * BLEED) * DPI)   # 1125
+GM = B + int(SAFE * DPI)
+
+
+def g_front(url):
+    img = Image.new("RGB", (GW, GH), INK_DEEP)
+    photo_h = 720
+    img.paste(duotone(ROOT / "public" / "assets" / "headshot.jpg",
+                      shadow=(11, 13, 20), highlight=(150, 214, 245), size=(GW, photo_h)), (0, 0))
+
+    # fade the photo into the panel below it
+    fade_h = 190
+    fade = lin_grad(GW, fade_h, [(0.0, INK_DEEP), (1.0, INK_DEEP)], vertical=True)
+    mask = Image.new("L", (GW, fade_h))
+    mp = mask.load()
+    for y in range(fade_h):
+        for x in range(0, GW, 1):
+            mp[x, y] = int(255 * (y / (fade_h - 1)) ** 1.5)
+    img.paste(fade, (0, photo_h - fade_h), mask)
+
+    d = ImageDraw.Draw(img)
+    img.paste(lin_grad(GW, 7, BRAND), (0, photo_h - 4))
+
+    d.text((GM, photo_h + 96), "Nasser", font=font("space-grotesk", 74, 600), fill=WHITE, anchor="ls")
+    d.text((GM, photo_h + 176), "Saleh", font=font("space-grotesk", 74, 600), fill=WHITE, anchor="ls")
+    draw_tracked(d, (GM, photo_h + 226), "DIGITAL MARKETING · MARTECH",
+                 font("jetbrains-mono", 19, 500), CYAN, 3.4)
+
+    mono = font("jetbrains-mono", 21, 400)
+    d.text((GM, GH - GM - 46), PHONE, font=mono, fill=(160, 168, 188), anchor="ls")
+    d.text((GM, GH - GM - 8), EMAIL, font=mono, fill=(160, 168, 188), anchor="ls")
+    return img
+
+
+def g_back(url):
+    img = Image.new("RGB", (GW, GH), WHITE)
+    d = ImageDraw.Draw(img)
+    img.paste(lin_grad(GW, B + 10, BRAND), (0, 0))  # survives the trim; see f_front
+
+    grad_text(img, (GW / 2, 250), "NS", font("space-grotesk", 150, 700), anchor="mm")
+
+    d.text((GW / 2, 400), TAG_1, font=font("inter", 27, 500), fill=INK, anchor="ms")
+    d.text((GW / 2, 442), TAG_2, font=font("inter", 27, 500), fill=INK, anchor="ms")
+
+    y = 540
+    for color, label in SERVICES:
+        d.ellipse([GM, y - 13, GM + 13, y], fill=color)
+        for i, line in enumerate(wrap(label, font("inter", 24, 420), GW - 2 * GM - 30)):
+            d.text((GM + 30, y + i * 34), line, font=font("inter", 24, 420),
+                   fill=MUTED, anchor="ls")
+        y += 34 * max(1, len(wrap(label, font("inter", 24, 420), GW - 2 * GM - 30))) + 22
+
+    img.paste(qr_image(url, QR_PX, "#171a22", "#ffffff"), ((GW - QR_PX) // 2, GH - GM - QR_PX - 44))
+    d.text((GW / 2, GH - GM - 8), SITE, font=font("jetbrains-mono", 24, 500),
+           fill=ELECTRIC, anchor="ms")
+    return img
+
+
+# ================================================================ CONCEPT H
+# "One Number" — the loudest card in the box. The front is a single result at
+# poster scale; everything that qualifies it moves to the back.
+def h_front(url):
+    img = canvas(WHITE)
+    d = ImageDraw.Draw(img)
+    grad_text(img, (W / 2, H / 2 - 18), "+100%", font("space-grotesk", 250, 700), anchor="mm")
+    draw_tracked(d, (W / 2, BASE_1), "WEBSITE TRAFFIC  ·  GLOBALDWS  ·  12 MONTHS",
+                 font("jetbrains-mono", 20, 500), MUTED, 4, anchor="ms")
+    return img
+
+
+def h_back(url):
+    img = canvas(INK_DEEP)
+    d = ImageDraw.Draw(img)
+
+    d.text((M, M + 62), NAME, font=font("space-grotesk", 62, 600), fill=WHITE, anchor="ls")
+    d.text((M, M + 110), TITLE, font=font("inter", 26, 420), fill=(166, 174, 194), anchor="ls")
+
+    rows = [("+40%", "SEO traffic, 5 months"), ("−20%", "cost-per-click, paid search"),
+            ("+20%", "campaign ROI")]
+    y = M + 192
+    num = font("space-grotesk", 40, 600)
+    lab = font("inter", 24, 400)
+    for metric, label in rows:
+        d.text((M, y), metric, font=num, fill=CYAN, anchor="ls")
+        d.text((M + 132, y), label, font=lab, fill=(150, 158, 178), anchor="ls")
+        y += 56
+
+    mono = font("jetbrains-mono", 21, 400)
+    d.text((M, BASE_2), f"{PHONE} · {EMAIL}", font=mono, fill=(132, 140, 160), anchor="ls")
+    d.text((M, BASE_1), f"{CITY} · {SITE}", font=mono, fill=(132, 140, 160), anchor="ls")
+    img.paste(qr_image(url, QR_PX, "#e6eaf4", "#0d0f16"), (W - M - QR_PX, H - M - QR_PX))
+    return img
+
+
 # ================================================================ build
+def d_side_front(url):
+    return d_side(url, False)
+
+
+def d_side_back(url):
+    return d_side(url, True)
+
+
 CONCEPTS = [
     ("A-gradient-monogram", "Gradient Monogram", a_front, a_back),
     ("B-dark-signal",       "Dark Signal",       b_front, b_back),
     ("C-editorial-ledger",  "Editorial Ledger",  c_front, c_back),
-    ("D-bilingual",         "Bilingual EN / AR", lambda: d_side(False), lambda: d_side(True)),
+    ("D-bilingual",         "Bilingual EN / AR", d_side_front, d_side_back),
+    ("E-search-result",     "Search Result",     e_front, e_back),
+    ("F-tracked",           "Tracked",           f_front, f_back),
+    ("G-portrait",          "Portrait",          g_front, g_back),
+    ("H-one-number",        "One Number",        h_front, h_back),
 ]
+
+# Concept G is the only vertical card, so it needs its own trim geometry.
+PORTRAIT = {"G-portrait"}
+
+
+def crop_for(slug, img):
+    """Crop to the trim box using whichever orientation this concept uses."""
+    tw, th = (int(TRIM_H * DPI), int(TRIM_W * DPI)) if slug in PORTRAIT \
+        else (int(TRIM_W * DPI), int(TRIM_H * DPI))
+    x, y = (img.width - tw) // 2, (img.height - th) // 2
+    return img.crop((x, y, x + tw, y + th))
+
+
+def save_png(img, path):
+    """Photographic cards (the duotone portrait) carry a couple of thousand
+    colours and balloon as truecolour PNG. Palette them — a duotone ramp fits
+    inside 256 entries with no visible loss. Flat/gradient art is left alone,
+    where paletting would band. The print PDFs always keep full colour."""
+    colors = img.getcolors(1 << 16)
+    if colors is None or len(colors) > 1200:
+        img = img.quantize(colors=256, method=Image.MEDIANCUT,
+                           dither=Image.FLOYDSTEINBERG)
+    img.save(path, dpi=(DPI, DPI), optimize=True)
+
+
+def guides_for(img):
+    """Proof-only overlay showing the trim line and safe area, any orientation."""
+    p = img.copy()
+    d = ImageDraw.Draw(p)
+    d.rectangle([B, B, img.width - B - 1, img.height - B - 1], outline=(255, 0, 90), width=3)
+    d.rectangle([M, M, img.width - M - 1, img.height - M - 1], outline=(0, 190, 255), width=2)
+    return p
 
 
 def main():
@@ -445,40 +788,43 @@ def main():
 
     proofs = []
     for slug, label, mk_front, mk_back in CONCEPTS:
-        front, back = mk_front(), mk_back()
+        url = card_url(slug)
+        front, back = mk_front(url), mk_back(url)
 
         pdf = OUT / f"nasser-saleh-card-{slug}.pdf"
         front.save(pdf, "PDF", resolution=DPI, save_all=True, append_images=[back])
 
         # Digital use: cropped to the trim, so there is no bleed hanging off.
-        trimmed(front).save(OUT / f"{slug}-front.png", dpi=(DPI, DPI))
-        trimmed(back).save(OUT / f"{slug}-back.png", dpi=(DPI, DPI))
-        proofs.append((label, trim_guides(front), trim_guides(back)))
-        print(f"{label:22} -> {pdf.name}")
+        for side, im in (("front", front), ("back", back)):
+            save_png(crop_for(slug, im), OUT / f"{slug}-{side}.png")
+        proofs.append((label, guides_for(front), guides_for(back)))
+        print(f"{label:22} -> {pdf.name}   {front.width}x{front.height}")
 
     # contact sheet: every concept, front and back, with trim + safe guides
-    scale = 0.46
-    cw, ch = int(W * scale), int(H * scale)
+    scale = 0.4
+    colw, rowh = int(W * scale), int(GH * scale)   # tallest card sets the row
     pad, gap, head, foot = 46, 30, 54, 70
-    sheet_w = pad * 2 + cw * 2 + gap
-    sheet_h = pad + len(proofs) * (head + ch + gap) + foot
+    sheet_w = pad * 2 + colw * 2 + gap
+    sheet_h = pad + len(proofs) * (head + rowh + gap) + foot
     sheet = Image.new("RGB", (sheet_w, sheet_h), (238, 240, 246))
     sd = ImageDraw.Draw(sheet)
     y = pad
     for label, f_img, b_img in proofs:
         sd.text((pad, y + 14), label, font=font("space-grotesk", 30, 600), fill=INK, anchor="ls")
-        sd.text((pad + cw + gap, y + 14), "back", font=font("inter", 24, 400),
+        sd.text((pad + colw + gap, y + 14), "back", font=font("inter", 24, 400),
                 fill=MUTED, anchor="ls")
         y += head
-        sheet.paste(f_img.resize((cw, ch), Image.LANCZOS), (pad, y))
-        sheet.paste(b_img.resize((cw, ch), Image.LANCZOS), (pad + cw + gap, y))
-        y += ch + gap
+        for i, im in enumerate((f_img, b_img)):
+            k = min(colw / im.width, rowh / im.height)
+            w2, h2 = int(im.width * k), int(im.height * k)
+            sheet.paste(im.resize((w2, h2), Image.LANCZOS),
+                        (pad + i * (colw + gap) + (colw - w2) // 2, y))
+        y += rowh + gap
     sd.text((pad, sheet_h - foot + 30),
             "pink = trim line   ·   blue = safe area   ·   art extends past trim = bleed",
             font=font("inter", 24, 400), fill=MUTED, anchor="ls")
     sheet.save(OUT / "ALL-concepts-proof.png")
-    print(f"\ncontact sheet         -> ALL-concepts-proof.png  ({sheet_w}x{sheet_h})")
-    print(f"card canvas {W}x{H}px @ {DPI}dpi = {TRIM_W + 2 * BLEED}x{TRIM_H + 2 * BLEED}in with bleed")
+    print(f"\ncontact sheet -> ALL-concepts-proof.png ({sheet_w}x{sheet_h})")
 
 
 if __name__ == "__main__":
