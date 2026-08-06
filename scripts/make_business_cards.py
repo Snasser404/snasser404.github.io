@@ -107,6 +107,23 @@ SERVICES = [
     (TEAL,     "Websites — custom, WordPress, Wix"),
 ]
 
+QUERIES = [
+    "digital marketing toronto", "seo specialist near me", "google ads management",
+    "marketing automation setup", "ga4 conversion tracking", "local seo gta",
+    "generative engine optimization", "does chatgpt know my business",
+    "martech consultant toronto", "how do i lower cost per lead",
+    "google business profile help", "wordpress site not ranking",
+    "why is my traffic down", "how to rank in ai answers", "ppc management agency",
+    "email marketing setup", "book more appointments online", "marketing dashboard",
+]
+
+CHECKS = [
+    "You show up for your service + your city",
+    "ChatGPT and Google's AI know you exist",
+    "You can name your cost per lead",
+    "Something follows up when a lead goes cold",
+]
+
 # Every literal drawn by concepts E–H, so check_coverage() sees them too.
 # The en-dashes, the true minus in "−20%" and "·" are the ones that bite.
 SERIES_2_COPY = [
@@ -124,6 +141,13 @@ SERIES_2_COPY = [
     "WEBSITE TRAFFIC  ·  GLOBALDWS  ·  12 MONTHS",
     "+40%", "−20%", "+20%",
     "SEO traffic, 5 months", "cost-per-click, paid search", "campaign ROI",
+    "THE ANSWER IN THE NOISE", "Scan", "me.", "MERCHANT COPY",
+    "TICK WHAT'S TRUE OF YOUR MARKETING", "Any box empty? That's the conversation.",
+    "I fix the", "empty boxes.", "TOTAL", "ONE CONVERSATION", "incl.",
+    "SEO & GEO", "PAID SEARCH & SOCIAL", "ANALYTICS & TRACKING",
+    "AUTOMATION & FUNNELS", "TRAFFIC", "SEO TRAFFIC", "COST PER CLICK",
+    "CAMPAIGN ROI", "NASSER SALEH", "DIGITAL MARKETING & MARTECH",
+    *QUERIES, *CHECKS,
 ]
 
 # ---------------------------------------------------------------- fonts
@@ -235,7 +259,7 @@ def draw_tracked(d, xy, text, fnt, fill, tracking, anchor="ls"):
         x += fnt.getlength(ch) + tracking
 
 
-QR_PX = 150  # 0.5in at 300dpi — the tagged URLs are longer, so give them room
+QR_PX = 170  # 0.57in at 300dpi, quiet zone included
 
 
 def card_url(slug):
@@ -244,18 +268,40 @@ def card_url(slug):
     return f"https://{SITE}/?utm_source=card&utm_medium=print&utm_campaign={slug[0].lower()}"
 
 
-def qr_image(data, size, fg, bg):
-    # Level L keeps the module count low, so each cell stays large enough to
-    # scan at this physical size.
-    q = qrcode.QRCode(version=None, box_size=10, border=0,
+def qr_image(data, size, fg, bg, border=4):
+    """`size` is the whole symbol *including* its quiet zone.
+
+    Two things this enforces, both learned the hard way:
+
+    - The quiet zone is built in (border=4, the spec minimum). Drawing a QR
+      flush against other artwork is a common way to make one that photographs
+      but never decodes.
+    - `fg` must be the DARK colour and `bg` the light one. A light-on-dark
+      "inverted" QR looks great on a dark card and is unreadable to a good
+      share of phone cameras, which assume dark modules on a light field. On a
+      dark card, pass a light `bg` — the quiet zone then reads as a deliberate
+      light plate under the code.
+    """
+    q = qrcode.QRCode(version=None, box_size=10, border=border,
                       error_correction=qrcode.constants.ERROR_CORRECT_L)
     q.add_data(data)
     q.make(fit=True)
-    modules = q.modules_count
-    if size / modules < 3.6:  # ~0.012in per module; below this, scans get flaky
-        raise SystemExit(f"QR too dense: {modules} modules in {size}px for {data}")
+    pitch = size / (q.modules_count + 2 * border)
+    if pitch < 3.6:  # ~0.012in per module; below this, scans get flaky
+        raise SystemExit(f"QR too dense: {pitch:.2f}px per module in {size}px for {data}")
+    if _luma(fg) > _luma(bg):
+        raise SystemExit(f"QR is inverted (light modules on dark): fg={fg} bg={bg}")
     img = q.make_image(fill_color=fg, back_color=bg).convert("RGB")
     return img.resize((size, size), Image.NEAREST)
+
+
+def _luma(hex_or_rgb):
+    if isinstance(hex_or_rgb, str):
+        h = hex_or_rgb.lstrip("#")
+        r, g, b = (int(h[i:i + 2], 16) for i in (0, 2, 4))
+    else:
+        r, g, b = hex_or_rgb
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b
 
 
 def wrap(text, fnt, max_w):
@@ -409,7 +455,7 @@ def b_back(url):
 
     d.text((M, BASE_1), LINKEDIN, font=font("jetbrains-mono", 23, 400),
            fill=(140, 148, 168), anchor="ls")
-    qr = qr_image(url, QR_PX, "#e6eaf4", "#0d0f16")
+    qr = qr_image(url, QR_PX, "#0d0f16", "#f4f6fb")
     img.paste(qr, (W - M - QR_PX, H - M - QR_PX))
     return img
 
@@ -485,7 +531,7 @@ def d_side(url, arabic):
         d.text((M, BASE_2), f"{PHONE} · {EMAIL}", font=mono, fill=(140, 148, 170), anchor="ls")
         d.text((M, BASE_1), f"{CITY_LONG} · {SITE}", font=mono, fill=(140, 148, 170), anchor="ls")
 
-    qr = qr_image(url, QR_PX, "#e8ecf6", "#171a22")
+    qr = qr_image(url, QR_PX, "#171a22", "#f4f6fb")
     qx = M if arabic else W - M - QR_PX
     img.paste(qr, (qx, M + 118))
     return img
@@ -545,7 +591,7 @@ def e_back(url):
 
     # The panel stops well short of the bottom — the citation row and QR live
     # outside it, the way a real answer box separates body from sources.
-    box = [M - 22, M - 14, W - M + 22, 452]
+    box = [M - 22, M - 14, W - M + 22, 408]
     d.rounded_rectangle(box, radius=26, fill=(250, 251, 255))
     grad_ring(img, box, radius=26, width=3)
 
@@ -563,12 +609,12 @@ def e_back(url):
         d.text((M, yy), line, font=body, fill=SERP_HEAD, anchor="ls")
         yy += 42
 
-    draw_tracked(d, (M, 512), "CITED SOURCE", font("jetbrains-mono", 18, 500), FAINT, 4)
-    d.rounded_rectangle([M, 526, M + 250, 580], radius=27,
+    draw_tracked(d, (M, 470), "CITED SOURCE", font("jetbrains-mono", 18, 500), FAINT, 4)
+    d.rounded_rectangle([M, 486, M + 250, 540], radius=27,
                         fill=WHITE, outline=(219, 223, 236), width=3)
-    d.text((M + 26, 566), SITE, font=font("inter", 24, 500), fill=SERP_LINK, anchor="ls")
+    d.text((M + 26, 526), SITE, font=font("inter", 24, 500), fill=SERP_LINK, anchor="ls")
 
-    img.paste(qr_image(url, QR_PX, "#202124", "#ffffff"), (W - M - QR_PX, 448))
+    img.paste(qr_image(url, QR_PX, "#202124", "#ffffff"), (W - M - QR_PX, 424))
     return img
 
 
@@ -609,13 +655,10 @@ def f_back(url):
     img = canvas(INK_DEEP)
     d = ImageDraw.Draw(img)
 
-    qr = qr_image(url, 232, "#0d0f16", "#ffffff")
-    pad = 18
-    plate = Image.new("RGB", (232 + pad * 2, 232 + pad * 2), WHITE)
-    plate.paste(qr, (pad, pad))
-    img.paste(plate, (M, (H - (232 + pad * 2)) // 2))
+    qs = 268
+    img.paste(qr_image(url, qs, "#0d0f16", "#ffffff"), (M, (H - qs) // 2))
 
-    tx = M + 232 + pad * 2 + 54
+    tx = M + qs + 54
     d.text((tx, 250), "Scan it.", font=font("space-grotesk", 54, 600), fill=WHITE, anchor="ls")
     body = font("inter", 26, 400)
     yy = 306
@@ -723,7 +766,251 @@ def h_back(url):
     mono = font("jetbrains-mono", 21, 400)
     d.text((M, BASE_2), f"{PHONE} · {EMAIL}", font=mono, fill=(132, 140, 160), anchor="ls")
     d.text((M, BASE_1), f"{CITY} · {SITE}", font=mono, fill=(132, 140, 160), anchor="ls")
-    img.paste(qr_image(url, QR_PX, "#e6eaf4", "#0d0f16"), (W - M - QR_PX, H - M - QR_PX))
+    img.paste(qr_image(url, QR_PX, "#0d0f16", "#f4f6fb"), (W - M - QR_PX, H - M - QR_PX))
+    return img
+
+
+# ================================================================ CONCEPT I
+# "Keyword Field" — the card is a wall of the things people actually type into
+# a search box, and his name is the part that lights up inside it. Literal, for
+# someone whose job is being the answer in that noise.
+
+
+def _field(img, color, size=17, lh=25):
+    """Fill the whole card with running search queries."""
+    d = ImageDraw.Draw(img)
+    f = font("jetbrains-mono", size, 400)
+    i = 0
+    y = 8
+    while y < img.height:
+        line, x = "", 0
+        # each row starts further into the list, so columns never line up
+        while x < img.width + 240:
+            q = QUERIES[i % len(QUERIES)]
+            line += q + "   ·   "
+            x = f.getlength(line)
+            i += 1
+        d.text((-((i * 37) % 190), y), line, font=f, fill=color, anchor="ls")
+        y += lh
+        i += 3
+    return img
+
+
+def i_front(url):
+    img = canvas(INK_DEEP)
+    _field(img, (44, 50, 66))                    # the noise
+
+    # Inside the letters everything inverts: bright gradient ground with the
+    # very same query text knocked out of it. _field is deterministic, so the
+    # lines run straight through the letterforms and flip polarity at the edge
+    # — which is what makes the name read hard instead of glowing vaguely.
+    letters = lin_grad(W, H, BRAND)
+    _field(letters, INK_DEEP)
+
+    mask = Image.new("L", (W, H), 0)
+    md = ImageDraw.Draw(mask)
+    nf = font("space-grotesk", 176, 700)
+    md.text((M, 306), "NASSER", font=nf, fill=255, anchor="ls")
+    md.text((M, 476), "SALEH", font=nf, fill=255, anchor="ls")
+    img.paste(letters, (0, 0), mask)
+
+    d = ImageDraw.Draw(img)
+    draw_tracked(d, (M, BASE_1), "THE ANSWER IN THE NOISE",
+                 font("jetbrains-mono", 19, 500), (128, 136, 156), 4)
+    return img
+
+
+def i_back(url):
+    img = canvas(INK_DEEP)
+    d = ImageDraw.Draw(img)
+    _field(img, (28, 33, 44))
+
+    panel = [M - 26, 150, W - M + 26, 470]
+    d.rounded_rectangle(panel, radius=8, fill=(16, 19, 27), outline=(48, 54, 70), width=2)
+
+    d.text((M, 246), NAME, font=font("space-grotesk", 58, 600), fill=WHITE, anchor="ls")
+    d.text((M, 296), TITLE, font=font("inter", 26, 420), fill=(168, 176, 196), anchor="ls")
+    mono = font("jetbrains-mono", 22, 400)
+    d.text((M, 376), f"{PHONE} · {EMAIL}", font=mono, fill=(140, 148, 170), anchor="ls")
+    d.text((M, 418), f"{CITY} · {SITE}", font=mono, fill=(140, 148, 170), anchor="ls")
+
+    img.paste(qr_image(url, QR_PX, "#101319", "#f4f6fb"), (W - M - QR_PX, 296))
+    return img
+
+
+# ================================================================ CONCEPT J
+# "Scan Me" — the QR stops being a footnote and becomes the card. Error
+# correction level H is what lets the monogram sit in the middle of it.
+def qr_knockout(data, size, fg, bg, label=None):
+    """High-redundancy QR with an optional knocked-out centre. border=4 keeps
+    the mandatory quiet zone inside the image, so it survives any background."""
+    q = qrcode.QRCode(error_correction=qrcode.constants.ERROR_CORRECT_H,
+                      box_size=10, border=4)
+    q.add_data(data)
+    q.make(fit=True)
+    img = q.make_image(fill_color=fg, back_color=bg).convert("RGB").resize(
+        (size, size), Image.NEAREST)
+    if label:
+        d = ImageDraw.Draw(img)
+        bw, bh = int(size * 0.30), int(size * 0.30)
+        x, y = (size - bw) // 2, (size - bh) // 2
+        d.rounded_rectangle([x, y, x + bw, y + bh], radius=int(bw * 0.18), fill=bg)
+        d.rounded_rectangle([x, y, x + bw, y + bh], radius=int(bw * 0.18),
+                            outline=fg, width=max(2, size // 90))
+        d.text((size / 2, size / 2 + int(size * 0.045)), label,
+               font=font("space-grotesk", int(size * 0.15), 700), fill=fg, anchor="mm")
+    return img
+
+
+def j_front(url):
+    img = canvas(WHITE)
+    d = ImageDraw.Draw(img)
+
+    qs = 470
+    img.paste(qr_knockout(url, qs, "#12141b", "#ffffff", label="NS"), (M - 14, (H - qs) // 2))
+
+    x = M + qs + 34
+    d.text((x, 250), "Scan", font=font("space-grotesk", 96, 600), fill=INK, anchor="ls")
+    d.text((x, 344), "me.", font=font("space-grotesk", 96, 600), fill=ELECTRIC, anchor="ls")
+    d.text((x, 404), TITLE, font=font("inter", 23, 450), fill=MUTED, anchor="ls")
+    mono = font("jetbrains-mono", 21, 400)
+    d.text((x, BASE_2), f"{NAME} · {PHONE}", font=mono, fill=(110, 118, 136), anchor="ls")
+    d.text((x, BASE_1), f"{EMAIL}", font=mono, fill=(110, 118, 136), anchor="ls")
+    return img
+
+
+def j_back(url):
+    img = canvas(INK_DEEP)
+    img.paste(lin_grad(W, H, BRAND), (0, 0))
+    d = ImageDraw.Draw(img)
+    d.text((M, 300), TAG_1, font=font("space-grotesk", 62, 600), fill=WHITE, anchor="ls")
+    d.text((M, 376), TAG_2, font=font("space-grotesk", 62, 600), fill=(255, 255, 255), anchor="ls")
+    mono = font("jetbrains-mono", 22, 500)
+    d.text((M, BASE_1), f"{EMAIL} · {SITE}", font=mono, fill=(255, 255, 255), anchor="ls")
+    return img
+
+
+# ================================================================ CONCEPT K
+# "The Audit" — the card does a job instead of sitting in a drawer. Four
+# questions a business owner cannot answer comfortably, and every unticked box
+# is the reason to call him.
+
+
+def k_front(url):
+    img = canvas((252, 252, 250))
+    d = ImageDraw.Draw(img)
+
+    draw_tracked(d, (M, M + 32), "TICK WHAT'S TRUE OF YOUR MARKETING",
+                 font("jetbrains-mono", 19, 500), (128, 132, 142), 3.6)
+
+    y = M + 112
+    body = font("inter", 26, 420)
+    for line in CHECKS:
+        d.rounded_rectangle([M, y - 26, M + 30, y + 4], radius=4,
+                            outline=(150, 156, 168), width=3)
+        d.text((M + 52, y), line, font=body, fill=(38, 40, 48), anchor="ls")
+        y += 76
+
+    d.line([(M, BASE_1 - 46), (W - M, BASE_1 - 46)], fill=(220, 222, 228), width=2)
+    d.text((M, BASE_1), "Any box empty? That's the conversation.",
+           font=font("inter", 24, 500), fill=ELECTRIC, anchor="ls")
+    d.text((W - M, BASE_1), NAME, font=font("jetbrains-mono", 21, 500),
+           fill=(120, 126, 138), anchor="rs")
+    return img
+
+
+def k_back(url):
+    img = canvas(INK_DEEP)
+    d = ImageDraw.Draw(img)
+
+    d.text((M, M + 74), "I fix the", font=font("space-grotesk", 58, 600), fill=WHITE, anchor="ls")
+    d.text((M, M + 142), "empty boxes.", font=font("space-grotesk", 58, 600), fill=CYAN, anchor="ls")
+
+    d.text((M, M + 208), TITLE, font=font("inter", 25, 420), fill=(170, 178, 198), anchor="ls")
+
+    mono = font("jetbrains-mono", 22, 400)
+    d.text((M, BASE_2), f"{PHONE} · {EMAIL}", font=mono, fill=(140, 148, 170), anchor="ls")
+    d.text((M, BASE_1), f"{CITY} · {SITE}", font=mono, fill=(140, 148, 170), anchor="ls")
+    img.paste(qr_image(url, QR_PX, "#0d0f16", "#f4f6fb"), (W - M - QR_PX, H - M - QR_PX))
+    return img
+
+
+# ================================================================ CONCEPT L
+# "The Receipt" — itemised, totalled, and free. The format is the argument:
+# this is someone who prices, tracks and reports on everything.
+def _dashes(d, y, x0, x1, color, dash=9, gap=8, width=2):
+    x = x0
+    while x < x1:
+        d.line([(x, y), (min(x + dash, x1), y)], fill=color, width=width)
+        x += dash + gap
+
+
+def l_front(url):
+    img = canvas((253, 252, 248))
+    d = ImageDraw.Draw(img)
+    ink = (36, 36, 40)
+    faint = (150, 150, 156)
+
+    x0, x1 = M, W - M
+    mono = font("jetbrains-mono", 23, 400)
+    monob = font("jetbrains-mono", 27, 600)
+
+    draw_tracked(d, (W / 2, M + 34), "NASSER SALEH", monob, ink, 6, anchor="ms")
+    draw_tracked(d, (W / 2, M + 68), "DIGITAL MARKETING & MARTECH",
+                 font("jetbrains-mono", 17, 400), faint, 3.4, anchor="ms")
+
+    _dashes(d, M + 96, x0, x1, (196, 196, 200))
+
+    items = [("1", "SEO & GEO"), ("1", "PAID SEARCH & SOCIAL"),
+             ("1", "ANALYTICS & TRACKING"), ("1", "AUTOMATION & FUNNELS")]
+    y = M + 136
+    for qty, name in items:
+        d.text((x0, y), qty, font=mono, fill=faint, anchor="ls")
+        d.text((x0 + 40, y), name, font=mono, fill=ink, anchor="ls")
+        dots_from = x0 + 40 + mono.getlength(name) + 14
+        _dashes(d, y - 7, dots_from, x1 - 92, (214, 214, 218), dash=3, gap=7, width=2)
+        d.text((x1, y), "incl.", font=mono, fill=faint, anchor="rs")
+        y += 42
+
+    _dashes(d, y + 8, x0, x1, (196, 196, 200))
+    d.text((x0, y + 54), "TOTAL", font=monob, fill=ink, anchor="ls")
+    d.text((x1, y + 54), "ONE CONVERSATION", font=monob, fill=ELECTRIC, anchor="rs")
+
+    _dashes(d, y + 78, x0, x1, (196, 196, 200))
+    draw_tracked(d, (W / 2, BASE_1), f"{PHONE}   ·   {SITE}",
+                 font("jetbrains-mono", 19, 400), faint, 2.6, anchor="ms")
+    return img
+
+
+def l_back(url):
+    img = canvas((253, 252, 248))
+    d = ImageDraw.Draw(img)
+    ink = (36, 36, 40)
+    faint = (150, 150, 156)
+    x0, x1 = M, W - M
+
+    draw_tracked(d, (W / 2, M + 40), "MERCHANT COPY",
+                 font("jetbrains-mono", 19, 500), faint, 5, anchor="ms")
+    _dashes(d, M + 64, x0, x1, (196, 196, 200))
+
+    rows = [("TRAFFIC", "+100%"), ("SEO TRAFFIC", "+40%"),
+            ("COST PER CLICK", "−20%"), ("CAMPAIGN ROI", "+20%")]
+    mono = font("jetbrains-mono", 23, 400)
+    monob = font("jetbrains-mono", 23, 600)
+    y = M + 108
+    for label, val in rows:
+        d.text((x0, y), label, font=mono, fill=ink, anchor="ls")
+        d.text((x1 - 210, y), val, font=monob, fill=ELECTRIC, anchor="rs")
+        y += 40
+
+    _dashes(d, y + 6, x0, x1, (196, 196, 200))
+    draw_tracked(d, (x0, y + 56), "PAID IN FULL, IN RESULTS",
+                 font("jetbrains-mono", 19, 500), ink, 2.4)
+    draw_tracked(d, (x0, y + 96), EMAIL, font("jetbrains-mono", 19, 400), faint, 2)
+    _dashes(d, y + 128, x0, x1, (196, 196, 200))
+    draw_tracked(d, (W / 2, BASE_1), f"THANK YOU   ·   {SITE}",
+                 font("jetbrains-mono", 19, 400), faint, 2.6, anchor="ms")
+    img.paste(qr_image(url, QR_PX, "#242428", "#fdfcf8"), (x1 - QR_PX, M + 84))
     return img
 
 
@@ -745,6 +1032,10 @@ CONCEPTS = [
     ("F-tracked",           "Tracked",           f_front, f_back),
     ("G-portrait",          "Portrait",          g_front, g_back),
     ("H-one-number",        "One Number",        h_front, h_back),
+    ("I-keyword-field",     "Keyword Field",     i_front, i_back),
+    ("J-scan-me",           "Scan Me",           j_front, j_back),
+    ("K-the-audit",         "The Audit",         k_front, k_back),
+    ("L-the-receipt",       "The Receipt",       l_front, l_back),
 ]
 
 # Concept G is the only vertical card, so it needs its own trim geometry.

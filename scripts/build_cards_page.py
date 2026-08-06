@@ -37,6 +37,44 @@ AR = "العربية"   # العربية
 
 PLATES = [
     dict(
+        key="I", slug="I-keyword-field", name="Keyword Field", group="bold",
+        line="His name, cut out of the search.",
+        use="The whole card is a wall of what people actually type into a search box — "
+            "“does chatgpt know my business”, “why is my traffic down”. His name is cut "
+            "out of it, and inside the letters the same queries invert. He sells being the answer "
+            "inside that noise, so the card is that, rather than a claim about it.",
+        risk="It is texture before it is a name. Some people will take a second to read it — "
+             "which is either the point or the problem, depending on the room.",
+        stock="16 pt matte — fine reversed text needs a stock that will not spread ink",
+    ),
+    dict(
+        key="J", slug="J-scan-me", name="Scan Me", group="bold",
+        line="The QR stops being a footnote.",
+        use="Half the card is the code, with the monogram knocked out of its middle. Error "
+            "correction level H is what makes that survivable, and this one is decoder-tested at "
+            "full size and at 45% of it. The reverse is pure brand — gradient, tagline, nothing else.",
+        risk="Only worth it if what sits behind the code is worth scanning.",
+        stock="16 pt smooth matte — gloss glare is what defeats scanners",
+    ),
+    dict(
+        key="K", slug="K-the-audit", name="The Audit", group="bold",
+        line="The card qualifies the lead for you.",
+        use="Four questions no owner answers comfortably, with real tick boxes. Hand it over and "
+            "they run their own discovery call; every empty box is a reason to phone him. A "
+            "business card that does a job instead of sitting in a drawer.",
+        risk="Reads as presumptuous if you hand it to a peer rather than a prospect.",
+        stock="Uncoated — so a pen actually works on it, which is the whole point",
+    ),
+    dict(
+        key="L", slug="L-the-receipt", name="The Receipt", group="bold",
+        line="Itemised, totalled, free.",
+        use="Set as a till receipt: line items, dashed rules, a total of ONE CONVERSATION, and a "
+            "merchant copy on the back carrying the numbers. The format is the argument — this is "
+            "someone who prices, tracks and reports on everything.",
+        risk="Charming or gimmicky depending entirely on the room. Nobody is neutral about it.",
+        stock="Uncoated; or trim it narrow at 3.5 × 1.75 in to lean all the way in",
+    ),
+    dict(
         key="E", slug="E-search-result", name="Search Result", group="concept",
         line="SEO on one side, GEO on the other.",
         use="The front is an organic search listing — query field, his name as the blue link, his "
@@ -107,7 +145,10 @@ PLATES = [
 ]
 
 GROUPS = [
-    ("concept", "Concept-led", "Each one argues for something only he can claim."),
+    ("bold", "Out of the box",
+     "These break the format rather than decorate it — a card that is a search result, a "
+     "questionnaire, a receipt."),
+    ("concept", "Concept-led", "Conventional shape, but each argues for something only he can claim."),
     ("classic", "Classic", "Quieter. For when the card just has to be handed over cleanly."),
 ]
 
@@ -124,6 +165,10 @@ NOTES = [
      "<code>utm_campaign=a</code>, card E carries <code>e</code>. Scans arrive in GA4 under source "
      "<code>card</code>. Print two designs and you have a real A/B test on which one people "
      "actually reach for."),
+    ("Every code is decoder-tested, not eyeballed.",
+     "The build reads each finished card back with a real QR decoder and fails if a code is too "
+     "dense, or drawn light-on-dark — an inverted QR looks striking on a dark card and a good "
+     "share of phone cameras simply refuse it. All twelve now decode as printed."),
     ("Send the PDF. Keep the PNG for screens.",
      "The PDF carries the 0.125 in bleed every printer asks for. The PNG is cropped to the trim "
      "line — right for an email signature or a deck, wrong for print, where it would leave white "
