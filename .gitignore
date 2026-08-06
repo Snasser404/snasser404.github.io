@@ -38,3 +38,7 @@ lighthouse-report*
 
 # generated print assets (regenerate with scripts/make_business_cards.py)
 business-cards/
+
+# python build artifacts
+scripts/__pycache__/
+scripts/cards-page.html
