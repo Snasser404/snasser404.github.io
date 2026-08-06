@@ -230,6 +230,16 @@ def qr_image(data, size, fg, bg):
     return img.resize((size, size), Image.NEAREST)
 
 
+def trimmed(img):
+    """Crop the bleed away — the card exactly as it looks once cut.
+    This is the version to use digitally (email signature, LinkedIn, decks).
+    Sized from the trim dimensions so it lands on exactly 1050x600, not on
+    whatever the rounded bleed offset happens to leave."""
+    tw, th = int(TRIM_W * DPI), int(TRIM_H * DPI)
+    x, y = (W - tw) // 2, (H - th) // 2
+    return img.crop((x, y, x + tw, y + th))
+
+
 def trim_guides(img):
     """Proof-only overlay showing the trim line and safe area."""
     p = img.copy()
@@ -440,8 +450,9 @@ def main():
         pdf = OUT / f"nasser-saleh-card-{slug}.pdf"
         front.save(pdf, "PDF", resolution=DPI, save_all=True, append_images=[back])
 
-        front.save(OUT / f"{slug}-front.png", dpi=(DPI, DPI))
-        back.save(OUT / f"{slug}-back.png", dpi=(DPI, DPI))
+        # Digital use: cropped to the trim, so there is no bleed hanging off.
+        trimmed(front).save(OUT / f"{slug}-front.png", dpi=(DPI, DPI))
+        trimmed(back).save(OUT / f"{slug}-back.png", dpi=(DPI, DPI))
         proofs.append((label, trim_guides(front), trim_guides(back)))
         print(f"{label:22} -> {pdf.name}")
 
